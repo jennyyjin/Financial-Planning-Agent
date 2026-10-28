@@ -1,0 +1,641 @@
+{
+  "$defs": {
+    "Debt": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/DebtType",
+          "default": "other"
+        },
+        "balance": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Balance"
+        },
+        "apr": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Annual percentage rate, e.g. 5.5 for 5.5%.",
+          "title": "Apr"
+        },
+        "minimum_payment": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minimum monthly payment in dollars.",
+          "title": "Minimum Payment"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Debt",
+      "type": "object"
+    },
+    "DebtType": {
+      "enum": [
+        "student_loan",
+        "credit_card",
+        "auto_loan",
+        "mortgage",
+        "personal_loan",
+        "medical",
+        "other"
+      ],
+      "title": "DebtType",
+      "type": "string"
+    },
+    "ExpenseCategory": {
+      "enum": [
+        "housing",
+        "utilities",
+        "groceries",
+        "dining_out",
+        "transport",
+        "insurance",
+        "healthcare",
+        "subscriptions",
+        "fitness",
+        "entertainment",
+        "shopping",
+        "personal_care",
+        "education",
+        "childcare",
+        "travel",
+        "gifts_donations",
+        "other"
+      ],
+      "title": "ExpenseCategory",
+      "type": "string"
+    },
+    "Frequency": {
+      "enum": [
+        "weekly",
+        "biweekly",
+        "semimonthly",
+        "monthly",
+        "quarterly",
+        "annual"
+      ],
+      "title": "Frequency",
+      "type": "string"
+    },
+    "Income": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "frequency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Frequency"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "is_net": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "True if take-home pay, False if gross, null if unknown.",
+          "title": "Is Net"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "title": "Income",
+      "type": "object"
+    },
+    "MemoryMethod": {
+      "enum": [
+        "full_history",
+        "rolling_summary"
+      ],
+      "title": "MemoryMethod",
+      "type": "string"
+    },
+    "Meta": {
+      "additionalProperties": false,
+      "properties": {
+        "user_id": {
+          "title": "User Id",
+          "type": "string"
+        },
+        "as_of": {
+          "description": "Timestamp of the latest user message reflected in this profile.",
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "profile_version": {
+          "minimum": 1,
+          "title": "Profile Version",
+          "type": "integer"
+        },
+        "memory_method": {
+          "$ref": "#/$defs/MemoryMethod"
+        }
+      },
+      "required": [
+        "user_id",
+        "as_of",
+        "profile_version",
+        "memory_method"
+      ],
+      "title": "Meta",
+      "type": "object"
+    },
+    "NeedOrWant": {
+      "enum": [
+        "need",
+        "want"
+      ],
+      "title": "NeedOrWant",
+      "type": "string"
+    },
+    "OneTimeExpense": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "expected_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Date"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "OneTimeExpense",
+      "type": "object"
+    },
+    "Priority": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "Priority",
+      "type": "string"
+    },
+    "RecurringExpense": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "frequency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Frequency"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "category": {
+          "$ref": "#/$defs/ExpenseCategory",
+          "default": "other"
+        },
+        "need_or_want": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NeedOrWant"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "is_fixed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "True if the amount is the same every period.",
+          "title": "Is Fixed"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "RecurringExpense",
+      "type": "object"
+    },
+    "Retirement": {
+      "additionalProperties": false,
+      "properties": {
+        "current_age": {
+          "anyOf": [
+            {
+              "maximum": 120,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Current Age"
+        },
+        "target_retirement_age": {
+          "anyOf": [
+            {
+              "maximum": 120,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Retirement Age"
+        },
+        "current_balance": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Current Balance"
+        },
+        "monthly_contribution": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Monthly Contribution"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Target retirement savings in dollars.",
+          "title": "Target"
+        }
+      },
+      "title": "Retirement",
+      "type": "object"
+    },
+    "SavingsAmount": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/SavingsAmountType"
+        },
+        "value": {
+          "description": "Dollars if type is 'amount', percent (0-100) if 'percent_of_income'.",
+          "minimum": 0,
+          "title": "Value",
+          "type": "number"
+        },
+        "frequency": {
+          "$ref": "#/$defs/Frequency",
+          "default": "monthly",
+          "description": "How often the dollar amount is saved. Ignored for percent_of_income."
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "title": "SavingsAmount",
+      "type": "object"
+    },
+    "SavingsAmountType": {
+      "enum": [
+        "amount",
+        "percent_of_income"
+      ],
+      "title": "SavingsAmountType",
+      "type": "string"
+    },
+    "SavingsGoal": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "target_amount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Amount"
+        },
+        "deadline": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline"
+        },
+        "contribution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SavingsAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "priority": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Priority"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "SavingsGoal",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    },
+    "income": {
+      "items": {
+        "$ref": "#/$defs/Income"
+      },
+      "title": "Income",
+      "type": "array"
+    },
+    "recurring_expenses": {
+      "items": {
+        "$ref": "#/$defs/RecurringExpense"
+      },
+      "title": "Recurring Expenses",
+      "type": "array"
+    },
+    "one_time_expenses": {
+      "items": {
+        "$ref": "#/$defs/OneTimeExpense"
+      },
+      "title": "One Time Expenses",
+      "type": "array"
+    },
+    "savings_goals": {
+      "items": {
+        "$ref": "#/$defs/SavingsGoal"
+      },
+      "title": "Savings Goals",
+      "type": "array"
+    },
+    "overall_savings_target": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SavingsAmount"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "debts": {
+      "items": {
+        "$ref": "#/$defs/Debt"
+      },
+      "title": "Debts",
+      "type": "array"
+    },
+    "retirement": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Retirement"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "current_savings_balance": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Current Savings Balance"
+    }
+  },
+  "required": [
+    "meta"
+  ],
+  "title": "FinancialProfile",
+  "type": "object"
+}

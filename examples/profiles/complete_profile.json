@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "user_id": "u_001",
+    "as_of": "2026-10-28T14:05:00",
+    "profile_version": 3,
+    "memory_method": "rolling_summary"
+  },
+  "income": [
+    {"source": "Software engineer salary", "amount": 6200, "frequency": "monthly",
+     "is_net": true, "effective_date": "2026-11-01"}
+  ],
+  "recurring_expenses": [
+    {"name": "Rent", "amount": 1800, "frequency": "monthly", "category": "housing",
+     "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Groceries", "amount": 100, "frequency": "weekly", "category": "groceries",
+     "need_or_want": "need", "is_fixed": false, "effective_date": null},
+    {"name": "Eating out", "amount": 450, "frequency": "monthly", "category": "dining_out",
+     "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Yoga membership", "amount": 120, "frequency": "monthly", "category": "fitness",
+     "need_or_want": "want", "is_fixed": true, "effective_date": null}
+  ],
+  "one_time_expenses": [
+    {"name": "Laptop", "amount": 1500, "expected_date": "2026-12-15", "effective_date": null}
+  ],
+  "savings_goals": [
+    {"name": "Japan trip", "target_amount": 4000, "deadline": "2027-06-01",
+     "contribution": {"type": "amount", "value": 500, "frequency": "monthly"},
+     "priority": "high", "effective_date": null}
+  ],
+  "overall_savings_target": {"type": "percent_of_income", "value": 20, "frequency": "monthly"},
+  "debts": [
+    {"name": "Federal student loan", "type": "student_loan", "balance": 18000,
+     "apr": 5.5, "minimum_payment": 210, "effective_date": null}
+  ],
+  "retirement": {
+    "current_age": 24, "target_retirement_age": 60, "current_balance": 8000,
+    "monthly_contribution": 400, "target": 1500000
+  },
+  "current_savings_balance": 6500
+}

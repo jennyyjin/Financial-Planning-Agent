@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "user_id": "u_002",
+    "as_of": "2026-10-28T09:30:00",
+    "profile_version": 1,
+    "memory_method": "full_history"
+  },
+  "income": [
+    {"source": "Barista job", "amount": 1100, "frequency": "biweekly",
+     "is_net": null, "effective_date": null}
+  ],
+  "recurring_expenses": [
+    {"name": "Rent", "amount": 950, "frequency": "monthly", "category": "housing",
+     "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Phone bill", "amount": 45, "frequency": "monthly", "category": "utilities",
+     "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Streaming services", "amount": null, "frequency": "monthly", "category": "subscriptions",
+     "need_or_want": "want", "is_fixed": true, "effective_date": null}
+  ],
+  "one_time_expenses": [],
+  "savings_goals": [
+    {"name": "Emergency fund", "target_amount": 3000, "deadline": null,
+     "contribution": null, "priority": "high", "effective_date": null}
+  ],
+  "overall_savings_target": {"type": "percent_of_income", "value": 10, "frequency": "monthly"},
+  "debts": [
+    {"name": "Credit card", "type": "credit_card", "balance": 2400,
+     "apr": null, "minimum_payment": null, "effective_date": null}
+  ],
+  "retirement": null,
+  "current_savings_balance": 800
+}
