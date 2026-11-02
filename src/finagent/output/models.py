@@ -51,13 +51,15 @@ class LineKind(str, Enum):
     retirement_contribution = "retirement_contribution"  # into the retirement portfolio (savings)
     emergency_fund = "emergency_fund"                    # into cash until the reserve is built (savings)
     general_savings = "general_savings"                  # into cash (savings)
+    one_time_fund = "one_time_fund"                      # cash set aside for upcoming one-time costs (no bucket)
 
 
 class Tier(str, Enum):
     protected = "protected"  # never changed by restructuring
     drop_only = "drop_only"  # keep or set to 0
     scalable = "scalable"    # any amount between 0 and the current amount
-    savings = "savings"      # savings lines; only the surplus policy changes them (upward)
+    savings = "savings"      # savings lines; agents never change them. The surplus policy raises them, and
+                             # deficit handling (TDD §7.6) lowers stated contributions when income is short.
 
 
 class AdjustmentAction(str, Enum):
@@ -114,7 +116,7 @@ class BudgetLine(_Model):
     id: str = Field(description="Stable id, e.g. 'rec:eating-out', 'debt:federal-student-loan:min'.")
     name: str
     kind: LineKind
-    bucket: Optional[Bucket] = Field(default=None, description="None for one-time items.")
+    bucket: Optional[Bucket] = Field(default=None, description="None for one-time items and the one-time set-aside.")
     monthly_amount: float = Field(ge=0, description="Dollars per month; for one-time items, the full amount.")
     original_amount: float = Field(ge=0, description="Amount before restructuring.")
     tier: Tier
@@ -180,6 +182,9 @@ class BucketTotals(_Model):
     need: float = 0.0
     want: float = 0.0
     savings: float = 0.0
+    one_time_set_aside: float = Field(
+        default=0.0, description="Cash kept monthly for upcoming one-time costs: spending, not savings (TDD §7.4)."
+    )
     unallocated: float = 0.0
 
 
@@ -214,7 +219,9 @@ class Budget(_Model):
     shares: Optional[BucketTotals] = Field(default=None, description="Fractions of income; None if income is 0.")
     targets: Optional[BudgetTargets] = None
     headroom: dict[str, float] = Field(default_factory=dict, description="Unused allowance: 'need', 'want'.")
-    feasible: bool = True
+    feasible: Optional[bool] = Field(
+        default=None, description="Restructured budgets: whether every target is met. None for the current budget."
+    )
     infeasibility: Optional[Infeasibility] = None
     unfunded_goals: list[str] = Field(default_factory=list)
     adjustments: list[Adjustment] = Field(default_factory=list)
@@ -282,21 +289,37 @@ class RetirementProjection(_Model):
     number_source: Optional[Literal["desired_annual_spending", "target", "budget_spending"]] = None
     implied_annual_spending: Optional[float] = None
     investable_now: Optional[float] = Field(default=None, description="Investable assets at the end of the forecast.")
-    monthly_investment: Optional[float] = Field(default=None, description="Monthly amount invested after the forecast.")
+    monthly_investment: Optional[float] = Field(
+        default=None, description="Monthly amount added to investable assets after the forecast (portfolio + cash)."
+    )
+    monthly_to_portfolio: Optional[float] = Field(
+        default=None, description="Part of monthly_investment that goes to the portfolio (earns real_return)."
+    )
+    monthly_to_cash: Optional[float] = Field(
+        default=None, description="Part of monthly_investment kept as cash (earns cash_real_return)."
+    )
     reachable: Optional[bool] = None
     projected_retirement_age: Optional[float] = None
     projected_retirement_year: Optional[int] = None
     target_retirement_age: Optional[int] = None
     delta_years: Optional[float] = Field(default=None, description="Projected minus target age; negative = early.")
     matches_target: Optional[bool] = None
-    required_monthly_to_hit_target: Optional[float] = None
+    required_monthly_to_hit_target: Optional[float] = Field(
+        default=None,
+        description="Total monthly_investment that reaches the number by the target age: today's inflows plus the "
+        "smallest extra portfolio contribution that does it (solved with this projector).",
+    )
 
 
 # --- Metrics ---------------------------------------------------------------------
 
 
 class BudgetMetrics(_Model):
-    savings_rate: Optional[float] = None
+    savings_rate: Optional[float] = Field(default=None, description="Savings lines / income (unassigned cash excluded).")
+    unallocated_share: Optional[float] = Field(default=None, description="Unassigned cash / income (never negative).")
+    savings_target_met: Optional[bool] = Field(
+        default=None, description="Savings lines meet the stated overall savings target; None if there is none."
+    )
     need_share: Optional[float] = None
     want_share: Optional[float] = None
     end_cash_balance: float
@@ -309,6 +332,7 @@ class Metrics(_Model):
     net_monthly_income: float
     emergency_fund_months: Optional[float] = Field(default=None, description="Cash / monthly needs (current budget).")
     debt_total: float
+    savings_target_monthly: Optional[float] = Field(default=None, description="Stated overall savings target per month.")
     debt_to_income: Optional[float] = Field(default=None, description="Monthly debt minimums / net monthly income.")
     high_apr_debts: list[str]
     per_budget: dict[str, BudgetMetrics]
@@ -354,6 +378,9 @@ class PlanMeta(_Model):
     start_month: date
     config: PlanConfig
     model: Optional[str] = None
+    agent_usage: dict[str, dict[str, float]] = Field(
+        default_factory=dict, description="Agent name -> summed token usage and latency_ms of its runs."
+    )
     warnings: list[PlanWarning] = Field(default_factory=list)
 
 

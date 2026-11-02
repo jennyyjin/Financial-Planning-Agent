@@ -38,3 +38,7 @@ def profile_named():
 @pytest.fixture
 def normalized_named(config):
     return lambda name: normalize(load_profile(name), config)
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "live: calls a real LLM (needs FINAGENT_LLM_MODEL); run with -m live")

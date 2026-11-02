@@ -8,11 +8,13 @@ fallback restructurer.
 
 from __future__ import annotations
 
+import re
 from typing import Callable
 
 from finagent.output import goals as goal_math
 from finagent.output import policy
 from finagent.output.config import PlanConfig
+from finagent.output.format import cents as _money
 from finagent.output.models import (
     Adjustment,
     AdjustmentAction,
@@ -22,6 +24,7 @@ from finagent.output.models import (
     BudgetLine,
     BucketTotals,
     BudgetTargets,
+    DebtInfo,
     DecidedBy,
     GeneratedBy,
     GoalInfo,
@@ -53,32 +56,40 @@ class AdjustmentError(Exception):
     """A proposed budget change breaks a rule; the message is readable by the agent."""
 
 
-def _money(x: float) -> str:
-    return f"${x:,.2f}"
+# One-time items have no category or need/want label in the schema (TDD §17 Q1), so this name guard is
+# what keeps an agent from reclassifying (and then dropping) an essential cost. Conservative on purpose.
+ESSENTIAL_ONE_TIME_RE = re.compile(
+    r"medic|dental|dentist|surgery|surgical|doctor|hospital|clinic|prescription|pharmac|therap|health|"
+    r"\btax|legal|lawyer|attorney|court|tuition|school|education|textbook|exam\b|repair|\brent\b|deposit|"
+    r"mortgage|moving|relocat|childcare|daycare|insurance|funeral|visa\b|passport|licen[cs]e|registration|"
+    r"\bvet\b|veterinar|utilit|emergency",
+    re.IGNORECASE,
+)
 
 
 # --- shared helpers -------------------------------------------------------------
 
 
 def compute_totals(lines: list[BudgetLine], income: float) -> BucketTotals:
+    """Bucket totals; the one-time set-aside is spending outside the buckets (N + W + S + O + U = I)."""
     totals = {bucket: 0.0 for bucket in Bucket}
+    set_aside = 0.0
     for line in lines:
         if line.bucket is not None:
             totals[line.bucket] += line.monthly_amount
-    spent = sum(totals.values())
+        elif line.kind is LineKind.one_time_fund:
+            set_aside += line.monthly_amount
+    spent = sum(totals.values()) + set_aside
     return BucketTotals(
         need=totals[Bucket.need], want=totals[Bucket.want], savings=totals[Bucket.savings],
-        unallocated=income - spent,
+        one_time_set_aside=set_aside, unallocated=income - spent,
     )
 
 
 def compute_shares(totals: BucketTotals, income: float) -> BucketTotals | None:
     if income <= 0:
         return None
-    return BucketTotals(
-        need=totals.need / income, want=totals.want / income,
-        savings=totals.savings / income, unallocated=totals.unallocated / income,
-    )
+    return BucketTotals(**{k: v / income for k, v in totals.model_dump().items()})
 
 
 def refresh(budget: Budget) -> Budget:
@@ -105,14 +116,33 @@ def build_current_budget(norm: NormalizedProfile, config: PlanConfig | None = No
 # --- targets ----------------------------------------------------------------------
 
 
+def goal_requirement(goal: GoalInfo, norm: NormalizedProfile) -> float:
+    """Monthly amount a goal needs: the deadline requirement, else its stated contribution (TDD §7.3).
+
+    A goal whose deadline has already passed has no deadline requirement, so it
+    falls back to its stated contribution (warning `goal_deadline_passed`).
+    """
+    req = goal_math.required_monthly(goal, norm.start_month)
+    return req if req is not None else (goal.stated_monthly or 0.0)
+
+
 def required_savings(norm: NormalizedProfile) -> float:
     """S_req of goals + 5:3 (TDD §7.3): max(overall target, goal requirements + retirement)."""
-    goal_total = 0.0
-    for goal in norm.goals:
-        req = goal_math.required_monthly(goal, norm.start_month)
-        goal_total += req if req is not None else (goal.stated_monthly or 0.0)
+    goal_total = sum(goal_requirement(goal, norm) for goal in norm.goals)
     retirement = norm.retirement.monthly_contribution if norm.retirement is not None else 0.0
     return max(norm.overall_savings_target_monthly or 0.0, goal_total + retirement)
+
+
+def goal_shortfall_monthly(budget: Budget, norm: NormalizedProfile) -> float:
+    """What surplus step 1 still has to add to goal lines to meet every deadline requirement."""
+    total = 0.0
+    for goal in norm.goals:
+        required = goal_math.required_monthly(goal, norm.start_month)
+        if required is None:
+            continue
+        line = _goal_line(budget, goal, create=False)
+        total += max(0.0, required - (line.monthly_amount if line is not None else 0.0))
+    return total
 
 
 def targets_for(budget_id: BudgetId, norm: NormalizedProfile, config: PlanConfig) -> BudgetTargets | None:
@@ -129,10 +159,15 @@ def targets_for(budget_id: BudgetId, norm: NormalizedProfile, config: PlanConfig
     return None
 
 
-def want_allowance(budget: Budget, targets: BudgetTargets) -> float:
-    """Most the wants may total: the savings floor comes before wants (TDD §7.2 step 2)."""
+def want_allowance(budget: Budget, targets: BudgetTargets, set_aside: float = 0.0) -> float:
+    """Most the wants may total: needs, upcoming one-time costs and the savings floor come first (TDD §7.2 step 2)."""
     needs = compute_totals(budget.lines, budget.income_monthly).need
-    return max(0.0, min(targets.want_max, budget.income_monthly - needs - targets.savings_min))
+    return max(0.0, min(targets.want_max, budget.income_monthly - needs - set_aside - targets.savings_min))
+
+
+def allowance_for(budget: Budget, norm: NormalizedProfile, config: PlanConfig) -> float:
+    """`want_allowance` with the one-time set-aside the budget's remaining one-time items require."""
+    return want_allowance(budget, budget.targets, one_time_set_aside(budget, norm, config))
 
 
 # --- restructuring session operations (called by the budget tools) -----------------
@@ -235,6 +270,11 @@ def mark_one_time_discretionary(
         raise AdjustmentError(f"'{line.name}' is not a one-time expense.")
     if line.discretionary:
         raise AdjustmentError(f"'{line.name}' is already marked discretionary.")
+    if ESSENTIAL_ONE_TIME_RE.search(line.name):
+        raise AdjustmentError(
+            f"'{line.name}' looks like an essential cost (medical, legal, tax, education, housing, repair...), "
+            "so it cannot be reclassified as discretionary."
+        )
     if len(rationale.strip()) < config.min_rationale_chars:
         raise AdjustmentError(f"Every change needs a specific rationale of at least {config.min_rationale_chars} characters.")
     line.discretionary = True
@@ -290,7 +330,10 @@ def _infeasibility_reason(budget: Budget, found: dict[str, float], config: PlanC
     if "want" in found:
         parts.append(f"wants are {_money(totals.want)}/mo, {_money(found['want'])} above the {_money(t.want_max)} ceiling")
     if "savings" in found:
-        parts.append(f"savings are {_money(totals.savings)}/mo, {_money(found['savings'])} short of the {_money(t.savings_min)} floor")
+        kept = (f" after {_money(totals.one_time_set_aside)}/mo is kept for upcoming one-time costs"
+                if totals.one_time_set_aside > config.money_tolerance else "")
+        parts.append(f"savings are {_money(totals.savings)}/mo{kept}, {_money(found['savings'])} short of the "
+                     f"{_money(t.savings_min)} floor")
     if "want" not in found and "savings" not in found:
         tail = "so cutting wants cannot close this gap."
     elif room > config.money_tolerance:
@@ -311,11 +354,12 @@ def _get_line(budget: Budget, line_id: str) -> BudgetLine | None:
 
 
 def _savings_line(budget: Budget, line_id: str, name: str, kind: LineKind, **fields) -> BudgetLine:
-    """Existing savings line, or a new one at 0 appended to the budget."""
+    """Existing savings line, or a new one at 0 appended to the budget (the one-time fund has no bucket)."""
     line = _get_line(budget, line_id)
     if line is None:
+        bucket = None if kind is LineKind.one_time_fund else Bucket.savings
         line = BudgetLine(
-            id=line_id, name=name, kind=kind, bucket=Bucket.savings, monthly_amount=0.0,
+            id=line_id, name=name, kind=kind, bucket=bucket, monthly_amount=0.0,
             original_amount=0.0, tier=Tier.savings, **fields,
         )
         budget.lines.append(line)
@@ -390,6 +434,16 @@ def _reduce_savings_for_deficit(budget: Budget, norm: NormalizedProfile, config:
         cut(line, 0.0, "lower-priority savings are reduced first.")
 
 
+def payoff_extra(debt: DebtInfo, months: int) -> float:
+    """Payment above the minimum that pays the debt off in `months` level payments (interest included)."""
+    rate = (debt.apr or 0.0) / 100 / 12
+    if rate > 0:
+        payment = debt.balance * rate / (1 - (1 + rate) ** -months)
+    else:
+        payment = debt.balance / months
+    return max(0.0, payment - (debt.minimum_payment or 0.0))
+
+
 def one_time_set_aside(budget: Budget, norm: NormalizedProfile, config: PlanConfig) -> float:
     """Monthly amount to keep in cash so one-time costs in the forecast window never overdraw savings.
 
@@ -417,13 +471,15 @@ def _allocate_surplus(budget: Budget, norm: NormalizedProfile, config: PlanConfi
         return budget.totals.unallocated
 
     # 0. Save ahead for one-time costs that current savings cannot cover (avoids overdrawing cash).
+    #    This is spending, not savings: the line has no bucket and is reported as totals.one_time_set_aside.
     amount = min(surplus(), one_time_set_aside(budget, norm, config))
     if amount > tol:
         names = ", ".join(line.name for line in budget.one_time if line.monthly_amount > 0)
-        line = _savings_line(budget, ONE_TIME_FUND_ID, "Upcoming one-time costs", LineKind.general_savings)
+        line = _savings_line(budget, ONE_TIME_FUND_ID, "Upcoming one-time costs", LineKind.one_time_fund)
         _allocate(budget, line, amount, "one_time_costs", (
             f"Kept {_money(amount)}/mo in cash for upcoming one-time costs ({names}) that current savings of "
-            f"{_money(norm.current_savings_balance)} cannot cover, so savings are never overdrawn."
+            f"{_money(norm.current_savings_balance)} cannot cover, so cash is never overdrawn. This is money for "
+            "planned spending, so it does not count toward the savings target."
         ))
 
     # 1. Shortfalls on goals with deadlines, by priority.
@@ -450,10 +506,32 @@ def _allocate_surplus(budget: Budget, norm: NormalizedProfile, config: PlanConfi
     # 2. Emergency fund, built over config.emergency_build_months.
     needs = budget.totals.need
     reserve = config.emergency_months * needs
-    # A user goal that is itself an emergency fund already builds (part of) the reserve.
-    earmarked = sum(g.target_amount or 0.0 for g in norm.goals if "emergency" in g.name.lower())
+    build = config.emergency_build_months
+    # A user goal that is itself an emergency fund builds part of the reserve, but only with the money its
+    # own line actually puts into it over the build period.
+    em_goals = sorted((g for g in norm.goals if "emergency" in g.name.lower() and g.target_amount),
+                      key=goal_math.goal_priority_key)
+
+    def goal_funding(goal: GoalInfo) -> float:
+        own = _goal_line(budget, goal, create=False)
+        return min(goal.target_amount, (own.monthly_amount if own is not None else 0.0) * build)
+
+    earmarked = sum(goal_funding(g) for g in em_goals)
     gap = max(0.0, reserve - norm.current_savings_balance - earmarked)
-    amount = min(surplus(), gap / config.emergency_build_months)
+    amount = min(surplus(), gap / build)
+    # The emergency goal's own line gets this money first, so its verdict and completion date show it.
+    for goal in em_goals:
+        give = min(amount, max(0.0, goal.target_amount - goal_funding(goal)) / build)
+        if give <= tol:
+            continue
+        own = _goal_line(budget, goal, create=True)
+        _allocate(budget, own, give, "emergency_fund", (
+            f"Put {_money(give)}/mo into {goal.name}, your emergency-fund goal of {_money(goal.target_amount)}, as "
+            f"the first part of an emergency reserve of {config.emergency_months:g} months of needs "
+            f"({_money(reserve)}); current savings of {_money(norm.current_savings_balance)} leave a {_money(gap)} "
+            f"gap, built over {build} months."
+        ))
+        amount -= give
     if amount > tol:
         line = _savings_line(budget, EMERGENCY_FUND_ID, "Emergency fund", LineKind.emergency_fund)
         _allocate(budget, line, amount, "emergency_fund", (
@@ -462,19 +540,25 @@ def _allocate_surplus(budget: Budget, norm: NormalizedProfile, config: PlanConfi
             f"built over {config.emergency_build_months} months."
         ))
 
-    # 3. Extra payments on high-APR debts, highest APR first.
+    # 3. Extra payments on high-APR debts, highest APR first: at most what pays the debt off over the
+    #    forecast window (a level payment), so a monthly line is never sized to the whole balance.
     high_apr = [d for d in norm.debts if d.apr is not None and d.apr >= config.high_apr_threshold and d.balance > 0]
     for debt in sorted(high_apr, key=lambda d: (-d.apr, d.id)):
-        amount = min(surplus(), debt.balance)
+        needed = payoff_extra(debt, config.horizon_months)
+        amount = min(surplus(), needed)
         if amount <= tol:
             continue
         line = _savings_line(
             budget, f"{debt.id}:extra", f"{debt.name} (extra payment)", LineKind.debt_extra,
             target_ref=debt.id, source_ref=debt.source_ref,
         )
+        full = amount >= needed - tol
         _allocate(budget, line, amount, "high_apr_debt", (
             f"Put an extra {_money(amount)}/mo toward {debt.name}, which charges {debt.apr:g}% APR "
-            f"(at or above the {config.high_apr_threshold:g}% high-interest threshold); the highest rate is paid first."
+            f"(at or above the {config.high_apr_threshold:g}% high-interest threshold); "
+            + (f"with the minimum, that pays it off within {config.horizon_months} months."
+               if full else f"paying it off within {config.horizon_months} months would take {_money(needed)}/mo extra.")
+            + " The highest rate is paid first."
         ))
 
     # 4. The rest to retirement (or general savings when there is no retirement account).
@@ -537,48 +621,81 @@ def finalize_budget(
 
 
 def _cut_wants_to(budget: Budget, allowance: float, config: PlanConfig) -> None:
+    """Cut wants to the allowance with as little overshoot as the all-or-nothing items allow.
+
+    Flexible wants are scaled down by a common fraction of their reducible amount.
+    Only if that cannot close the gap are all-or-nothing wants dropped: the
+    smallest one that closes what flexible cuts cannot, else the largest, and so
+    on. The flexible cut is then sized so wants land on the allowance.
+    """
     tol = config.money_tolerance
     rule = f"{budget.id.value}.wants_ceiling"
     excess = budget.totals.want - allowance
     if excess <= tol:
         return
-
-    # 1. Scale every flexible monthly want down by the same fraction of its reducible amount.
     scalable = [l for l in budget.lines if l.bucket is Bucket.want and l.tier is Tier.scalable]
     room = {l.id: l.monthly_amount - policy.min_allowed(l, config) for l in scalable}
     total_room = sum(room.values())
-    if total_room > tol:
-        fraction = min(1.0, excess / total_room)
-        for line in scalable:
-            if room[line.id] <= 0:
-                continue
-            floor = policy.min_allowed(line, config)
-            new = max(floor, line.monthly_amount - fraction * room[line.id])
-            apply_adjustment(budget, line.id, new, (
-                f"Fallback rule {rule}: wants were {_money(allowance + excess)}/mo against a {_money(allowance)}/mo "
-                f"allowance, so every flexible want is cut by {fraction:.0%} of its reducible amount; "
-                f"{line.name} goes from {_money(line.original_amount)} to {_money(new)}/mo."
-            ), config, decided_by=DecidedBy.fallback, rule=rule)
 
-    # 2. Still over: drop all-or-nothing wants, largest first.
-    drop_only = sorted(
-        (l for l in budget.lines if l.bucket is Bucket.want and l.tier is Tier.drop_only and l.monthly_amount > tol),
-        key=lambda l: (-l.monthly_amount, l.id),
-    )
-    for line in drop_only:
-        if budget.totals.want - allowance <= tol:
-            break
-        apply_adjustment(budget, line.id, 0.0, (
-            f"Fallback rule {rule}: wants were still {_money(budget.totals.want)}/mo after cutting flexible wants, "
-            f"above the {_money(allowance)}/mo allowance, so the all-or-nothing {line.name} "
-            f"({_money(line.original_amount)}/mo) is dropped, largest first."
+    # 1. Drop all-or-nothing wants only while flexible cuts alone cannot close the gap.
+    candidates = [l for l in budget.lines if l.bucket is Bucket.want and l.tier is Tier.drop_only and l.monthly_amount > tol]
+    remaining = excess
+    while remaining - total_room > tol and candidates:
+        short = remaining - total_room
+        enough = sorted((l for l in candidates if l.monthly_amount >= short - tol), key=lambda l: (l.monthly_amount, l.id))
+        pick = enough[0] if enough else max(candidates, key=lambda l: (l.monthly_amount, l.id))
+        candidates.remove(pick)
+        remaining -= pick.monthly_amount
+        apply_adjustment(budget, pick.id, 0.0, (
+            f"Fallback rule {rule}: wants were {_money(allowance + excess)}/mo against a {_money(allowance)}/mo "
+            f"allowance and cutting flexible wants could free only {_money(total_room)}/mo, so the all-or-nothing "
+            f"{pick.name} ({_money(pick.original_amount)}/mo) is dropped."
+        ), config, decided_by=DecidedBy.fallback, rule=rule)
+
+    # 2. Scale every flexible want down by the same fraction of its reducible amount.
+    if remaining <= tol or total_room <= tol:
+        return
+    fraction = min(1.0, remaining / total_room)
+    for line in scalable:
+        if room[line.id] <= 0:
+            continue
+        floor = policy.min_allowed(line, config)
+        new = max(floor, line.monthly_amount - fraction * room[line.id])
+        apply_adjustment(budget, line.id, new, (
+            f"Fallback rule {rule}: wants were {_money(allowance + excess)}/mo against a {_money(allowance)}/mo "
+            f"allowance, so every flexible want is cut by {fraction:.0%} of its reducible amount; "
+            f"{line.name} goes from {_money(line.original_amount)} to {_money(new)}/mo."
+        ), config, decided_by=DecidedBy.fallback, rule=rule)
+
+
+def _trim_needs_to(budget: Budget, config: PlanConfig) -> None:
+    """With need_trim_cap > 0, trim scalable (variable) needs proportionally toward the needs ceiling."""
+    tol = config.money_tolerance
+    excess = budget.totals.need - budget.targets.need_max
+    trimmable = [l for l in budget.lines if l.bucket is Bucket.need and l.tier is Tier.scalable]
+    room = {l.id: l.monthly_amount - policy.min_allowed(l, config) for l in trimmable}
+    total_room = sum(room.values())
+    if excess <= tol or total_room <= tol:
+        return
+    fraction = min(1.0, excess / total_room)
+    rule = f"{budget.id.value}.needs_ceiling"
+    for line in trimmable:
+        if room[line.id] <= tol:
+            continue
+        new = line.monthly_amount - fraction * room[line.id]
+        apply_adjustment(budget, line.id, new, (
+            f"Fallback rule {rule}: needs were {_money(budget.targets.need_max + excess)}/mo against a "
+            f"{_money(budget.targets.need_max)}/mo ceiling, so each variable need is trimmed by {fraction:.0%} of the "
+            f"{config.need_trim_cap:.0%} allowed; {line.name} goes from {_money(line.original_amount)} to {_money(new)}/mo."
         ), config, decided_by=DecidedBy.fallback, rule=rule)
 
 
 def fallback_restructure(norm: NormalizedProfile, budget_id: BudgetId, config: PlanConfig) -> Budget:
-    """Rule-based restructurer: cut wants to the allowance, then apply the surplus policy."""
+    """Rule-based restructurer: trim variable needs (only if need_trim_cap > 0), cut wants to the allowance,
+    then apply the surplus policy."""
     budget = start_restructure(norm, budget_id, config)
-    _cut_wants_to(budget, want_allowance(budget, budget.targets), config)
+    _trim_needs_to(budget, config)
+    _cut_wants_to(budget, allowance_for(budget, norm, config), config)
     return finalize_budget(budget, norm, config, GeneratedBy.fallback)
 
 

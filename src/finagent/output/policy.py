@@ -7,6 +7,7 @@ protected expense (rent, medication, debt minimums...) to be cut.
 
 from __future__ import annotations
 
+import math
 from typing import Optional
 
 from finagent.output.config import PlanConfig
@@ -58,6 +59,8 @@ def validate_adjustment(
 ) -> Optional[str]:
     """Return an error message if the change breaks a rule, else None."""
     tol = config.money_tolerance
+    if not isinstance(new_amount, (int, float)) or not math.isfinite(new_amount):
+        return "Amount must be a finite number."
     if not is_adjustable(line):
         if line.kind is LineKind.one_time:
             return (

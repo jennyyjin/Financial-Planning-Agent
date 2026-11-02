@@ -65,9 +65,22 @@ def test_required_monthly_none_without_target_or_deadline(target, deadline):
 
 
 @pytest.mark.parametrize("deadline", [date(2026, 11, 1), date(2026, 10, 15), date(2025, 1, 1)])
-def test_deadline_at_or_before_start_needs_whole_remainder(deadline):
-    assert required_monthly(goal(target=3000, deadline=deadline), NOV) == pytest.approx(3000)
-    assert required_monthly(goal(target=3000, deadline=deadline), NOV, funded=1000) == pytest.approx(2000)
+def test_deadline_at_or_before_start_has_no_requirement(deadline):
+    # A passed deadline is planned like no deadline (warning goal_deadline_passed), not as the whole
+    # remainder every month.
+    from finagent.output.goals import deadline_passed
+
+    assert required_monthly(goal(target=3000, deadline=deadline), NOV) is None
+    assert required_monthly(goal(target=3000, deadline=deadline), NOV, funded=1000) is None
+    assert deadline_passed(goal(target=3000, deadline=deadline), NOV)
+
+
+def test_deadline_in_the_first_month_still_has_a_requirement():
+    from finagent.output.goals import deadline_passed
+
+    g = goal(target=3000, deadline=date(2026, 11, 15))  # November starts before the deadline
+    assert not deadline_passed(g, NOV)
+    assert required_monthly(g, NOV) == pytest.approx(3000)
 
 
 def test_big_goals_requirements(normalized_named):

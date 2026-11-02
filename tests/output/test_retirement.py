@@ -215,7 +215,8 @@ def test_required_monthly_round_trip():
     proj = project_retirement(budget, forecast, norm, config)
     pmt = proj.required_monthly_to_hit_target
     n = 30 * 12 - config.horizon_months
-    assert fv(proj.investable_now, pmt, n, monthly_rate(config.real_return)) == pytest.approx(1_200_000, abs=1)
+    # Without a cash pool the solver agrees with the closed-form annuity (to the bisection tolerance).
+    assert fv(proj.investable_now, pmt, n, monthly_rate(config.real_return)) == pytest.approx(1_200_000, abs=5)
 
     # Feeding the required amount back through the projector lands on the target age.
     hit = project_retirement(budget, forecast, norm, config, extra_monthly=pmt - proj.monthly_investment)
@@ -411,3 +412,70 @@ def test_reached_at_forecast_end_past_max_age_is_unreachable():
                               PlanConfig(count_cash_as_investable=False))
     assert proj.reachable is False
     assert proj.projected_retirement_age is None
+
+
+# --- review regressions: the required amount uses the same two-pool model ---------------------
+
+
+@pytest.mark.parametrize("cash_return", [0.0, 0.02])
+def test_required_monthly_round_trip_with_default_cash_pool(normalized_named, cash_return):
+    """Reviewer repro: with cash counted at 0%, feeding the required amount back used to miss the target."""
+    from finagent.output.forecast import forecast_budget
+
+    config = PlanConfig(cash_real_return=cash_return)
+    norm = normalized_named("complete").model_copy(deep=True)
+    norm.retirement.target = 6_000_000
+    budget = build_current_budget(norm)
+    forecast = forecast_budget(budget, norm, config)
+    proj = project_retirement(budget, forecast, norm, config)
+    assert proj.matches_target is False
+    extra = proj.required_monthly_to_hit_target - proj.monthly_investment
+    assert extra > 0
+    hit = project_retirement(budget, forecast, norm, config, extra_monthly=extra)
+    assert hit.matches_target is True
+    assert hit.monthly_investment == pytest.approx(proj.required_monthly_to_hit_target)
+    # ...and it is the smallest such amount (to a few dollars).
+    miss = project_retirement(budget, forecast, norm, config, extra_monthly=max(0.0, extra - 5))
+    assert miss.projected_retirement_age is None or miss.projected_retirement_age > hit.projected_retirement_age - 1e-9
+
+
+def test_monthly_investment_split_between_portfolio_and_cash():
+    lines = [rent(2000), ret_line(500), line("sav:emergency", LineKind.emergency_fund, Bucket.savings, 200)]
+    norm = make_norm(lines, income=3000)  # unallocated 300
+    proj = project_retirement(build_current_budget(norm), make_forecast(cash=0, retirement_balance=0), norm,
+                              PlanConfig())
+    assert proj.monthly_to_portfolio == pytest.approx(500)
+    assert proj.monthly_to_cash == pytest.approx(500)
+    assert proj.monthly_investment == pytest.approx(1000)
+
+
+def test_one_time_set_aside_is_freed_after_the_window(normalized_named):
+    from finagent.output.budget import fallback_restructure
+    from finagent.output.forecast import forecast_budget
+    from finagent.output.models import BudgetId
+
+    norm = normalized_named("overspender")
+    budget = fallback_restructure(norm, BudgetId.rule_50_30_20, PlanConfig())
+    forecast = forecast_budget(budget, norm, PlanConfig())
+    on = project_retirement(budget, forecast, norm, PlanConfig())
+    off = project_retirement(budget, forecast, norm, PlanConfig(redirect_freed_payments_to_retirement=False))
+    # Redirected: the $400 trip set-aside and the emergency goal's $272.73 (deadline passed) go to the portfolio.
+    assert on.monthly_to_portfolio == pytest.approx(off.monthly_to_portfolio + 400 + 3000 / 11)
+
+
+@pytest.mark.parametrize("profile", ["complete", "overspender", "big_goals", "mislabeled"])
+def test_required_amount_meets_the_target_for_every_fixture_budget(normalized_named, profile):
+    """The advice 'investing about $X/mo would reach the number by age N' must hold (re-run the projector)."""
+    from finagent.output.budget import build_budgets
+    from finagent.output.forecast import forecast_budget
+
+    config = PlanConfig()
+    norm = normalized_named(profile)
+    for bid, budget in build_budgets(norm, config).items():
+        forecast = forecast_budget(budget, norm, config)
+        proj = project_retirement(budget, forecast, norm, config)
+        if proj.required_monthly_to_hit_target is None:
+            continue
+        extra = proj.required_monthly_to_hit_target - proj.monthly_investment
+        hit = project_retirement(budget, forecast, norm, config, extra_monthly=extra)
+        assert hit.matches_target is True, (profile, bid)

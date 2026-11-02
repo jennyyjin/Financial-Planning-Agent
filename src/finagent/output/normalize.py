@@ -14,6 +14,7 @@ import re
 from datetime import date
 
 from finagent.output.config import PlanConfig
+from finagent.output.goals import contribution_months
 from finagent.output.models import (
     Bucket,
     BudgetLine,
@@ -146,6 +147,13 @@ def normalize(profile: FinancialProfile, config: PlanConfig | None = None) -> No
             warnings.append(PlanWarning(code="goal_target_unknown", message=f"Goal '{goal.name}' has no target amount.", ref=goal_id))
         if goal.deadline is None and stated is None:
             warnings.append(PlanWarning(code="goal_unscheduled", message=f"Goal '{goal.name}' has neither a deadline nor a contribution.", ref=goal_id))
+        if goal.deadline is not None and contribution_months(start_month, goal.deadline) == 0:
+            warnings.append(PlanWarning(
+                code="goal_deadline_passed",
+                message=f"Goal '{goal.name}' has a deadline before the forecast starts; it is planned like a goal without a deadline"
+                + (" (its stated contribution is kept)." if stated else " and gets no required contribution."),
+                ref=goal_id,
+            ))
         goals.append(GoalInfo(
             id=goal_id, name=goal.name, target_amount=goal.target_amount, deadline=goal.deadline,
             stated_monthly=stated, priority=goal.priority, source_ref=ref,

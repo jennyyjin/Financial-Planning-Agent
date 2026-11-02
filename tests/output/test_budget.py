@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from datetime import date
 
 import pytest
 
@@ -31,6 +32,7 @@ from finagent.output.models import (
     Tier,
 )
 from conftest import ALL_PROFILES
+from invariants import check_budget_invariants
 
 R50 = BudgetId.rule_50_30_20
 G53 = BudgetId.goals_5_3
@@ -301,12 +303,16 @@ def test_big_goals_variants_differ(normalized_named, config):
 def test_overspender_50_30_20(normalized_named, config):
     budget = fallback_restructure(normalized_named("overspender"), R50, config)
     assert budget.totals.need == pytest.approx(3080)
-    assert budget.totals.want == pytest.approx(120)
-    assert line(budget, "rec:streaming").monthly_amount == 60
-    assert line(budget, "rec:dining-out").monthly_amount == pytest.approx(60)
+    # The $400/mo set aside for the Disneyland trip is spending, so it comes before wants:
+    # allowance = max(0, 4000 - 3080 - 400 - 800) = 0.
+    assert budget.totals.one_time_set_aside == pytest.approx(400)
+    assert budget.totals.want == pytest.approx(0)
+    assert line(budget, "rec:streaming").monthly_amount == 0
+    assert line(budget, "rec:dining-out").monthly_amount == 0
     assert not budget.feasible
-    assert budget.infeasibility.gaps == {"need": pytest.approx(1080)}
-    assert budget.totals.savings == pytest.approx(800)
+    assert budget.infeasibility.gaps == {"need": pytest.approx(1080), "savings": pytest.approx(280)}
+    assert budget.totals.savings == pytest.approx(520)  # true savings only, not the trip money
+    assert "kept for upcoming one-time costs" in budget.infeasibility.reason
     assert line(budget, "one:disneyland-trip").monthly_amount == 2500  # fallback never touches one-time items
     cut = adjustments_for(budget, "rec:dining-out")[0]
     assert cut.decided_by is DecidedBy.fallback and "50_30_20.wants_ceiling" in cut.rule
@@ -409,7 +415,7 @@ def test_infeasibility_reason_mentions_remaining_cuts_for_agent_budget(normalize
     budget = start_restructure(norm, R50, config)  # agent made no cuts
     finalize_budget(budget, norm, config, GeneratedBy.agent)
     assert set(budget.infeasibility.gaps) == {"need", "savings"}
-    assert "$540.00" in budget.infeasibility.reason  # 660 - 120 still cuttable
+    assert "$660.00" in budget.infeasibility.reason  # the allowance is 0 after the trip set-aside
     assert "no further allowed cut" not in budget.infeasibility.reason
 
 
@@ -459,46 +465,7 @@ def test_finalize_agent_budget(normalized_named, config):
 @pytest.mark.parametrize("profile", ALL_PROFILES)
 def test_invariants(normalized_named, config, profile, budget_id):
     norm = normalized_named(profile)
-    budget = fallback_restructure(norm, budget_id, config)
-    tol = config.money_tolerance
-    t = budget.totals
-    assert t.need + t.want + t.savings + t.unallocated == pytest.approx(norm.net_monthly_income)
-    if t.need <= norm.net_monthly_income:
-        assert t.unallocated == pytest.approx(0, abs=tol)
-
-    originals = {l.id: l for l in norm.lines + norm.one_time}
-    for l in budget.lines + budget.one_time:
-        orig = originals.get(l.id)
-        if orig is not None and orig.tier is Tier.protected:
-            assert l.monthly_amount == orig.monthly_amount, l.id
-        if l.monthly_amount > l.original_amount + tol:
-            assert l.tier is Tier.savings
-            assert any(a.action is AdjustmentAction.allocate and a.decided_by is DecidedBy.policy
-                       for a in adjustments_for(budget, l.id)), l.id
-        baseline = orig.monthly_amount if orig is not None else 0.0
-        changed = abs(l.monthly_amount - baseline) > tol
-        records = [a for a in adjustments_for(budget, l.id) if a.action is not AdjustmentAction.reclassify]
-        if changed:
-            assert len(records) == 1, l.id
-            assert records[0].rationale.strip()
-        else:
-            assert records == [], l.id
-    assert len(Counter(l.id for l in budget.lines)) == len(budget.lines)
-
-    g = gaps(budget, config)
-    assert budget.feasible == (not g)
-    if budget.feasible:
-        assert budget.infeasibility is None
-    else:
-        assert budget.infeasibility.gaps == pytest.approx(g)
-        assert budget.infeasibility.reason
-        if "want" in g or "savings" in g:
-            assert remaining_cuts_possible(budget, config) <= tol
-        # A needs or wants gap equals the best achievable one (TDD §14.2).
-        best = best_achievable(budget, config)
-        assert best.need == pytest.approx(t.need)
-        if "want" in g:
-            assert best.want == pytest.approx(t.want)
+    check_budget_invariants(norm, fallback_restructure(norm, budget_id, config), config)
 
 
 @pytest.mark.parametrize("profile", ALL_PROFILES)
@@ -526,3 +493,145 @@ def test_build_budgets_custom_restructure(normalized_named, config):
 
     build_budgets(normalized_named("complete"), config, restructure=restructure)
     assert calls == [R50, G53]
+
+
+# --- review regressions ---------------------------------------------------------------------
+
+
+def test_one_time_set_aside_is_spending_not_savings_and_goals_stay_funded(normalized_named, config):
+    """Overspender Goals + 5:3: the trip set-aside used to eat the whole savings floor and leave the goal unfunded."""
+    from finagent.output.budget import ONE_TIME_FUND_ID
+
+    norm = normalized_named("overspender")
+    budget = fallback_restructure(norm, G53, config)
+    fund = line(budget, ONE_TIME_FUND_ID)
+    assert fund.bucket is None and fund.kind.value == "one_time_fund"
+    assert budget.totals.one_time_set_aside == pytest.approx(400)
+    # S_req = max(10% x 4000, 272.73) = 400, allowance = 4000 - 3080 - 400 (trip) - 400 = 120.
+    assert budget.totals.want == pytest.approx(120)
+    assert budget.totals.savings == pytest.approx(400)
+    assert budget.unfunded_goals == []
+    assert line(budget, "goal:emergency-fund:contribution").monthly_amount == pytest.approx(3000 / 11)
+    assert "savings" not in (budget.infeasibility.gaps if budget.infeasibility else {})
+
+
+def test_set_aside_counts_against_the_wants_allowance(normalized_named, config):
+    from finagent.output.budget import allowance_for, one_time_set_aside
+
+    norm = normalized_named("overspender")
+    budget = start_restructure(norm, G53, config)
+    set_aside = one_time_set_aside(budget, norm, config)
+    assert allowance_for(budget, norm, config) == pytest.approx(want_allowance(budget, budget.targets) - set_aside)
+
+
+def test_unfunded_emergency_goal_gets_the_emergency_allocation(normalized_named, config):
+    """incomplete_profile: an unscheduled 'Emergency fund' goal used to zero the reserve gap while getting $0."""
+    from finagent.output.forecast import forecast_budget
+
+    norm = normalized_named("incomplete")
+    budget = fallback_restructure(norm, R50, config)
+    goal_line = line(budget, "goal:emergency-fund:contribution")
+    gap = 3 * budget.totals.need - 800  # nothing earmarked: the goal's own line was empty
+    # The reserve gap (3 x 995 - 800 = 2,185) is below the goal's 3,000, so all of it goes to the goal line.
+    assert goal_line.monthly_amount == pytest.approx(gap / 12)
+    assert not any(l.id == "savings:emergency-fund" for l in budget.lines)
+    [rec] = adjustments_for(budget, goal_line.id)
+    assert rec.rule == "surplus.emergency_fund"
+    verdict = forecast_budget(budget, norm, config).goals[0]
+    assert verdict.projected_completion_date is not None
+
+
+def test_emergency_goal_with_its_own_funding_still_counts(normalized_named, config):
+    budget = fallback_restructure(normalized_named("overspender"), R50, config)
+    # The deadline goal is funded at 272.73 x 11 = 3000 by step 1, so it fully counts toward the reserve.
+    reserve = line(budget, "savings:emergency-fund")
+    assert reserve.monthly_amount == pytest.approx(min(4000 - 3080 - 400 - 3000 / 11, (3 * 3080 - 500 - 3000) / 12))
+
+
+def test_past_deadline_goal_is_not_a_monthly_requirement(profile_named, config):
+    """Reviewer repro: a Japan deadline of 2026-09-01 made a permanent $2,787-$3,357/mo goal line."""
+    from finagent.output.normalize import normalize
+
+    profile = profile_named("complete")
+    profile.savings_goals[0].deadline = date(2026, 9, 1)
+    norm = normalize(profile, config)
+    assert any(w.code == "goal_deadline_passed" for w in norm.warnings)
+    t = targets_for(G53, norm, config)
+    assert t.savings_min == pytest.approx(1240)  # max(20%, stated 500 + retirement 400)
+    budgets = build_budgets(norm, config)
+    for bid in VARIANTS:
+        japan = line(budgets[bid], "goal:japan-trip:contribution")
+        assert japan.monthly_amount == pytest.approx(500), bid
+        check_budget_invariants(norm, budgets[bid], config)
+
+
+def test_high_apr_extra_is_a_payoff_over_the_window_not_the_whole_balance(normalized_named):
+    """Reviewer repro: at $9,000 income the card got a $4,109/mo extra line."""
+    from finagent.output.budget import payoff_extra
+
+    config = PlanConfig()
+    norm = normalized_named("overspender").model_copy(update={"net_monthly_income": 9000})
+    budget = fallback_restructure(norm, R50, config)
+    extra = line(budget, "debt:credit-card:extra")
+    debt = norm.debts[0]
+    rate = 0.02
+    level = 5000 * rate / (1 - (1 + rate) ** -12)
+    assert extra.monthly_amount == pytest.approx(level - 150)
+    assert payoff_extra(debt, 12) == pytest.approx(level - 150)
+    assert line(budget, "ret:contribution").monthly_amount > 1000  # the rest is invested
+
+
+def test_fallback_trims_variable_needs_when_need_trim_cap_is_set(normalized_named):
+    config = PlanConfig(need_trim_cap=0.1)
+    norm = normalize_with(normalized_named, "overspender", config)
+    budget = fallback_restructure(norm, R50, config)
+    groceries = line(budget, "rec:groceries")
+    assert groceries.monthly_amount == pytest.approx(450)  # 10% of 500; rent etc. stay protected
+    [rec] = adjustments_for(budget, "rec:groceries")
+    assert rec.rule == "50_30_20.needs_ceiling" and rec.decided_by is DecidedBy.fallback
+    assert budget.infeasibility.gaps["need"] == pytest.approx(1030)
+    check_budget_invariants(norm, budget, config)
+
+
+def normalize_with(normalized_named, name, config):
+    from conftest import load_profile
+    from finagent.output.normalize import normalize
+
+    return normalize(load_profile(name), config)
+
+
+def test_essential_one_time_items_cannot_be_reclassified(normalized_named, config):
+    """Reviewer repro: 'Dental surgery' was reclassified and dropped."""
+    budget = start_restructure(normalized_named("mislabeled"), R50, config)
+    with pytest.raises(AdjustmentError, match="essential"):
+        mark_one_time_discretionary(budget, "one:dental-surgery", "A dental surgery can wait another year or so.", config)
+    mark_one_time_discretionary(budget, "one:festival-tickets", "Festival tickets are entertainment, not a need.", config)
+    assert line(budget, "one:festival-tickets").discretionary
+
+
+def test_fallback_drops_the_smallest_sufficient_all_or_nothing_want(config):
+    from finagent.output.models import Bucket, BudgetLine, LineKind
+
+    def want(name, amount, fixed):
+        return BudgetLine(id=f"rec:{name}", name=name, kind=LineKind.recurring, bucket=Bucket.want,
+                          monthly_amount=amount, original_amount=amount,
+                          tier=Tier.drop_only if fixed else Tier.scalable, is_fixed=fixed)
+
+    from finagent.output.normalize import normalize
+    from conftest import load_profile
+
+    norm = normalize(load_profile("complete"), config)
+    rent = next(l for l in norm.lines if l.id == "rec:rent")
+    lines = [rent, want("gym", 100, True), want("club", 300, True), want("dining", 50, False)]
+    # income 2000, needs 1800 -> allowance min(600, 2000 - 1800 - 400) = 0 under 50/30/20; use a smaller floor
+    norm = norm.model_copy(update={"lines": lines, "one_time": [], "goals": [], "retirement": None,
+                                   "net_monthly_income": 2800, "overall_savings_target_monthly": None})
+    budget = fallback_restructure(norm, R50, config)  # allowance = min(840, 2800 - 1800 - 560) = 440, wants 450
+    assert line(budget, "rec:gym").monthly_amount == 100 and line(budget, "rec:club").monthly_amount == 300
+    assert line(budget, "rec:dining").monthly_amount == pytest.approx(40)  # the flexible cut is enough
+    norm = norm.model_copy(update={"net_monthly_income": 2550})
+    budget = fallback_restructure(norm, R50, config)  # allowance = min(765, 2550 - 1800 - 510) = 240
+    assert line(budget, "rec:club").monthly_amount == 0  # smallest drop that the 50 flexible cannot cover
+    assert line(budget, "rec:gym").monthly_amount == 100
+    assert budget.totals.want == pytest.approx(150)
+    check_budget_invariants(norm, budget, config)

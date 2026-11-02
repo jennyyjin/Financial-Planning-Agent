@@ -12,9 +12,10 @@ from __future__ import annotations
 import copy
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Literal, Optional
+from typing import Callable, Literal, Optional
 
 from finagent.output.config import PlanConfig, monthly_rate
+from finagent.output.format import CASH_SAVINGS_KINDS
 from finagent.output.goals import add_months
 from finagent.output.models import (
     Budget,
@@ -26,7 +27,7 @@ from finagent.output.models import (
 
 NumberSource = Literal["desired_annual_spending", "target", "budget_spending"]
 
-_CASH_KINDS = (LineKind.emergency_fund, LineKind.general_savings)
+_CASH_KINDS = CASH_SAVINGS_KINDS
 _DEBT_KINDS = (LineKind.debt_min, LineKind.debt_extra)
 
 
@@ -80,10 +81,12 @@ class _Simulation:
     cash_rate: float
     count_cash: bool
     redirect: bool
-    portfolio_inflow: float                      # retirement line + extra_monthly
+    portfolio_inflow: float                      # retirement line (+ one-time set-aside if redirected) + extra
     cash_inflow: float                           # surplus + emergency/general savings
     goals: list[_Goal] = field(default_factory=list)
     debts: list[_Debt] = field(default_factory=list)
+    last_to_portfolio: float = 0.0
+    last_to_cash: float = 0.0
 
     def investable(self) -> float:
         cash_pool = max(0.0, self.cash - self.reserve) if self.count_cash else 0.0
@@ -119,10 +122,22 @@ class _Simulation:
             else:
                 to_cash += debt.payment - paid
         self.portfolio = self.portfolio * (1 + self.portfolio_rate) + to_portfolio
+        self.last_to_portfolio = to_portfolio
         if not self.count_cash:
+            self.last_to_cash = 0.0
             return to_portfolio
         self.cash = self.cash * (1 + self.cash_rate) + to_cash
+        self.last_to_cash = to_cash
         return to_portfolio + to_cash
+
+    def reaches(self, threshold: float, start_month: date, elapsed: int, limit: int) -> tuple[bool, int]:
+        """Step until investable assets reach `threshold` or `limit` months have elapsed (mutates the state)."""
+        reached = self.investable() >= threshold and elapsed <= limit
+        while not reached and elapsed < limit:
+            self.step(add_months(start_month, elapsed))
+            elapsed += 1
+            reached = self.investable() >= threshold
+        return reached, elapsed
 
 
 def _build_simulation(budget: Budget, forecast: Forecast, norm: NormalizedProfile, config: PlanConfig,
@@ -140,6 +155,21 @@ def _build_simulation(budget: Budget, forecast: Forecast, norm: NormalizedProfil
         for l in lines
         if l.kind == LineKind.goal_contribution
     ]
+    # After the window the one-time costs are paid, so the set-aside is freed like a goal past its deadline.
+    set_aside = sum(l.monthly_amount for l in lines if l.kind == LineKind.one_time_fund)
+    portfolio_inflow = sum(l.monthly_amount for l in lines if l.kind == LineKind.retirement_contribution)
+    cash_inflow = max(0.0, budget.totals.unallocated) + sum(l.monthly_amount for l in lines if l.kind in _CASH_KINDS)
+    if config.redirect_freed_payments_to_retirement:
+        portfolio_inflow += set_aside
+    else:
+        cash_inflow += set_aside
+    if extra_monthly >= 0:
+        portfolio_inflow += extra_monthly
+    else:  # a smaller total: take it from 0%-return cash first, then from the portfolio
+        cut = -extra_monthly
+        from_cash = min(cash_inflow, cut) if config.count_cash_as_investable else 0.0
+        cash_inflow -= from_cash
+        portfolio_inflow -= cut - from_cash
     debts = [
         _Debt(
             balance=end.debt_balances.get(debt.id, debt.balance),
@@ -156,23 +186,50 @@ def _build_simulation(budget: Budget, forecast: Forecast, norm: NormalizedProfil
         cash_rate=monthly_rate(config.cash_real_return),
         count_cash=config.count_cash_as_investable,
         redirect=config.redirect_freed_payments_to_retirement,
-        portfolio_inflow=sum(l.monthly_amount for l in lines if l.kind == LineKind.retirement_contribution)
-        + extra_monthly,
-        cash_inflow=max(0.0, budget.totals.unallocated)
-        + sum(l.monthly_amount for l in lines if l.kind in _CASH_KINDS),
+        portfolio_inflow=portfolio_inflow,
+        cash_inflow=cash_inflow,
         goals=goals,
         debts=debts,
     )
 
 
 def required_monthly(number: float, investable_now: float, months: int, monthly_rate: float) -> Optional[float]:
-    """Constant monthly contribution that grows investable_now to the number in `months` (None if months <= 0)."""
+    """Closed-form annuity: constant monthly contribution that grows investable_now to the number in `months`
+    at one rate (None if months <= 0). Exact only when every dollar earns that rate (no cash pool); the
+    projection itself uses `_solve_required_extra`, which runs the same two-pool simulation."""
     if months <= 0:
         return None
     if monthly_rate == 0:
         return max(0.0, (number - investable_now) / months)
     growth = (1 + monthly_rate) ** months
     return max(0.0, (number - investable_now * growth) * monthly_rate / (growth - 1))
+
+
+def _solve_required_extra(build: Callable[[float], _Simulation], threshold: float, start_month: date,
+                          horizon: int, limit: int, lower: float, upper: float, tol: float) -> float:
+    """Smallest extra monthly portfolio contribution (>= lower) whose projection reaches the number within
+    `limit` months, by bisection over the projector itself (so feeding it back always matches)."""
+
+    def ok(extra: float) -> bool:
+        return build(extra).reaches(threshold, start_month, horizon, limit)[0]
+
+    if ok(0.0):
+        lo, hi = lower, 0.0
+        if ok(lo):
+            return lo
+    else:
+        lo, hi = 0.0, upper
+        for _ in range(60):  # defensive: `upper` (the whole number in one month) always reaches
+            if ok(hi):
+                break
+            lo, hi = hi, hi * 2
+    while hi - lo > tol:
+        mid = (lo + hi) / 2
+        if ok(mid):
+            hi = mid
+        else:
+            lo = mid
+    return hi
 
 
 def project_retirement(budget: Budget, forecast: Forecast, norm: NormalizedProfile, config: PlanConfig,
@@ -187,19 +244,19 @@ def project_retirement(budget: Budget, forecast: Forecast, norm: NormalizedProfi
         )
 
     number, source, spending = retirement_number(budget, norm, config)
-    sim = _build_simulation(budget, forecast, norm, config, extra_monthly)
+
+    def build(extra: float) -> _Simulation:
+        return _build_simulation(budget, forecast, norm, config, extra_monthly + extra)
+
+    sim = build(0.0)
     investable_now = sim.investable()
     horizon = config.horizon_months
-    monthly_investment = copy.deepcopy(sim).step(add_months(norm.start_month, horizon))
+    first = copy.deepcopy(sim)
+    monthly_investment = first.step(add_months(norm.start_month, horizon))
 
     threshold = number - config.money_tolerance
     max_elapsed = (config.max_age - ret.current_age) * 12
-    elapsed = horizon
-    reached = investable_now >= threshold and elapsed <= max_elapsed
-    while not reached and elapsed < max_elapsed:
-        sim.step(add_months(norm.start_month, elapsed))
-        elapsed += 1
-        reached = sim.investable() >= threshold
+    reached, elapsed = sim.reaches(threshold, norm.start_month, horizon, max_elapsed)
 
     age = ret.current_age + elapsed / 12 if reached else None
     year = add_months(norm.start_month, elapsed).year if reached else None
@@ -211,13 +268,19 @@ def project_retirement(budget: Budget, forecast: Forecast, norm: NormalizedProfi
         matches = reached and elapsed <= (target_age - ret.current_age) * 12 + 1
     required = None
     if target_age is not None:
-        months_left = (target_age - ret.current_age) * 12 - horizon
-        required = required_monthly(number, investable_now, months_left, monthly_rate(config.real_return))
+        limit = (target_age - ret.current_age) * 12
+        if limit - horizon > 0:
+            base = build(0.0)
+            lower = -(base.portfolio_inflow + (base.cash_inflow if config.count_cash_as_investable else 0.0))
+            extra = _solve_required_extra(build, threshold, norm.start_month, horizon, limit,
+                                          lower=lower, upper=max(number, 1.0), tol=config.money_tolerance / 2)
+            required = max(0.0, monthly_investment + extra)
 
     return RetirementProjection(
         budget_id=budget.id, status="ok",
         retirement_number=number, number_source=source, implied_annual_spending=spending,
         investable_now=investable_now, monthly_investment=monthly_investment,
+        monthly_to_portfolio=first.last_to_portfolio, monthly_to_cash=first.last_to_cash,
         reachable=reached, projected_retirement_age=age, projected_retirement_year=year,
         target_retirement_age=target_age, delta_years=delta, matches_target=matches,
         required_monthly_to_hit_target=required,
