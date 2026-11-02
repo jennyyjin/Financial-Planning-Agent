@@ -20,7 +20,11 @@ def classify_tier(
     is_fixed: Optional[bool],
     config: PlanConfig,
 ) -> Tier:
-    """Tier of a recurring expense. Unlabelled lines arrive here as needs."""
+    """Tier of a labelled recurring expense.
+
+    Unlabelled lines never reach here: normalize marks them protected directly,
+    because with need_trim_cap > 0 a variable "need" would otherwise be scalable.
+    """
     if category in config.protected_categories:
         return Tier.protected
     if bucket is Bucket.need:

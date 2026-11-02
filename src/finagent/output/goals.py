@@ -11,6 +11,12 @@ from finagent.schema import Priority
 _PRIORITY_RANK = {Priority.high: 0, Priority.medium: 1, Priority.low: 2, None: 3}
 
 
+def add_months(d: date, n: int) -> date:
+    """First day of the month n months after d's month (n may be negative)."""
+    total = d.year * 12 + (d.month - 1) + n
+    return date(total // 12, total % 12 + 1, 1)
+
+
 def months_between(start: date, end: date) -> int:
     """Whole calendar months from start's month to end's month (may be negative)."""
     return (end.year - start.year) * 12 + (end.month - start.month)

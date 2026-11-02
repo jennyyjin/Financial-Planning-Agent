@@ -103,13 +103,16 @@ def normalize(profile: FinancialProfile, config: PlanConfig | None = None) -> No
         if bucket is Bucket.want and exp.category in config.protected_categories:
             warnings.append(PlanWarning(
                 code="label_conflict",
-                message=f"Expense '{exp.name}' is labelled a want but its category '{exp.category.value}' is protected; it will not be cut.",
+                message=f"Expense '{exp.name}' is labelled a want but its category '{exp.category.value}' is protected; it is counted as a need and will not be cut.",
                 ref=line_id,
             ))
+            bucket = Bucket.need
+        # TDD §6: a line whose label is null is protected whatever need_trim_cap says.
+        tier = Tier.protected if exp.need_or_want is None else classify_tier(bucket, exp.category, exp.is_fixed, config)
         lines.append(BudgetLine(
             id=line_id, name=exp.name, kind=LineKind.recurring, bucket=bucket,
             monthly_amount=amount, original_amount=amount,
-            tier=classify_tier(bucket, exp.category, exp.is_fixed, config),
+            tier=tier,
             category=exp.category, is_fixed=exp.is_fixed, effective_date=exp.effective_date, source_ref=ref,
         ))
 

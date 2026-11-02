@@ -20,6 +20,11 @@ DEFAULT_PROTECTED_CATEGORIES: list[ExpenseCategory] = [
 ]
 
 
+def monthly_rate(annual: float) -> float:
+    """Monthly rate equivalent to an effective annual rate (shared by forecast and retirement)."""
+    return (1 + annual) ** (1 / 12) - 1
+
+
 class PlanConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
