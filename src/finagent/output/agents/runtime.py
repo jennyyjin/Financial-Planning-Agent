@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import itertools
 import json
+import math
 import os
 import time
 import urllib.error
@@ -17,7 +18,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from typing import Any, Callable, Literal, Optional, Protocol, Union
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from finagent.output.config import PlanConfig
 from finagent.output.models import TraceStep
@@ -67,6 +68,26 @@ class ChatModel(Protocol):
 
 class ToolError(Exception):
     """Raised by a tool handler for a rule violation; the message goes back to the model."""
+
+
+class ToolArgs(BaseModel):
+    """Base of every tool argument model: NaN and infinity are rejected before a handler runs."""
+
+    model_config = ConfigDict(allow_inf_nan=False)
+
+
+class NoArgs(ToolArgs):
+    """Arguments of a tool that takes none."""
+
+
+def _non_finite(value: Any) -> bool:
+    if isinstance(value, float):
+        return not math.isfinite(value)
+    if isinstance(value, dict):
+        return any(_non_finite(v) for v in value.values())
+    if isinstance(value, (list, tuple)):
+        return any(_non_finite(v) for v in value)
+    return False
 
 
 @dataclass
@@ -134,6 +155,8 @@ class ToolRegistry:
             return {"error": f"Unknown tool '{call.name}'. Available tools: {', '.join(self._tools)}"}, False
         if set(call.arguments) == {RAW_ARGS_KEY}:
             return {"error": f"Invalid arguments: not valid JSON: {call.arguments[RAW_ARGS_KEY]!r}"}, False
+        if _non_finite(call.arguments):
+            return {"error": "Invalid arguments: numbers must be finite (no NaN or Infinity)."}, False
         try:
             args = tool.args_model.model_validate(call.arguments)
         except ValidationError as exc:
@@ -142,6 +165,8 @@ class ToolRegistry:
             value = tool.handler(args)
         except ToolError as exc:
             return {"error": str(exc)}, False
+        except Exception as exc:  # a bug in a tool must not end the run or lose the trace (D4)
+            return {"error": f"Internal tool error in '{call.name}': {exc!r}", "internal_error": True}, False
         try:
             result = _to_json_result(value)
         except (TypeError, ValueError) as exc:
@@ -212,13 +237,14 @@ def run_agent(
 
         executed: list[tuple[ToolCall, dict[str, Any]]] = []
         final: Optional[dict[str, Any]] = None
-        for call in reply.tool_calls:
+        for i, call in enumerate(reply.tool_calls):
             out, done = registry.dispatch(call)
             executed.append((call, out))
             trace.append(
                 TraceStep(
                     agent=agent_name, step=step, tool=call.name, arguments=call.arguments,
-                    result=out, text=reply.text, usage=usage,
+                    # The turn's usage is recorded once, on its first tool call, so trace sums are correct.
+                    result=out, text=reply.text, usage=usage if i == 0 else None,
                 )
             )
             if done:
@@ -302,14 +328,18 @@ def _message_to_openai(msg: Message) -> dict[str, Any]:
     return out
 
 
+def _reject_constant(token: str) -> Any:
+    raise ValueError(f"non-finite number {token} in tool arguments")
+
+
 def _parse_arguments(raw: Any) -> dict[str, Any]:
     if isinstance(raw, dict):
         return raw
     if raw is None or (isinstance(raw, str) and not raw.strip()):
         return {}
     try:
-        parsed = json.loads(raw)
-    except (TypeError, json.JSONDecodeError):
+        parsed = json.loads(raw, parse_constant=_reject_constant)
+    except (TypeError, ValueError):  # JSONDecodeError is a ValueError; so are NaN/Infinity tokens
         return {RAW_ARGS_KEY: str(raw)}
     return parsed if isinstance(parsed, dict) else {RAW_ARGS_KEY: str(raw)}
 

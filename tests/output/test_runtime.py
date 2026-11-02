@@ -458,3 +458,67 @@ def test_openai_missing_tool_call_ids_are_unique() -> None:
     model = OpenAICompatibleModel("m", transport=FakeTransport(_response(message)))
     ids = [c.id for _ in range(2) for c in model.chat([], []).tool_calls]
     assert len(set(ids)) == 4 and all(ids)
+
+
+# --- review regressions -------------------------------------------------------------------------
+
+
+def _crashing_registry() -> ToolRegistry:
+    reg = ToolRegistry()
+
+    @reg.tool("explode", "Raises a bug.", AddArgs)
+    def explode(args):
+        raise ZeroDivisionError("bug in tool")
+
+    @reg.tool("done", "Finish.", FinalizeArgs, terminal=True)
+    def done(args):
+        return {"ok": True}
+
+    return reg
+
+
+def test_unexpected_tool_exception_becomes_an_error_and_keeps_the_trace():
+    model = ScriptedModel([turn(call("explode", a=1, b=2)), turn(call("done", summary="finished"))])
+    result = run_agent(model, "sys", _crashing_registry(), "go", agent_name="t")
+    assert result.completed
+    assert result.trace[0].result["internal_error"] is True
+    assert "ZeroDivisionError" in result.trace[0].result["error"]
+    assert [s.tool for s in result.trace] == ["explode", "done"]
+
+
+def test_usage_is_recorded_once_per_turn():
+    """Reviewer repro: 2 model calls x 1000 prompt tokens summed to 4000 in the trace."""
+    reg = _crashing_registry()
+    turns = [AssistantTurn(tool_calls=[call("explode", a=1, b=2), call("explode", a=3, b=4)],
+                           usage={"prompt_tokens": 1000}),
+             AssistantTurn(tool_calls=[call("done", summary="x")], usage={"prompt_tokens": 1000})]
+    result = run_agent(ScriptedModel(turns), "sys", reg, "go", agent_name="t")
+    traced = sum((s.usage or {}).get("prompt_tokens", 0) for s in result.trace)
+    assert traced == 2000 == result.usage["prompt_tokens"]
+    assert result.trace[1].usage is None
+
+
+def test_non_finite_arguments_are_rejected_before_the_handler(registry):
+    for bad in (float("nan"), float("inf")):
+        out, done = registry.dispatch(ToolCall(id="x", name="add", arguments={"a": bad, "b": 1}))
+        assert not done and "finite" in out["error"]
+
+
+def test_nan_tokens_in_provider_arguments_become_raw():
+    from finagent.output.agents.runtime import _parse_arguments
+
+    assert set(_parse_arguments('{"a": NaN, "b": 1}')) == {"_raw"}
+    assert set(_parse_arguments('{"a": Infinity}')) == {"_raw"}
+    assert _parse_arguments('{"a": 1.5}') == {"a": 1.5}
+
+
+def test_tool_args_base_rejects_nan():
+    from pydantic import ValidationError
+
+    from finagent.output.agents.runtime import ToolArgs
+
+    class Args(ToolArgs):
+        x: float
+
+    with pytest.raises(ValidationError):
+        Args(x=float("nan"))
