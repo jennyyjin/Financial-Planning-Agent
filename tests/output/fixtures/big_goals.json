@@ -1,0 +1,23 @@
+{
+  "meta": {"user_id": "u_goals", "as_of": "2026-10-28T10:00:00", "profile_version": 2, "memory_method": "rolling_summary"},
+  "income": [
+    {"source": "Nurse salary", "amount": 5000, "frequency": "monthly", "is_net": true, "effective_date": null}
+  ],
+  "recurring_expenses": [
+    {"name": "Rent", "amount": 1500, "frequency": "monthly", "category": "housing", "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Utilities", "amount": 150, "frequency": "monthly", "category": "utilities", "need_or_want": "need", "is_fixed": false, "effective_date": null},
+    {"name": "Groceries", "amount": 400, "frequency": "monthly", "category": "groceries", "need_or_want": "need", "is_fixed": false, "effective_date": null},
+    {"name": "Dining out", "amount": 500, "frequency": "monthly", "category": "dining_out", "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Shopping", "amount": 400, "frequency": "monthly", "category": "shopping", "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Gym", "amount": 60, "frequency": "monthly", "category": "fitness", "need_or_want": "want", "is_fixed": true, "effective_date": null}
+  ],
+  "one_time_expenses": [],
+  "savings_goals": [
+    {"name": "House down payment", "target_amount": 30000, "deadline": "2029-11-01", "contribution": null, "priority": "high", "effective_date": null},
+    {"name": "Wedding", "target_amount": 12000, "deadline": "2027-11-01", "contribution": {"type": "amount", "value": 500, "frequency": "monthly"}, "priority": "medium", "effective_date": null}
+  ],
+  "overall_savings_target": null,
+  "debts": [],
+  "retirement": {"current_age": 28, "target_retirement_age": 55, "current_balance": 20000, "monthly_contribution": 300, "target": 1200000},
+  "current_savings_balance": 10000
+}

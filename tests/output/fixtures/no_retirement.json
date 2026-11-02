@@ -1,0 +1,16 @@
+{
+  "meta": {"user_id": "u_noret", "as_of": "2026-10-28T10:00:00", "profile_version": 1, "memory_method": "full_history"},
+  "income": [
+    {"source": "Part-time tutoring", "amount": 600, "frequency": "biweekly", "is_net": true, "effective_date": null}
+  ],
+  "recurring_expenses": [
+    {"name": "Dorm housing", "amount": 700, "frequency": "monthly", "category": "housing", "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Takeout", "amount": 40, "frequency": "weekly", "category": "dining_out", "need_or_want": "want", "is_fixed": false, "effective_date": null}
+  ],
+  "one_time_expenses": [],
+  "savings_goals": [],
+  "overall_savings_target": null,
+  "debts": [],
+  "retirement": null,
+  "current_savings_balance": 1200
+}
