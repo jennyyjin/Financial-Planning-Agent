@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "user_id": "u_demo",
+    "as_of": "2026-11-02T09:00:00",
+    "profile_version": 1,
+    "memory_method": "full_history"
+  },
+  "income": [
+    {"source": "Take-home pay", "amount": 5000, "frequency": "monthly", "is_net": true, "effective_date": null}
+  ],
+  "recurring_expenses": [
+    {"name": "Rent", "amount": 1650, "frequency": "monthly", "category": "housing",
+     "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Utilities", "amount": 110, "frequency": "monthly", "category": "utilities",
+     "need_or_want": "need", "is_fixed": false, "effective_date": null},
+    {"name": "Groceries", "amount": 90, "frequency": "weekly", "category": "groceries",
+     "need_or_want": "need", "is_fixed": false, "effective_date": null},
+    {"name": "Dining out", "amount": 680, "frequency": "monthly", "category": "dining_out",
+     "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Shopping", "amount": 420, "frequency": "monthly", "category": "shopping",
+     "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Concerts and events", "amount": 240, "frequency": "monthly", "category": "entertainment",
+     "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Rideshares", "amount": 190, "frequency": "monthly", "category": "transport",
+     "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Yoga membership", "amount": 120, "frequency": "monthly", "category": "fitness",
+     "need_or_want": "want", "is_fixed": true, "effective_date": null},
+    {"name": "Streaming", "amount": 48, "frequency": "monthly", "category": "subscriptions",
+     "need_or_want": "want", "is_fixed": true, "effective_date": null}
+  ],
+  "one_time_expenses": [],
+  "savings_goals": [
+    {"name": "Japan trip", "target_amount": 4000, "deadline": "2027-06-01",
+     "contribution": {"type": "amount", "value": 300, "frequency": "monthly"},
+     "priority": "high", "effective_date": null},
+    {"name": "Moving deposit", "target_amount": 6000, "deadline": "2027-09-01",
+     "contribution": null, "priority": null, "effective_date": null}
+  ],
+  "overall_savings_target": null,
+  "debts": [
+    {"name": "Student loan", "type": "student_loan", "balance": null,
+     "apr": null, "minimum_payment": 210, "effective_date": null},
+    {"name": "Credit card", "type": "credit_card", "balance": 2400,
+     "apr": 22, "minimum_payment": 90, "effective_date": null}
+  ]
+,
+  "retirement": {
+    "current_age": null, "target_retirement_age": null, "current_balance": null,
+    "monthly_contribution": 250, "target": null
+  },
+  "current_savings_balance": 5000
+}

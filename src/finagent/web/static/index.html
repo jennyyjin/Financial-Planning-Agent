@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Budget planner</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a10 10 0 0 1 10 10H12z' fill='%23FF7A1A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div style="min-height: 100vh; padding: 16px 16px 20px">
+<div style="max-width: 1200px; margin: 0 auto">
+
+<header style="display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 4px 8px 12px">
+  <span style="display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#000000"></circle><path d="M12 2a10 10 0 0 1 10 10H12z" fill="#FF7A1A"></path></svg>
+    Budget planner</span>
+  <span style="font-size: 14px; color: #55544F">Monthly figures, in today’s dollars</span>
+</header>
+
+<div id="intro" class="intro">
+  <div class="grid">
+    <div class="t s8" style="background: #CDEBF7; display: flex; flex-direction: column; justify-content: space-between; gap: 18px">
+      <h1 class="serif hero-title" style="margin: 0; font-size: clamp(44px, 7.5vh, 84px); line-height: .95; letter-spacing: -0.02em">Tell us where your money stands.</h1>
+      <p style="margin: 0; max-width: 48ch; font-size: 18px; line-height: 1.55; color: #1E2A30">Write it the way you’d explain it to a friend: what comes in, what goes out, and what you’re saving for. We’ll turn it into three budgets you can compare.</p>
+    </div>
+    <div class="t s4" style="background: #FF7A1A; display: flex; flex-direction: column; justify-content: space-between; gap: 16px">
+      <span style="font-size: 15px; font-weight: 600">What you’ll get</span>
+      <div style="display: flex; align-items: flex-end; gap: 14px">
+        <span class="num" style="font-size: clamp(72px, 12vh, 140px)">3</span>
+        <span style="font-size: 18px; line-height: 1.3; font-weight: 500; padding-bottom: 12px">budgets, side by side, with a reason for every change</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form id="card" class="card is-open" novalidate>
+  <div class="open-body">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <label for="situation" style="font-size: 15px; font-weight: 600">Your situation</label>
+      <textarea id="situation" placeholder="I take home about $5,000 a month after tax. Rent is $1,650…"></textarea>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
+        <p style="margin: 0; max-width: 46ch; font-size: 15px; line-height: 1.5; color: #55544F">Include take-home pay, regular bills, debts and any goals with a date. Rough numbers are fine.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" class="ghost" id="example">Fill in an example</button>
+          <button type="submit" class="primary" id="submit">Build my budgets</button>
+        </div>
+      </div>
+      <div id="feedback" role="alert"></div>
+    </div>
+  </div>
+  <div class="closed-body">
+    <div style="display: flex; align-items: center; gap: 16px">
+      <div style="flex: 1 1 auto; min-width: 0">
+        <div style="font-size: 13px; font-weight: 600; color: #55544F">Your situation</div>
+        <div id="snippet" style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"></div>
+      </div>
+      <button type="button" class="ghost" id="edit" style="flex: none">Edit</button>
+    </div>
+  </div>
+</form>
+
+<div id="working" class="status" role="status" hidden>
+  <svg class="squig" viewBox="0 0 140 140" aria-hidden="true"><path id="squiggle" pathLength="820"></path></svg>
+  <p class="serif" style="margin: 0; font-size: 30px">Working out your three budgets</p>
+</div>
+
+<main id="results" class="grid" style="margin-top: 12px; margin-bottom: 60px" hidden></main>
+
+</div>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>

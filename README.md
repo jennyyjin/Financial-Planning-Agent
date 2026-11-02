@@ -54,3 +54,13 @@ print(render_text(plan))                            # Markdown; the agent trace 
 - Sample outputs: `examples/plans/complete_plan.json`, `complete_plan.md` and `overspender_plan.md` (deterministic, `--generated-at 2026-10-28T15:00:00`). A test fails if they differ from a fresh run; regenerate them with the CLI commands above.
 - Tests: `pytest tests/output`. The live smoke test (`pytest -m live tests/output/test_live.py`) runs only when `FINAGENT_LLM_MODEL` is set. The JSON-schema validation tests run only if `jsonschema` is installed.
 - Agent prompts live in `prompts/output/`.
+
+## Dashboard
+A web front end for the output phase (`src/finagent/web/`), built from the "Financial planning agent" design. It uses only the standard library: a static page plus a small JSON API.
+```
+python -m finagent.web               # http://127.0.0.1:8000/ ; uses the LLM agents if FINAGENT_LLM_MODEL is set
+python -m finagent.web --no-llm --port 8765
+```
+- The user describes their situation in the text box. **The input phase is not connected yet**, so `finagent/web/extract.py` accepts the bundled example narrative ("Fill in an example": `examples/profiles/narrative_profile.txt`, which maps to `narrative_profile.json`) or a `FinancialProfile` pasted as JSON. Once `finagent.input_pipeline.process_message` exists it is used for all other text automatically, and `needs_clarification` follow-up questions are shown under the text box.
+- `POST /api/plan {"text", "user_id"?}` returns `{"status": "ready", "view", "plan"}`. `plan` is the `PlanOutput` without `trace`. `view` comes from `finagent/web/view.py`, which only selects, groups and formats plan values (plus simple differences such as the total cut to wants).
+- Tests: `pytest tests/web`.
