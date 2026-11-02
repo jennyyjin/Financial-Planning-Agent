@@ -1,0 +1,22 @@
+{
+  "meta": {"user_id": "u_label", "as_of": "2026-10-28T10:00:00", "profile_version": 1, "memory_method": "full_history"},
+  "income": [
+    {"source": "Retail job", "amount": 3000, "frequency": "monthly", "is_net": true, "effective_date": null}
+  ],
+  "recurring_expenses": [
+    {"name": "Rent", "amount": 1400, "frequency": "monthly", "category": "housing", "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Medication", "amount": 120, "frequency": "monthly", "category": "healthcare", "need_or_want": "want", "is_fixed": true, "effective_date": null},
+    {"name": "Mystery charge", "amount": 90, "frequency": "monthly", "category": "other", "need_or_want": null, "is_fixed": null, "effective_date": null},
+    {"name": "Concerts", "amount": 350, "frequency": "monthly", "category": "entertainment", "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Shopping", "amount": 500, "frequency": "monthly", "category": "shopping", "need_or_want": "want", "is_fixed": false, "effective_date": null}
+  ],
+  "one_time_expenses": [
+    {"name": "Festival tickets", "amount": 600, "expected_date": "2027-01-20", "effective_date": null},
+    {"name": "Dental surgery", "amount": 1200, "expected_date": "2026-12-05", "effective_date": null}
+  ],
+  "savings_goals": [],
+  "overall_savings_target": {"type": "amount", "value": 300, "frequency": "monthly"},
+  "debts": [],
+  "retirement": {"current_age": 35, "target_retirement_age": 62, "current_balance": 15000, "monthly_contribution": 100, "target": null},
+  "current_savings_balance": 900
+}

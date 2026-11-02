@@ -90,7 +90,7 @@ Bucket assignment:
 
 Income: the budget is based on the sum of net monthly income. If any income has `is_net` set to false or null, the amount is used as given and the warning `income_may_be_gross` is attached, because 50/30/20 is defined on take-home pay (see open question Q1 in the prototype plan).
 
-Effective dates: an item counts from its `effective_date` onwards. The budgets use the items active in the first forecast month. The forecast switches items on in the month they become effective.
+Effective dates: the profile describes the user's go-forward situation (a new value replaces the old one), so the **budgets use every item** in the profile. The **forecast** respects `effective_date`: an item is active in a month if its `effective_date` is null or falls on or before the last day of that month.
 
 ## 6. Expense flexibility rules
 Every expense line gets a tier. **Tools enforce the tiers**, and an adjustment that breaks them is rejected with an error the agent can read.
@@ -137,8 +137,9 @@ Order of priority when the targets conflict:
 
 ### 7.4 Surplus allocation policy (both restructured budgets; deterministic)
 Leftover money is assigned in this order. Each step records a policy rationale.
+0. Cash set aside for one-time costs in the forecast window that current savings cannot cover (line `savings:one-time-costs`), so the forecast never overdraws cash.
 1. Shortfalls on goals with deadlines, by priority.
-2. An emergency fund, until the cash balance reaches `config.emergency_months` (3 by default) × the monthly needs.
+2. An emergency fund, until the cash balance reaches `config.emergency_months` (3 by default) × the monthly needs. A user goal named like "emergency fund" counts toward this reserve.
 3. Extra payments on debts with APR ≥ `config.high_apr_threshold` (8% by default), highest APR first.
 4. Retirement contributions, which are invested at the real return rate.
 
@@ -432,7 +433,7 @@ Net income `I` = $6,200/mo.
 
   Headroom is reported: wants could rise to $1,860, but the plan does not recommend it.
 - **Goals + 5:3:** `S_req` = max(20% × 6,200 = 1,240, 571.43 + 400 = 971.43) = $1,240. This equals 20%, so the ceilings are again $3,100 / $1,860. This is the "reduces to 50/30/20" case. Use `big_goals.json` to exercise a real difference.
-- **Retirement (target $1.5M, age 24 → 60, 5% real):** the stated $400/mo plus the $8,000 balance reach about $531k by 60. That is far short when only the retirement account counts. Whether cash counts as investable changes the answer a lot, so that assumption is shown in the output (open question 4).
+- **Retirement (target $1.5M, age 24 → 60, 5% real):** the stated $400/mo plus the $8,000 balance reach about $517k by 60 (5% effective annual, compounded monthly). That is far short when only the retirement account counts. Whether cash counts as investable changes the answer a lot, so that assumption is shown in the output (open question 4).
 
 ## 17. Open questions
 1. **Schema:** add `need_or_want` (and `category`) to `OneTimeExpense`, so that "Disneyland trip" is labelled by the extractor rather than reclassified by the agent. *(Arina)*
