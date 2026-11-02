@@ -12,6 +12,7 @@ from typing import Optional
 
 from finagent.output import goals as goal_math
 from finagent.output.config import PlanConfig, monthly_rate
+from finagent.output.format import CASH_SAVINGS_KINDS
 from finagent.output.goals import add_months
 from finagent.output.models import (
     Budget,
@@ -27,7 +28,7 @@ from finagent.output.models import (
     NormalizedProfile,
 )
 
-_CASH_SAVINGS = (LineKind.emergency_fund, LineKind.general_savings)
+_CASH_SAVINGS = CASH_SAVINGS_KINDS
 
 
 def month_starts(start_month: date, n: int) -> list[date]:

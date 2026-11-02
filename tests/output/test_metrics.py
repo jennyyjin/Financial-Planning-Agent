@@ -45,7 +45,10 @@ def test_complete_profile_metrics(normalized_named, config):
     assert m.high_apr_debts == []
 
     bm = m.per_budget["current"]
-    assert bm.savings_rate == pytest.approx((900 + 2286.667) / 6200, rel=1e-4)
+    assert bm.savings_rate == pytest.approx(900 / 6200, rel=1e-4)  # explicit savings only
+    assert bm.unallocated_share == pytest.approx(2286.667 / 6200, rel=1e-4)
+    assert m.savings_target_monthly == pytest.approx(1240)  # 20% of income
+    assert bm.savings_target_met is False  # $900 of explicit savings (the unassigned $2,287 does not count)
     assert bm.need_share == pytest.approx(2443.333 / 6200, rel=1e-4)
     assert bm.want_share == pytest.approx(570 / 6200)
     assert bm.end_cash_balance == pytest.approx(21_000)
@@ -65,7 +68,10 @@ def test_high_apr_and_shortfalls(normalized_named, config):
     assert m.high_apr_debts == [norm.debts[0].id]
     assert m.debt_to_income == pytest.approx(150 / 4000)
     bm = m.per_budget["current"]
-    assert bm.savings_rate == pytest.approx(260 / 4000)  # no savings lines; the surplus counts
+    assert bm.savings_rate == 0  # no savings lines; the surplus is reported separately
+    assert bm.unallocated_share == pytest.approx(260 / 4000)
+    assert m.savings_target_monthly == pytest.approx(400)
+    assert bm.savings_target_met is False
     assert bm.goals_off_track == []
     assert bm.cash_shortfall_months == 2
     assert bm.retirement_delta_years is None

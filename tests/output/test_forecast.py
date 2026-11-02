@@ -401,7 +401,7 @@ def test_deadline_before_forecast_is_off_track():
     assert v.status is GoalStatus.off_track
     assert v.balance_at_deadline == 0
     assert v.shortfall == pytest.approx(4000)
-    assert v.required_monthly == pytest.approx(4000)  # whole remainder in the first month
+    assert v.required_monthly is None  # the deadline has passed: no monthly amount can meet it
 
 
 def test_deadline_on_window_boundary():

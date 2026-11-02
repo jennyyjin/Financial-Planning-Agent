@@ -1,0 +1,1583 @@
+{
+  "meta": {
+    "user_id": "u_001",
+    "profile_version": 3,
+    "generated_at": "2026-10-28T15:00:00",
+    "start_month": "2026-11-01",
+    "config": {
+      "horizon_months": 12,
+      "real_return": 0.05,
+      "cash_real_return": 0.0,
+      "withdrawal_rate": 0.04,
+      "max_age": 100,
+      "count_cash_as_investable": true,
+      "redirect_freed_payments_to_retirement": true,
+      "emergency_months": 3.0,
+      "emergency_build_months": 12,
+      "high_apr_threshold": 8.0,
+      "protected_categories": [
+        "housing",
+        "utilities",
+        "healthcare",
+        "insurance",
+        "childcare",
+        "education"
+      ],
+      "need_trim_cap": 0.0,
+      "min_rationale_chars": 20,
+      "agent_max_steps": 25,
+      "money_tolerance": 0.01
+    },
+    "model": null,
+    "agent_usage": {},
+    "warnings": []
+  },
+  "budgets": {
+    "current": {
+      "id": "current",
+      "description": "Your budget as you described it.",
+      "income_monthly": 6200.0,
+      "lines": [
+        {
+          "id": "rec:rent",
+          "name": "Rent",
+          "kind": "recurring",
+          "bucket": "need",
+          "monthly_amount": 1800.0,
+          "original_amount": 1800.0,
+          "tier": "protected",
+          "category": "housing",
+          "is_fixed": true,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/0"
+        },
+        {
+          "id": "rec:groceries",
+          "name": "Groceries",
+          "kind": "recurring",
+          "bucket": "need",
+          "monthly_amount": 433.3333333333333,
+          "original_amount": 433.3333333333333,
+          "tier": "protected",
+          "category": "groceries",
+          "is_fixed": false,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/1"
+        },
+        {
+          "id": "rec:eating-out",
+          "name": "Eating out",
+          "kind": "recurring",
+          "bucket": "want",
+          "monthly_amount": 450.0,
+          "original_amount": 450.0,
+          "tier": "scalable",
+          "category": "dining_out",
+          "is_fixed": false,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/2"
+        },
+        {
+          "id": "rec:yoga-membership",
+          "name": "Yoga membership",
+          "kind": "recurring",
+          "bucket": "want",
+          "monthly_amount": 120.0,
+          "original_amount": 120.0,
+          "tier": "drop_only",
+          "category": "fitness",
+          "is_fixed": true,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/3"
+        },
+        {
+          "id": "debt:federal-student-loan:min",
+          "name": "Federal student loan (minimum payment)",
+          "kind": "debt_min",
+          "bucket": "need",
+          "monthly_amount": 210.0,
+          "original_amount": 210.0,
+          "tier": "protected",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": "debt:federal-student-loan",
+          "discretionary": false,
+          "source_ref": "/debts/0"
+        },
+        {
+          "id": "goal:japan-trip:contribution",
+          "name": "Japan trip savings",
+          "kind": "goal_contribution",
+          "bucket": "savings",
+          "monthly_amount": 500.0,
+          "original_amount": 500.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": "goal:japan-trip",
+          "discretionary": false,
+          "source_ref": "/savings_goals/0"
+        },
+        {
+          "id": "ret:contribution",
+          "name": "Retirement contribution",
+          "kind": "retirement_contribution",
+          "bucket": "savings",
+          "monthly_amount": 400.0,
+          "original_amount": 400.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/retirement"
+        }
+      ],
+      "one_time": [
+        {
+          "id": "one:laptop",
+          "name": "Laptop",
+          "kind": "one_time",
+          "bucket": null,
+          "monthly_amount": 1500.0,
+          "original_amount": 1500.0,
+          "tier": "protected",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": "2026-12-15",
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/one_time_expenses/0"
+        }
+      ],
+      "totals": {
+        "need": 2443.3333333333335,
+        "want": 570.0,
+        "savings": 900.0,
+        "one_time_set_aside": 0.0,
+        "unallocated": 2286.6666666666665
+      },
+      "shares": {
+        "need": 0.39408602150537636,
+        "want": 0.09193548387096774,
+        "savings": 0.14516129032258066,
+        "one_time_set_aside": 0.0,
+        "unallocated": 0.36881720430107523
+      },
+      "targets": null,
+      "headroom": {},
+      "feasible": null,
+      "infeasibility": null,
+      "unfunded_goals": [],
+      "adjustments": [],
+      "generated_by": "as_stated",
+      "summary_rationale": null
+    },
+    "50_30_20": {
+      "id": "50_30_20",
+      "description": "Restructured to the 50/30/20 rule: at most 50% needs, at most 30% wants, at least 20% savings.",
+      "income_monthly": 6200.0,
+      "lines": [
+        {
+          "id": "rec:rent",
+          "name": "Rent",
+          "kind": "recurring",
+          "bucket": "need",
+          "monthly_amount": 1800.0,
+          "original_amount": 1800.0,
+          "tier": "protected",
+          "category": "housing",
+          "is_fixed": true,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/0"
+        },
+        {
+          "id": "rec:groceries",
+          "name": "Groceries",
+          "kind": "recurring",
+          "bucket": "need",
+          "monthly_amount": 433.3333333333333,
+          "original_amount": 433.3333333333333,
+          "tier": "protected",
+          "category": "groceries",
+          "is_fixed": false,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/1"
+        },
+        {
+          "id": "rec:eating-out",
+          "name": "Eating out",
+          "kind": "recurring",
+          "bucket": "want",
+          "monthly_amount": 450.0,
+          "original_amount": 450.0,
+          "tier": "scalable",
+          "category": "dining_out",
+          "is_fixed": false,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/2"
+        },
+        {
+          "id": "rec:yoga-membership",
+          "name": "Yoga membership",
+          "kind": "recurring",
+          "bucket": "want",
+          "monthly_amount": 120.0,
+          "original_amount": 120.0,
+          "tier": "drop_only",
+          "category": "fitness",
+          "is_fixed": true,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/3"
+        },
+        {
+          "id": "debt:federal-student-loan:min",
+          "name": "Federal student loan (minimum payment)",
+          "kind": "debt_min",
+          "bucket": "need",
+          "monthly_amount": 210.0,
+          "original_amount": 210.0,
+          "tier": "protected",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": "debt:federal-student-loan",
+          "discretionary": false,
+          "source_ref": "/debts/0"
+        },
+        {
+          "id": "goal:japan-trip:contribution",
+          "name": "Japan trip savings",
+          "kind": "goal_contribution",
+          "bucket": "savings",
+          "monthly_amount": 571.4285714285714,
+          "original_amount": 500.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": "goal:japan-trip",
+          "discretionary": false,
+          "source_ref": "/savings_goals/0"
+        },
+        {
+          "id": "ret:contribution",
+          "name": "Retirement contribution",
+          "kind": "retirement_contribution",
+          "bucket": "savings",
+          "monthly_amount": 2546.0714285714284,
+          "original_amount": 400.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/retirement"
+        },
+        {
+          "id": "savings:emergency-fund",
+          "name": "Emergency fund",
+          "kind": "emergency_fund",
+          "bucket": "savings",
+          "monthly_amount": 69.16666666666667,
+          "original_amount": 0.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": null
+        }
+      ],
+      "one_time": [
+        {
+          "id": "one:laptop",
+          "name": "Laptop",
+          "kind": "one_time",
+          "bucket": null,
+          "monthly_amount": 1500.0,
+          "original_amount": 1500.0,
+          "tier": "protected",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": "2026-12-15",
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/one_time_expenses/0"
+        }
+      ],
+      "totals": {
+        "need": 2443.3333333333335,
+        "want": 570.0,
+        "savings": 3186.6666666666665,
+        "one_time_set_aside": 0.0,
+        "unallocated": 0.0
+      },
+      "shares": {
+        "need": 0.39408602150537636,
+        "want": 0.09193548387096774,
+        "savings": 0.5139784946236559,
+        "one_time_set_aside": 0.0,
+        "unallocated": 0.0
+      },
+      "targets": {
+        "need_max": 3100.0,
+        "want_max": 1860.0,
+        "savings_min": 1240.0
+      },
+      "headroom": {
+        "need": 656.6666666666665,
+        "want": 1290.0
+      },
+      "feasible": true,
+      "infeasibility": null,
+      "unfunded_goals": [],
+      "adjustments": [
+        {
+          "line_id": "goal:japan-trip:contribution",
+          "action": "allocate",
+          "before_monthly": 500.0,
+          "after_monthly": 571.4285714285714,
+          "rationale": "Raised Japan trip savings from $500.00 to $571.43/mo, the amount needed to reach $4,000.00 by June 1, 2027 (7 monthly contributions).",
+          "rule": "surplus.goal_shortfall",
+          "decided_by": "policy"
+        },
+        {
+          "line_id": "savings:emergency-fund",
+          "action": "allocate",
+          "before_monthly": 0.0,
+          "after_monthly": 69.16666666666667,
+          "rationale": "Set aside $69.17/mo toward an emergency fund of 3 months of needs ($7,330.00); current savings of $6,500.00 leave a $830.00 gap, built over 12 months.",
+          "rule": "surplus.emergency_fund",
+          "decided_by": "policy"
+        },
+        {
+          "line_id": "ret:contribution",
+          "action": "allocate",
+          "before_monthly": 400.0,
+          "after_monthly": 2546.0714285714284,
+          "rationale": "Invested the remaining $2,146.07/mo surplus in retirement (now $2,546.07/mo), assumed to grow at a 5% real return.",
+          "rule": "surplus.retirement",
+          "decided_by": "policy"
+        }
+      ],
+      "generated_by": "fallback",
+      "summary_rationale": null
+    },
+    "goals_5_3": {
+      "id": "goals_5_3",
+      "description": "Restructured to fund your saving goals first, with the rest split 5:3 between needs and wants.",
+      "income_monthly": 6200.0,
+      "lines": [
+        {
+          "id": "rec:rent",
+          "name": "Rent",
+          "kind": "recurring",
+          "bucket": "need",
+          "monthly_amount": 1800.0,
+          "original_amount": 1800.0,
+          "tier": "protected",
+          "category": "housing",
+          "is_fixed": true,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/0"
+        },
+        {
+          "id": "rec:groceries",
+          "name": "Groceries",
+          "kind": "recurring",
+          "bucket": "need",
+          "monthly_amount": 433.3333333333333,
+          "original_amount": 433.3333333333333,
+          "tier": "protected",
+          "category": "groceries",
+          "is_fixed": false,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/1"
+        },
+        {
+          "id": "rec:eating-out",
+          "name": "Eating out",
+          "kind": "recurring",
+          "bucket": "want",
+          "monthly_amount": 450.0,
+          "original_amount": 450.0,
+          "tier": "scalable",
+          "category": "dining_out",
+          "is_fixed": false,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/2"
+        },
+        {
+          "id": "rec:yoga-membership",
+          "name": "Yoga membership",
+          "kind": "recurring",
+          "bucket": "want",
+          "monthly_amount": 120.0,
+          "original_amount": 120.0,
+          "tier": "drop_only",
+          "category": "fitness",
+          "is_fixed": true,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/recurring_expenses/3"
+        },
+        {
+          "id": "debt:federal-student-loan:min",
+          "name": "Federal student loan (minimum payment)",
+          "kind": "debt_min",
+          "bucket": "need",
+          "monthly_amount": 210.0,
+          "original_amount": 210.0,
+          "tier": "protected",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": "debt:federal-student-loan",
+          "discretionary": false,
+          "source_ref": "/debts/0"
+        },
+        {
+          "id": "goal:japan-trip:contribution",
+          "name": "Japan trip savings",
+          "kind": "goal_contribution",
+          "bucket": "savings",
+          "monthly_amount": 571.4285714285714,
+          "original_amount": 500.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": "goal:japan-trip",
+          "discretionary": false,
+          "source_ref": "/savings_goals/0"
+        },
+        {
+          "id": "ret:contribution",
+          "name": "Retirement contribution",
+          "kind": "retirement_contribution",
+          "bucket": "savings",
+          "monthly_amount": 2546.0714285714284,
+          "original_amount": 400.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/retirement"
+        },
+        {
+          "id": "savings:emergency-fund",
+          "name": "Emergency fund",
+          "kind": "emergency_fund",
+          "bucket": "savings",
+          "monthly_amount": 69.16666666666667,
+          "original_amount": 0.0,
+          "tier": "savings",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": null,
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": null
+        }
+      ],
+      "one_time": [
+        {
+          "id": "one:laptop",
+          "name": "Laptop",
+          "kind": "one_time",
+          "bucket": null,
+          "monthly_amount": 1500.0,
+          "original_amount": 1500.0,
+          "tier": "protected",
+          "category": null,
+          "is_fixed": null,
+          "expected_date": "2026-12-15",
+          "effective_date": null,
+          "target_ref": null,
+          "discretionary": false,
+          "source_ref": "/one_time_expenses/0"
+        }
+      ],
+      "totals": {
+        "need": 2443.3333333333335,
+        "want": 570.0,
+        "savings": 3186.6666666666665,
+        "one_time_set_aside": 0.0,
+        "unallocated": 0.0
+      },
+      "shares": {
+        "need": 0.39408602150537636,
+        "want": 0.09193548387096774,
+        "savings": 0.5139784946236559,
+        "one_time_set_aside": 0.0,
+        "unallocated": 0.0
+      },
+      "targets": {
+        "need_max": 3100.0,
+        "want_max": 1860.0,
+        "savings_min": 1240.0
+      },
+      "headroom": {
+        "need": 656.6666666666665,
+        "want": 1290.0
+      },
+      "feasible": true,
+      "infeasibility": null,
+      "unfunded_goals": [],
+      "adjustments": [
+        {
+          "line_id": "goal:japan-trip:contribution",
+          "action": "allocate",
+          "before_monthly": 500.0,
+          "after_monthly": 571.4285714285714,
+          "rationale": "Raised Japan trip savings from $500.00 to $571.43/mo, the amount needed to reach $4,000.00 by June 1, 2027 (7 monthly contributions).",
+          "rule": "surplus.goal_shortfall",
+          "decided_by": "policy"
+        },
+        {
+          "line_id": "savings:emergency-fund",
+          "action": "allocate",
+          "before_monthly": 0.0,
+          "after_monthly": 69.16666666666667,
+          "rationale": "Set aside $69.17/mo toward an emergency fund of 3 months of needs ($7,330.00); current savings of $6,500.00 leave a $830.00 gap, built over 12 months.",
+          "rule": "surplus.emergency_fund",
+          "decided_by": "policy"
+        },
+        {
+          "line_id": "ret:contribution",
+          "action": "allocate",
+          "before_monthly": 400.0,
+          "after_monthly": 2546.0714285714284,
+          "rationale": "Invested the remaining $2,146.07/mo surplus in retirement (now $2,546.07/mo), assumed to grow at a 5% real return.",
+          "rule": "surplus.retirement",
+          "decided_by": "policy"
+        }
+      ],
+      "generated_by": "fallback",
+      "summary_rationale": null
+    }
+  },
+  "forecasts": {
+    "current": {
+      "budget_id": "current",
+      "months": [
+        {
+          "month": "2026-11-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2286.6666666666665,
+          "cash_balance": 8786.666666666666,
+          "goal_balances": {
+            "goal:japan-trip": 500.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17872.5
+          },
+          "retirement_balance": 8432.592990269186
+        },
+        {
+          "month": "2026-12-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 1500.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 786.6666666666665,
+          "cash_balance": 9573.333333333332,
+          "goal_balances": {
+            "goal:japan-trip": 1000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17744.415625
+          },
+          "retirement_balance": 8866.948417928668
+        },
+        {
+          "month": "2027-01-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2286.6666666666665,
+          "cash_balance": 11859.999999999998,
+          "goal_balances": {
+            "goal:japan-trip": 1500.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17615.744196614585
+          },
+          "retirement_balance": 9303.073463366534
+        },
+        {
+          "month": "2027-02-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2286.6666666666665,
+          "cash_balance": 14146.666666666664,
+          "goal_balances": {
+            "goal:japan-trip": 2000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17486.483024182402
+          },
+          "retirement_balance": 9740.975336224663
+        },
+        {
+          "month": "2027-03-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2286.6666666666665,
+          "cash_balance": 16433.333333333332,
+          "goal_balances": {
+            "goal:japan-trip": 2500.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17356.629404709904
+          },
+          "retirement_balance": 10180.661275517909
+        },
+        {
+          "month": "2027-04-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2286.6666666666665,
+          "cash_balance": 18720.0,
+          "goal_balances": {
+            "goal:japan-trip": 3000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17226.180622814823
+          },
+          "retirement_balance": 10622.138549753763
+        },
+        {
+          "month": "2027-05-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2286.6666666666665,
+          "cash_balance": 21006.666666666668,
+          "goal_balances": {
+            "goal:japan-trip": 3500.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17095.13395066939
+          },
+          "retirement_balance": 11065.414457052522
+        },
+        {
+          "month": "2027-06-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 500.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2286.6666666666665,
+          "cash_balance": 23293.333333333336,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16963.486647943293
+          },
+          "retirement_balance": 11510.496325267926
+        },
+        {
+          "month": "2027-07-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2786.6666666666665,
+          "cash_balance": 26080.000000000004,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16831.235961746366
+          },
+          "retirement_balance": 11957.391512108297
+        },
+        {
+          "month": "2027-08-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2786.6666666666665,
+          "cash_balance": 28866.66666666667,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16698.37912657104
+          },
+          "retirement_balance": 12406.107405258173
+        },
+        {
+          "month": "2027-09-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2786.6666666666665,
+          "cash_balance": 31653.33333333334,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16564.91336423449
+          },
+          "retirement_balance": 12856.651422500432
+        },
+        {
+          "month": "2027-10-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 400.0,
+          "emergency_and_general_savings": 0.0,
+          "net_cash_flow": 2786.6666666666665,
+          "cash_balance": 34440.00000000001,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16430.835883820564
+          },
+          "retirement_balance": 13309.031011838917
+        }
+      ],
+      "goals": [
+        {
+          "goal_id": "goal:japan-trip",
+          "name": "Japan trip",
+          "status": "off_track",
+          "target_amount": 4000.0,
+          "deadline": "2027-06-01",
+          "balance_at_deadline": 3500.0,
+          "shortfall": 500.0,
+          "projected_completion_date": "2027-06-01",
+          "current_monthly": 0.0,
+          "required_monthly": 571.4285714285714
+        }
+      ],
+      "cash_shortfall_months": [],
+      "end_state": {
+        "month": "2027-10-01",
+        "cash_balance": 34440.00000000001,
+        "goal_balances": {
+          "goal:japan-trip": 4000.0
+        },
+        "debt_balances": {
+          "debt:federal-student-loan": 16430.835883820564
+        },
+        "retirement_balance": 13309.031011838917
+      }
+    },
+    "50_30_20": {
+      "budget_id": "50_30_20",
+      "months": [
+        {
+          "month": "2026-11-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 6569.166666666666,
+          "goal_balances": {
+            "goal:japan-trip": 571.4285714285714
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17872.5
+          },
+          "retirement_balance": 10578.664418840615
+        },
+        {
+          "month": "2026-12-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 1500.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": -1430.8333333333335,
+          "cash_balance": 5138.333333333332,
+          "goal_balances": {
+            "goal:japan-trip": 1142.857142857143
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17744.415625
+          },
+          "retirement_balance": 13167.834635720075
+        },
+        {
+          "month": "2027-01-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5207.499999999998,
+          "goal_balances": {
+            "goal:japan-trip": 1714.2857142857142
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17615.744196614585
+          },
+          "retirement_balance": 15767.553452560038
+        },
+        {
+          "month": "2027-02-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5276.666666666664,
+          "goal_balances": {
+            "goal:japan-trip": 2285.714285714286
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17486.483024182402
+          },
+          "retirement_balance": 18377.863845662487
+        },
+        {
+          "month": "2027-03-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5345.83333333333,
+          "goal_balances": {
+            "goal:japan-trip": 2857.1428571428573
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17356.629404709904
+          },
+          "retirement_balance": 20998.80896642018
+        },
+        {
+          "month": "2027-04-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5414.999999999996,
+          "goal_balances": {
+            "goal:japan-trip": 3428.571428571429
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17226.180622814823
+          },
+          "retirement_balance": 23630.43214202999
+        },
+        {
+          "month": "2027-05-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285711,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666697,
+          "cash_balance": 5484.166666666663,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17095.13395066939
+          },
+          "retirement_balance": 26272.77687620915
+        },
+        {
+          "month": "2027-06-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 6124.761904761901,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16963.486647943293
+          },
+          "retirement_balance": 28925.88684991443
+        },
+        {
+          "month": "2027-07-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 6765.3571428571395,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16831.235961746366
+          },
+          "retirement_balance": 31589.805922064214
+        },
+        {
+          "month": "2027-08-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 7405.952380952378,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16698.37912657104
+          },
+          "retirement_balance": 34264.57813026356
+        },
+        {
+          "month": "2027-09-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 8046.5476190476165,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16564.91336423449
+          },
+          "retirement_balance": 36950.24769153217
+        },
+        {
+          "month": "2027-10-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 8687.142857142855,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16430.835883820564
+          },
+          "retirement_balance": 39646.859003035366
+        }
+      ],
+      "goals": [
+        {
+          "goal_id": "goal:japan-trip",
+          "name": "Japan trip",
+          "status": "met",
+          "target_amount": 4000.0,
+          "deadline": "2027-06-01",
+          "balance_at_deadline": 4000.0,
+          "shortfall": 0.0,
+          "projected_completion_date": "2027-05-01",
+          "current_monthly": 0.0,
+          "required_monthly": null
+        }
+      ],
+      "cash_shortfall_months": [],
+      "end_state": {
+        "month": "2027-10-01",
+        "cash_balance": 8687.142857142855,
+        "goal_balances": {
+          "goal:japan-trip": 4000.0
+        },
+        "debt_balances": {
+          "debt:federal-student-loan": 16430.835883820564
+        },
+        "retirement_balance": 39646.859003035366
+      }
+    },
+    "goals_5_3": {
+      "budget_id": "goals_5_3",
+      "months": [
+        {
+          "month": "2026-11-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 6569.166666666666,
+          "goal_balances": {
+            "goal:japan-trip": 571.4285714285714
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17872.5
+          },
+          "retirement_balance": 10578.664418840615
+        },
+        {
+          "month": "2026-12-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 1500.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": -1430.8333333333335,
+          "cash_balance": 5138.333333333332,
+          "goal_balances": {
+            "goal:japan-trip": 1142.857142857143
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17744.415625
+          },
+          "retirement_balance": 13167.834635720075
+        },
+        {
+          "month": "2027-01-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5207.499999999998,
+          "goal_balances": {
+            "goal:japan-trip": 1714.2857142857142
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17615.744196614585
+          },
+          "retirement_balance": 15767.553452560038
+        },
+        {
+          "month": "2027-02-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5276.666666666664,
+          "goal_balances": {
+            "goal:japan-trip": 2285.714285714286
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17486.483024182402
+          },
+          "retirement_balance": 18377.863845662487
+        },
+        {
+          "month": "2027-03-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5345.83333333333,
+          "goal_balances": {
+            "goal:japan-trip": 2857.1428571428573
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17356.629404709904
+          },
+          "retirement_balance": 20998.80896642018
+        },
+        {
+          "month": "2027-04-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285714,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666652,
+          "cash_balance": 5414.999999999996,
+          "goal_balances": {
+            "goal:japan-trip": 3428.571428571429
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17226.180622814823
+          },
+          "retirement_balance": 23630.43214202999
+        },
+        {
+          "month": "2027-05-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 571.4285714285711,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 69.16666666666697,
+          "cash_balance": 5484.166666666663,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 17095.13395066939
+          },
+          "retirement_balance": 26272.77687620915
+        },
+        {
+          "month": "2027-06-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 6124.761904761901,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16963.486647943293
+          },
+          "retirement_balance": 28925.88684991443
+        },
+        {
+          "month": "2027-07-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 6765.3571428571395,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16831.235961746366
+          },
+          "retirement_balance": 31589.805922064214
+        },
+        {
+          "month": "2027-08-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 7405.952380952378,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16698.37912657104
+          },
+          "retirement_balance": 34264.57813026356
+        },
+        {
+          "month": "2027-09-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 8046.5476190476165,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16564.91336423449
+          },
+          "retirement_balance": 36950.24769153217
+        },
+        {
+          "month": "2027-10-01",
+          "income": 6200.0,
+          "needs": 2233.3333333333335,
+          "wants": 570.0,
+          "one_time": 0.0,
+          "debt_payments": 210.0,
+          "goal_contributions": 0.0,
+          "retirement_contribution": 2546.0714285714284,
+          "emergency_and_general_savings": 69.16666666666667,
+          "net_cash_flow": 640.5952380952381,
+          "cash_balance": 8687.142857142855,
+          "goal_balances": {
+            "goal:japan-trip": 4000.0
+          },
+          "debt_balances": {
+            "debt:federal-student-loan": 16430.835883820564
+          },
+          "retirement_balance": 39646.859003035366
+        }
+      ],
+      "goals": [
+        {
+          "goal_id": "goal:japan-trip",
+          "name": "Japan trip",
+          "status": "met",
+          "target_amount": 4000.0,
+          "deadline": "2027-06-01",
+          "balance_at_deadline": 4000.0,
+          "shortfall": 0.0,
+          "projected_completion_date": "2027-05-01",
+          "current_monthly": 0.0,
+          "required_monthly": null
+        }
+      ],
+      "cash_shortfall_months": [],
+      "end_state": {
+        "month": "2027-10-01",
+        "cash_balance": 8687.142857142855,
+        "goal_balances": {
+          "goal:japan-trip": 4000.0
+        },
+        "debt_balances": {
+          "debt:federal-student-loan": 16430.835883820564
+        },
+        "retirement_balance": 39646.859003035366
+      }
+    }
+  },
+  "retirement": {
+    "current": {
+      "budget_id": "current",
+      "status": "ok",
+      "missing": [],
+      "retirement_number": 1500000.0,
+      "number_source": "target",
+      "implied_annual_spending": 60000.0,
+      "investable_now": 40419.031011838924,
+      "monthly_investment": 3186.6666666666665,
+      "monthly_to_portfolio": 900.0,
+      "monthly_to_cash": 2286.6666666666665,
+      "reachable": true,
+      "projected_retirement_age": 52.08333333333333,
+      "projected_retirement_year": 2054,
+      "target_retirement_age": 60,
+      "delta_years": -7.916666666666671,
+      "matches_target": true,
+      "required_monthly_to_hit_target": 1523.4292284647622
+    },
+    "50_30_20": {
+      "budget_id": "50_30_20",
+      "status": "ok",
+      "missing": [],
+      "retirement_number": 1500000.0,
+      "number_source": "target",
+      "implied_annual_spending": 60000.0,
+      "investable_now": 41004.00186017822,
+      "monthly_investment": 3186.6666666666665,
+      "monthly_to_portfolio": 3117.5,
+      "monthly_to_cash": 69.16666666666667,
+      "reachable": true,
+      "projected_retirement_age": 45.66666666666667,
+      "projected_retirement_year": 2048,
+      "target_retirement_age": 60,
+      "delta_years": -14.333333333333329,
+      "matches_target": true,
+      "required_monthly_to_hit_target": 1028.3899107433504
+    },
+    "goals_5_3": {
+      "budget_id": "goals_5_3",
+      "status": "ok",
+      "missing": [],
+      "retirement_number": 1500000.0,
+      "number_source": "target",
+      "implied_annual_spending": 60000.0,
+      "investable_now": 41004.00186017822,
+      "monthly_investment": 3186.6666666666665,
+      "monthly_to_portfolio": 3117.5,
+      "monthly_to_cash": 69.16666666666667,
+      "reachable": true,
+      "projected_retirement_age": 45.66666666666667,
+      "projected_retirement_year": 2048,
+      "target_retirement_age": 60,
+      "delta_years": -14.333333333333329,
+      "matches_target": true,
+      "required_monthly_to_hit_target": 1028.3899107433504
+    }
+  },
+  "metrics": {
+    "net_monthly_income": 6200.0,
+    "emergency_fund_months": 2.660300136425648,
+    "debt_total": 18000.0,
+    "savings_target_monthly": 1240.0,
+    "debt_to_income": 0.03387096774193549,
+    "high_apr_debts": [],
+    "per_budget": {
+      "current": {
+        "savings_rate": 0.14516129032258066,
+        "unallocated_share": 0.36881720430107523,
+        "savings_target_met": false,
+        "need_share": 0.39408602150537636,
+        "want_share": 0.09193548387096774,
+        "end_cash_balance": 34440.00000000001,
+        "goals_off_track": [
+          "goal:japan-trip"
+        ],
+        "cash_shortfall_months": 0,
+        "retirement_delta_years": -7.916666666666671
+      },
+      "50_30_20": {
+        "savings_rate": 0.5139784946236559,
+        "unallocated_share": 0.0,
+        "savings_target_met": true,
+        "need_share": 0.39408602150537636,
+        "want_share": 0.09193548387096774,
+        "end_cash_balance": 8687.142857142855,
+        "goals_off_track": [],
+        "cash_shortfall_months": 0,
+        "retirement_delta_years": -14.333333333333329
+      },
+      "goals_5_3": {
+        "savings_rate": 0.5139784946236559,
+        "unallocated_share": 0.0,
+        "savings_target_met": true,
+        "need_share": 0.39408602150537636,
+        "want_share": 0.09193548387096774,
+        "end_cash_balance": 8687.142857142855,
+        "goals_off_track": [],
+        "cash_shortfall_months": 0,
+        "retirement_delta_years": -14.333333333333329
+      }
+    }
+  },
+  "recommendation": {
+    "overall_status": "needs_attention",
+    "summary": "Overall, your finances are in reasonable shape but need attention in a few areas. In your current budget, your saving goal is off track and you save less than your target of $1,240/mo. We suggest the 50/30/20 budget, which leaves 0 goals off track and projects retirement around age 46 against your target of 60.",
+    "recommended_budget": "50_30_20",
+    "major_changes": [
+      {
+        "title": "Switch to the 50/30/20 budget",
+        "detail": "The 50/30/20 budget sets needs $2,443, wants $570 and savings $3,187 per month out of $6,200 take-home pay, a savings rate of 51%. It gives a purpose to the $2,287/mo your current budget leaves unassigned.",
+        "impact": "In this budget, off-track goals go from 1 to 0; projected retirement age moves from about 52 to about 46.",
+        "evidence_refs": [
+          "budgets.50_30_20.totals",
+          "metrics.per_budget.50_30_20.savings_rate",
+          "retirement.50_30_20.projected_retirement_age",
+          "forecasts.50_30_20.goals"
+        ]
+      },
+      {
+        "title": "Raise Japan trip savings to $571/mo",
+        "detail": "At $500/mo in your current budget, Japan trip reaches $3,500 of its $4,000 target by June 2027, $500 short.",
+        "impact": "The 50/30/20 budget funds this goal, so it is met.",
+        "evidence_refs": [
+          "forecasts.current.goals.goal:japan-trip",
+          "forecasts.50_30_20.goals.goal:japan-trip"
+        ]
+      },
+      {
+        "title": "Build a 3-month emergency fund",
+        "detail": "Your $6,500 of savings covers 2.7 months of needs; the guideline is 3 months, or $7,330. The 50/30/20 budget sets aside $69/mo toward it.",
+        "impact": "A cash cushion keeps an unexpected bill from turning into high-interest debt.",
+        "evidence_refs": [
+          "metrics.emergency_fund_months",
+          "budgets.50_30_20.lines.savings:emergency-fund"
+        ]
+      }
+    ],
+    "strengths": [
+      "Your current budget never runs out of cash over the next 12 months.",
+      "The 50/30/20 budget puts every saving goal back on track using your existing income.",
+      "None of your debts charge 8% APR or more.",
+      "Your current budget projects retirement around age 52, at or before your target of 60."
+    ],
+    "risks": [
+      "Your current budget saves less than your target of $1,240/mo.",
+      "Your savings cover only 2.7 months of needs."
+    ],
+    "generated_by": "fallback"
+  },
+  "trace": []
+}

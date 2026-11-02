@@ -37,13 +37,22 @@ def contribution_months(start_month: date, deadline: date) -> int:
 def required_monthly(goal: GoalInfo, start_month: date, funded: float = 0.0) -> Optional[float]:
     """Monthly contribution needed to reach the target by the deadline.
 
-    None if the goal has no target or no deadline. A deadline at or before the
-    start of the forecast needs the whole remainder in the first month.
+    None if the goal has no target or no deadline, or if the deadline has
+    already passed (no contribution month is left before it). A passed
+    deadline is treated like no deadline: the goal keeps its stated
+    contribution, and normalize warns `goal_deadline_passed`. (Spreading the
+    whole remainder over one month would otherwise become a permanent
+    monthly line the size of the target.)
     """
-    if goal.target_amount is None or goal.deadline is None:
+    if goal.target_amount is None or goal.deadline is None or deadline_passed(goal, start_month):
         return None
     remaining = max(0.0, goal.target_amount - funded)
-    return remaining / max(1, contribution_months(start_month, goal.deadline))
+    return remaining / contribution_months(start_month, goal.deadline)
+
+
+def deadline_passed(goal: GoalInfo, start_month: date) -> bool:
+    """True if the goal has a deadline and no forecast month starts before it."""
+    return goal.deadline is not None and contribution_months(start_month, goal.deadline) == 0
 
 
 def goal_priority_key(goal: GoalInfo) -> tuple:
