@@ -1,0 +1,1574 @@
+{
+  "$defs": {
+    "Adjustment": {
+      "additionalProperties": false,
+      "properties": {
+        "line_id": {
+          "title": "Line Id",
+          "type": "string"
+        },
+        "action": {
+          "$ref": "#/$defs/AdjustmentAction"
+        },
+        "before_monthly": {
+          "title": "Before Monthly",
+          "type": "number"
+        },
+        "after_monthly": {
+          "title": "After Monthly",
+          "type": "number"
+        },
+        "rationale": {
+          "title": "Rationale",
+          "type": "string"
+        },
+        "rule": {
+          "description": "e.g. '50_30_20.wants_ceiling', 'surplus.goal_shortfall'.",
+          "title": "Rule",
+          "type": "string"
+        },
+        "decided_by": {
+          "$ref": "#/$defs/DecidedBy"
+        }
+      },
+      "required": [
+        "line_id",
+        "action",
+        "before_monthly",
+        "after_monthly",
+        "rationale",
+        "rule",
+        "decided_by"
+      ],
+      "title": "Adjustment",
+      "type": "object"
+    },
+    "AdjustmentAction": {
+      "enum": [
+        "reduce",
+        "drop",
+        "reclassify",
+        "allocate"
+      ],
+      "title": "AdjustmentAction",
+      "type": "string"
+    },
+    "Bucket": {
+      "enum": [
+        "need",
+        "want",
+        "savings"
+      ],
+      "title": "Bucket",
+      "type": "string"
+    },
+    "BucketTotals": {
+      "additionalProperties": false,
+      "properties": {
+        "need": {
+          "default": 0.0,
+          "title": "Need",
+          "type": "number"
+        },
+        "want": {
+          "default": 0.0,
+          "title": "Want",
+          "type": "number"
+        },
+        "savings": {
+          "default": 0.0,
+          "title": "Savings",
+          "type": "number"
+        },
+        "one_time_set_aside": {
+          "default": 0.0,
+          "description": "Cash kept monthly for upcoming one-time costs: spending, not savings (TDD \u00a77.4).",
+          "title": "One Time Set Aside",
+          "type": "number"
+        },
+        "unallocated": {
+          "default": 0.0,
+          "title": "Unallocated",
+          "type": "number"
+        }
+      },
+      "title": "BucketTotals",
+      "type": "object"
+    },
+    "Budget": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/BudgetId"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "income_monthly": {
+          "title": "Income Monthly",
+          "type": "number"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/BudgetLine"
+          },
+          "title": "Lines",
+          "type": "array"
+        },
+        "one_time": {
+          "items": {
+            "$ref": "#/$defs/BudgetLine"
+          },
+          "title": "One Time",
+          "type": "array"
+        },
+        "totals": {
+          "$ref": "#/$defs/BucketTotals"
+        },
+        "shares": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BucketTotals"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fractions of income; None if income is 0."
+        },
+        "targets": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BudgetTargets"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "headroom": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Unused allowance: 'need', 'want'.",
+          "title": "Headroom",
+          "type": "object"
+        },
+        "feasible": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Restructured budgets: whether every target is met. None for the current budget.",
+          "title": "Feasible"
+        },
+        "infeasibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Infeasibility"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "unfunded_goals": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unfunded Goals",
+          "type": "array"
+        },
+        "adjustments": {
+          "items": {
+            "$ref": "#/$defs/Adjustment"
+          },
+          "title": "Adjustments",
+          "type": "array"
+        },
+        "generated_by": {
+          "$ref": "#/$defs/GeneratedBy"
+        },
+        "summary_rationale": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary Rationale"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "income_monthly",
+        "lines",
+        "one_time",
+        "totals",
+        "generated_by"
+      ],
+      "title": "Budget",
+      "type": "object"
+    },
+    "BudgetId": {
+      "enum": [
+        "current",
+        "50_30_20",
+        "goals_5_3"
+      ],
+      "title": "BudgetId",
+      "type": "string"
+    },
+    "BudgetLine": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable id, e.g. 'rec:eating-out', 'debt:federal-student-loan:min'.",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/LineKind"
+        },
+        "bucket": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Bucket"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "None for one-time items and the one-time set-aside."
+        },
+        "monthly_amount": {
+          "description": "Dollars per month; for one-time items, the full amount.",
+          "minimum": 0,
+          "title": "Monthly Amount",
+          "type": "number"
+        },
+        "original_amount": {
+          "description": "Amount before restructuring.",
+          "minimum": 0,
+          "title": "Original Amount",
+          "type": "number"
+        },
+        "tier": {
+          "$ref": "#/$defs/Tier"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExpenseCategory"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "is_fixed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Is Fixed"
+        },
+        "expected_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "One-time items: month the cost falls in.",
+          "title": "Expected Date"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        },
+        "target_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Goal or debt id this line pays into.",
+          "title": "Target Ref"
+        },
+        "discretionary": {
+          "default": false,
+          "description": "One-time items reclassified as non-essential.",
+          "title": "Discretionary",
+          "type": "boolean"
+        },
+        "source_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Ref"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "monthly_amount",
+        "original_amount",
+        "tier"
+      ],
+      "title": "BudgetLine",
+      "type": "object"
+    },
+    "BudgetMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "savings_rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Savings lines / income (unassigned cash excluded).",
+          "title": "Savings Rate"
+        },
+        "unallocated_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unassigned cash / income (never negative).",
+          "title": "Unallocated Share"
+        },
+        "savings_target_met": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Savings lines meet the stated overall savings target; None if there is none.",
+          "title": "Savings Target Met"
+        },
+        "need_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Need Share"
+        },
+        "want_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Want Share"
+        },
+        "end_cash_balance": {
+          "title": "End Cash Balance",
+          "type": "number"
+        },
+        "goals_off_track": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Goals Off Track",
+          "type": "array"
+        },
+        "cash_shortfall_months": {
+          "title": "Cash Shortfall Months",
+          "type": "integer"
+        },
+        "retirement_delta_years": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retirement Delta Years"
+        }
+      },
+      "required": [
+        "end_cash_balance",
+        "goals_off_track",
+        "cash_shortfall_months"
+      ],
+      "title": "BudgetMetrics",
+      "type": "object"
+    },
+    "BudgetTargets": {
+      "additionalProperties": false,
+      "properties": {
+        "need_max": {
+          "title": "Need Max",
+          "type": "number"
+        },
+        "want_max": {
+          "title": "Want Max",
+          "type": "number"
+        },
+        "savings_min": {
+          "title": "Savings Min",
+          "type": "number"
+        }
+      },
+      "required": [
+        "need_max",
+        "want_max",
+        "savings_min"
+      ],
+      "title": "BudgetTargets",
+      "type": "object"
+    },
+    "DecidedBy": {
+      "enum": [
+        "agent",
+        "policy",
+        "fallback"
+      ],
+      "title": "DecidedBy",
+      "type": "string"
+    },
+    "EndState": {
+      "additionalProperties": false,
+      "properties": {
+        "month": {
+          "description": "Last forecast month.",
+          "format": "date",
+          "title": "Month",
+          "type": "string"
+        },
+        "cash_balance": {
+          "title": "Cash Balance",
+          "type": "number"
+        },
+        "goal_balances": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Goal Balances",
+          "type": "object"
+        },
+        "debt_balances": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Debt Balances",
+          "type": "object"
+        },
+        "retirement_balance": {
+          "title": "Retirement Balance",
+          "type": "number"
+        }
+      },
+      "required": [
+        "month",
+        "cash_balance",
+        "goal_balances",
+        "debt_balances",
+        "retirement_balance"
+      ],
+      "title": "EndState",
+      "type": "object"
+    },
+    "ExpenseCategory": {
+      "enum": [
+        "housing",
+        "utilities",
+        "groceries",
+        "dining_out",
+        "transport",
+        "insurance",
+        "healthcare",
+        "subscriptions",
+        "fitness",
+        "entertainment",
+        "shopping",
+        "personal_care",
+        "education",
+        "childcare",
+        "travel",
+        "gifts_donations",
+        "other"
+      ],
+      "title": "ExpenseCategory",
+      "type": "string"
+    },
+    "Forecast": {
+      "additionalProperties": false,
+      "properties": {
+        "budget_id": {
+          "$ref": "#/$defs/BudgetId"
+        },
+        "months": {
+          "items": {
+            "$ref": "#/$defs/ForecastMonth"
+          },
+          "title": "Months",
+          "type": "array"
+        },
+        "goals": {
+          "items": {
+            "$ref": "#/$defs/GoalVerdict"
+          },
+          "title": "Goals",
+          "type": "array"
+        },
+        "cash_shortfall_months": {
+          "items": {
+            "format": "date",
+            "type": "string"
+          },
+          "title": "Cash Shortfall Months",
+          "type": "array"
+        },
+        "end_state": {
+          "$ref": "#/$defs/EndState"
+        }
+      },
+      "required": [
+        "budget_id",
+        "months",
+        "goals",
+        "end_state"
+      ],
+      "title": "Forecast",
+      "type": "object"
+    },
+    "ForecastMonth": {
+      "additionalProperties": false,
+      "properties": {
+        "month": {
+          "format": "date",
+          "title": "Month",
+          "type": "string"
+        },
+        "income": {
+          "title": "Income",
+          "type": "number"
+        },
+        "needs": {
+          "title": "Needs",
+          "type": "number"
+        },
+        "wants": {
+          "title": "Wants",
+          "type": "number"
+        },
+        "one_time": {
+          "title": "One Time",
+          "type": "number"
+        },
+        "debt_payments": {
+          "title": "Debt Payments",
+          "type": "number"
+        },
+        "goal_contributions": {
+          "title": "Goal Contributions",
+          "type": "number"
+        },
+        "retirement_contribution": {
+          "title": "Retirement Contribution",
+          "type": "number"
+        },
+        "emergency_and_general_savings": {
+          "title": "Emergency And General Savings",
+          "type": "number"
+        },
+        "net_cash_flow": {
+          "description": "Change in the cash balance this month.",
+          "title": "Net Cash Flow",
+          "type": "number"
+        },
+        "cash_balance": {
+          "title": "Cash Balance",
+          "type": "number"
+        },
+        "goal_balances": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Goal Balances",
+          "type": "object"
+        },
+        "debt_balances": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Debt Balances",
+          "type": "object"
+        },
+        "retirement_balance": {
+          "title": "Retirement Balance",
+          "type": "number"
+        }
+      },
+      "required": [
+        "month",
+        "income",
+        "needs",
+        "wants",
+        "one_time",
+        "debt_payments",
+        "goal_contributions",
+        "retirement_contribution",
+        "emergency_and_general_savings",
+        "net_cash_flow",
+        "cash_balance",
+        "goal_balances",
+        "debt_balances",
+        "retirement_balance"
+      ],
+      "title": "ForecastMonth",
+      "type": "object"
+    },
+    "GeneratedBy": {
+      "enum": [
+        "as_stated",
+        "agent",
+        "fallback"
+      ],
+      "title": "GeneratedBy",
+      "type": "string"
+    },
+    "GoalStatus": {
+      "enum": [
+        "met",
+        "on_track",
+        "off_track",
+        "no_deadline"
+      ],
+      "title": "GoalStatus",
+      "type": "string"
+    },
+    "GoalVerdict": {
+      "additionalProperties": false,
+      "properties": {
+        "goal_id": {
+          "title": "Goal Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/GoalStatus"
+        },
+        "target_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Amount"
+        },
+        "deadline": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline"
+        },
+        "balance_at_deadline": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Projected fund at the deadline.",
+          "title": "Balance At Deadline"
+        },
+        "shortfall": {
+          "default": 0.0,
+          "title": "Shortfall",
+          "type": "number"
+        },
+        "projected_completion_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Projected Completion Date"
+        },
+        "current_monthly": {
+          "default": 0.0,
+          "title": "Current Monthly",
+          "type": "number"
+        },
+        "required_monthly": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Monthly contribution needed from now.",
+          "title": "Required Monthly"
+        }
+      },
+      "required": [
+        "goal_id",
+        "name",
+        "status"
+      ],
+      "title": "GoalVerdict",
+      "type": "object"
+    },
+    "Infeasibility": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "gaps": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Bucket -> dollars by which the target is missed.",
+          "title": "Gaps",
+          "type": "object"
+        }
+      },
+      "required": [
+        "reason",
+        "gaps"
+      ],
+      "title": "Infeasibility",
+      "type": "object"
+    },
+    "LineKind": {
+      "enum": [
+        "recurring",
+        "one_time",
+        "debt_min",
+        "debt_extra",
+        "goal_contribution",
+        "retirement_contribution",
+        "emergency_fund",
+        "general_savings",
+        "one_time_fund"
+      ],
+      "title": "LineKind",
+      "type": "string"
+    },
+    "MajorChange": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "impact": {
+          "title": "Impact",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "description": "Dotted paths into PlanOutput.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "title",
+        "detail",
+        "impact"
+      ],
+      "title": "MajorChange",
+      "type": "object"
+    },
+    "Metrics": {
+      "additionalProperties": false,
+      "properties": {
+        "net_monthly_income": {
+          "title": "Net Monthly Income",
+          "type": "number"
+        },
+        "emergency_fund_months": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cash / monthly needs (current budget).",
+          "title": "Emergency Fund Months"
+        },
+        "debt_total": {
+          "title": "Debt Total",
+          "type": "number"
+        },
+        "savings_target_monthly": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Stated overall savings target per month.",
+          "title": "Savings Target Monthly"
+        },
+        "debt_to_income": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Monthly debt minimums / net monthly income.",
+          "title": "Debt To Income"
+        },
+        "high_apr_debts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "High Apr Debts",
+          "type": "array"
+        },
+        "per_budget": {
+          "additionalProperties": {
+            "$ref": "#/$defs/BudgetMetrics"
+          },
+          "title": "Per Budget",
+          "type": "object"
+        }
+      },
+      "required": [
+        "net_monthly_income",
+        "debt_total",
+        "high_apr_debts",
+        "per_budget"
+      ],
+      "title": "Metrics",
+      "type": "object"
+    },
+    "OverallStatus": {
+      "enum": [
+        "on_track",
+        "needs_attention",
+        "at_risk"
+      ],
+      "title": "OverallStatus",
+      "type": "string"
+    },
+    "PlanConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "horizon_months": {
+          "default": 12,
+          "description": "Length of the forecast window.",
+          "minimum": 1,
+          "title": "Horizon Months",
+          "type": "integer"
+        },
+        "real_return": {
+          "default": 0.05,
+          "description": "Annual real return of the retirement portfolio.",
+          "title": "Real Return",
+          "type": "number"
+        },
+        "cash_real_return": {
+          "default": 0.0,
+          "description": "Annual real return of cash savings.",
+          "title": "Cash Real Return",
+          "type": "number"
+        },
+        "withdrawal_rate": {
+          "default": 0.04,
+          "description": "4% rule: retirement number = spending / rate.",
+          "exclusiveMinimum": 0,
+          "title": "Withdrawal Rate",
+          "type": "number"
+        },
+        "max_age": {
+          "default": 100,
+          "description": "Retirement projections stop at this age.",
+          "title": "Max Age",
+          "type": "integer"
+        },
+        "count_cash_as_investable": {
+          "default": true,
+          "description": "Count cash (minus the emergency reserve) toward the retirement number.",
+          "title": "Count Cash As Investable",
+          "type": "boolean"
+        },
+        "redirect_freed_payments_to_retirement": {
+          "default": true,
+          "description": "After the forecast, goal contributions past their deadline and paid-off debt payments are invested.",
+          "title": "Redirect Freed Payments To Retirement",
+          "type": "boolean"
+        },
+        "emergency_months": {
+          "default": 3,
+          "description": "Emergency fund target in months of needs.",
+          "minimum": 0,
+          "title": "Emergency Months",
+          "type": "number"
+        },
+        "emergency_build_months": {
+          "default": 12,
+          "description": "Months over which to build the emergency fund.",
+          "minimum": 1,
+          "title": "Emergency Build Months",
+          "type": "integer"
+        },
+        "high_apr_threshold": {
+          "default": 8.0,
+          "description": "Debts at or above this APR get extra payments.",
+          "minimum": 0,
+          "title": "High Apr Threshold",
+          "type": "number"
+        },
+        "protected_categories": {
+          "items": {
+            "$ref": "#/$defs/ExpenseCategory"
+          },
+          "title": "Protected Categories",
+          "type": "array"
+        },
+        "need_trim_cap": {
+          "default": 0.0,
+          "description": "Max fraction a variable need may be trimmed (0 = needs untouchable).",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Need Trim Cap",
+          "type": "number"
+        },
+        "min_rationale_chars": {
+          "default": 20,
+          "minimum": 1,
+          "title": "Min Rationale Chars",
+          "type": "integer"
+        },
+        "agent_max_steps": {
+          "default": 25,
+          "minimum": 1,
+          "title": "Agent Max Steps",
+          "type": "integer"
+        },
+        "money_tolerance": {
+          "default": 0.01,
+          "description": "Dollar tolerance for target and invariant checks.",
+          "title": "Money Tolerance",
+          "type": "number"
+        }
+      },
+      "title": "PlanConfig",
+      "type": "object"
+    },
+    "PlanMeta": {
+      "additionalProperties": false,
+      "properties": {
+        "user_id": {
+          "title": "User Id",
+          "type": "string"
+        },
+        "profile_version": {
+          "title": "Profile Version",
+          "type": "integer"
+        },
+        "generated_at": {
+          "format": "date-time",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "start_month": {
+          "format": "date",
+          "title": "Start Month",
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/$defs/PlanConfig"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "agent_usage": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object"
+          },
+          "description": "Agent name -> summed token usage and latency_ms of its runs.",
+          "title": "Agent Usage",
+          "type": "object"
+        },
+        "warnings": {
+          "items": {
+            "$ref": "#/$defs/PlanWarning"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "user_id",
+        "profile_version",
+        "generated_at",
+        "start_month",
+        "config"
+      ],
+      "title": "PlanMeta",
+      "type": "object"
+    },
+    "PlanWarning": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "JSON pointer into the profile, or a line id.",
+          "title": "Ref"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "PlanWarning",
+      "type": "object"
+    },
+    "Recommendation": {
+      "additionalProperties": false,
+      "properties": {
+        "overall_status": {
+          "$ref": "#/$defs/OverallStatus"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "recommended_budget": {
+          "$ref": "#/$defs/BudgetId"
+        },
+        "major_changes": {
+          "items": {
+            "$ref": "#/$defs/MajorChange"
+          },
+          "title": "Major Changes",
+          "type": "array"
+        },
+        "strengths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Strengths",
+          "type": "array"
+        },
+        "risks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Risks",
+          "type": "array"
+        },
+        "generated_by": {
+          "$ref": "#/$defs/GeneratedBy"
+        }
+      },
+      "required": [
+        "overall_status",
+        "summary",
+        "recommended_budget",
+        "major_changes",
+        "generated_by"
+      ],
+      "title": "Recommendation",
+      "type": "object"
+    },
+    "RetirementProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "budget_id": {
+          "$ref": "#/$defs/BudgetId"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "insufficient_data"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "missing": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing",
+          "type": "array"
+        },
+        "retirement_number": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retirement Number"
+        },
+        "number_source": {
+          "anyOf": [
+            {
+              "enum": [
+                "desired_annual_spending",
+                "target",
+                "budget_spending"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Number Source"
+        },
+        "implied_annual_spending": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Implied Annual Spending"
+        },
+        "investable_now": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Investable assets at the end of the forecast.",
+          "title": "Investable Now"
+        },
+        "monthly_investment": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Monthly amount added to investable assets after the forecast (portfolio + cash).",
+          "title": "Monthly Investment"
+        },
+        "monthly_to_portfolio": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Part of monthly_investment that goes to the portfolio (earns real_return).",
+          "title": "Monthly To Portfolio"
+        },
+        "monthly_to_cash": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Part of monthly_investment kept as cash (earns cash_real_return).",
+          "title": "Monthly To Cash"
+        },
+        "reachable": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reachable"
+        },
+        "projected_retirement_age": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Projected Retirement Age"
+        },
+        "projected_retirement_year": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Projected Retirement Year"
+        },
+        "target_retirement_age": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Retirement Age"
+        },
+        "delta_years": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Projected minus target age; negative = early.",
+          "title": "Delta Years"
+        },
+        "matches_target": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Matches Target"
+        },
+        "required_monthly_to_hit_target": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Total monthly_investment that reaches the number by the target age: today's inflows plus the smallest extra portfolio contribution that does it (solved with this projector).",
+          "title": "Required Monthly To Hit Target"
+        }
+      },
+      "required": [
+        "budget_id",
+        "status"
+      ],
+      "title": "RetirementProjection",
+      "type": "object"
+    },
+    "Tier": {
+      "enum": [
+        "protected",
+        "drop_only",
+        "scalable",
+        "savings"
+      ],
+      "title": "Tier",
+      "type": "string"
+    },
+    "TraceStep": {
+      "additionalProperties": false,
+      "properties": {
+        "agent": {
+          "title": "Agent",
+          "type": "string"
+        },
+        "step": {
+          "title": "Step",
+          "type": "integer"
+        },
+        "tool": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool"
+        },
+        "arguments": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Arguments"
+        },
+        "result": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Usage"
+        }
+      },
+      "required": [
+        "agent",
+        "step"
+      ],
+      "title": "TraceStep",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "meta": {
+      "$ref": "#/$defs/PlanMeta"
+    },
+    "budgets": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Budget"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/BudgetId"
+      },
+      "title": "Budgets",
+      "type": "object"
+    },
+    "forecasts": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Forecast"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/BudgetId"
+      },
+      "title": "Forecasts",
+      "type": "object"
+    },
+    "retirement": {
+      "additionalProperties": {
+        "$ref": "#/$defs/RetirementProjection"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/BudgetId"
+      },
+      "title": "Retirement",
+      "type": "object"
+    },
+    "metrics": {
+      "$ref": "#/$defs/Metrics"
+    },
+    "recommendation": {
+      "$ref": "#/$defs/Recommendation"
+    },
+    "trace": {
+      "items": {
+        "$ref": "#/$defs/TraceStep"
+      },
+      "title": "Trace",
+      "type": "array"
+    }
+  },
+  "required": [
+    "meta",
+    "budgets",
+    "forecasts",
+    "retirement",
+    "metrics",
+    "recommendation"
+  ],
+  "title": "PlanOutput",
+  "type": "object"
+}

@@ -1,0 +1,26 @@
+{
+  "meta": {"user_id": "u_over", "as_of": "2026-10-28T10:00:00", "profile_version": 1, "memory_method": "full_history"},
+  "income": [
+    {"source": "Office job", "amount": 4000, "frequency": "monthly", "is_net": true, "effective_date": null}
+  ],
+  "recurring_expenses": [
+    {"name": "Rent", "amount": 2200, "frequency": "monthly", "category": "housing", "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Medication", "amount": 80, "frequency": "monthly", "category": "healthcare", "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Groceries", "amount": 500, "frequency": "monthly", "category": "groceries", "need_or_want": "need", "is_fixed": false, "effective_date": null},
+    {"name": "Car insurance", "amount": 150, "frequency": "monthly", "category": "insurance", "need_or_want": "need", "is_fixed": true, "effective_date": null},
+    {"name": "Dining out", "amount": 600, "frequency": "monthly", "category": "dining_out", "need_or_want": "want", "is_fixed": false, "effective_date": null},
+    {"name": "Streaming", "amount": 60, "frequency": "monthly", "category": "subscriptions", "need_or_want": "want", "is_fixed": true, "effective_date": null}
+  ],
+  "one_time_expenses": [
+    {"name": "Disneyland trip", "amount": 2500, "expected_date": "2027-03-15", "effective_date": null}
+  ],
+  "savings_goals": [
+    {"name": "Emergency fund", "target_amount": 3000, "deadline": "2027-10-01", "contribution": null, "priority": "high", "effective_date": null}
+  ],
+  "overall_savings_target": {"type": "percent_of_income", "value": 10, "frequency": "monthly"},
+  "debts": [
+    {"name": "Credit card", "type": "credit_card", "balance": 5000, "apr": 24, "minimum_payment": 150, "effective_date": null}
+  ],
+  "retirement": {"current_age": 30, "target_retirement_age": 65, "current_balance": 2000, "monthly_contribution": 0, "target": null},
+  "current_savings_balance": 500
+}

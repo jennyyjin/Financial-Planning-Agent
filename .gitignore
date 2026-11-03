@@ -7,3 +7,4 @@ __pycache__/
 
 # Per-user memory and profile snapshots written at runtime
 data/
+.DS_Store
