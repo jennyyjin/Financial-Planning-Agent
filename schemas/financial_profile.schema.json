@@ -265,6 +265,21 @@
           "default": null,
           "title": "Expected Date"
         },
+        "category": {
+          "$ref": "#/$defs/ExpenseCategory",
+          "default": "other"
+        },
+        "need_or_want": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NeedOrWant"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "effective_date": {
           "anyOf": [
             {
@@ -443,6 +458,20 @@
           "default": null,
           "description": "Target retirement savings in dollars.",
           "title": "Target"
+        },
+        "desired_annual_spending": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Desired yearly spending in retirement, in today's dollars.",
+          "title": "Desired Annual Spending"
         }
       },
       "title": "Retirement",

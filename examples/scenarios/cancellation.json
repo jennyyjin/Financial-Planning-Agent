@@ -1,0 +1,27 @@
+{
+  "name": "cancellation",
+  "description": "The user cancels a subscription. It should be removed and everything else kept.",
+  "turns": [
+    {
+      "text": "I take home $2,900 every two weeks after tax. Rent is $1,600 a month and utilities are $120 a month. I spend $400 a month on groceries. I pay $60 a month for a gym membership and $15 a month for Spotify. I have $8,000 in savings and no debt.",
+      "timestamp": "2026-11-03T09:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "income", "has": {"amount": 2900, "frequency": "biweekly", "is_net": true}},
+        {"section": "recurring_expenses", "has": {"amount": 60, "category": "fitness", "is_fixed": true}},
+        {"section": "recurring_expenses", "count": 5}
+      ]
+    },
+    {
+      "text": "I cancelled my gym membership this week.",
+      "timestamp": "2026-11-09T19:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "recurring_expenses", "lacks": {"amount": 60}},
+        {"section": "recurring_expenses", "has": {"amount": 15}},
+        {"section": "recurring_expenses", "count": 4},
+        {"path": "/current_savings_balance", "equals": 8000}
+      ]
+    }
+  ]
+}

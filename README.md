@@ -14,6 +14,19 @@ The input phase outputs a `FinancialProfile` JSON (defined in `src/finagent/sche
 - Examples: `examples/profiles/complete_profile.json`, `examples/profiles/incomplete_profile.json`
 - Amounts are stored as stated (`amount` + `frequency`); use `monthly_amount()` to normalize. Unknown values are `null`.
 
+## Input phase
+The input phase (`src/finagent/input_pipeline.py`, plan in [docs/PROTOTYPE_PLAN.md](docs/PROTOTYPE_PLAN.md)) turns each user message into an updated `FinancialProfile`:
+- The user's memory is either **full history** (the whole transcript) or a **rolling summary** (a running summary plus the latest exchange). The LLM rebuilds the whole profile from it every turn, and the result is checked against the schema and retried if it is invalid.
+- Code checks the required fields (`completeness.RequiredFields`). If something is missing, the result is `needs_clarification` with follow-up questions worded by the LLM. Otherwise it is `ready` with a confirmation message built in code, which lists what changed since the last plan.
+- Every LLM call is logged with a tag, token counts and latency (`InputResult.usage`) for the memory comparison.
+
+```
+export FINAGENT_LLM_MODEL=... FINAGENT_LLM_API_KEY=... FINAGENT_LLM_BASE_URL=...   # same config as the output phase
+python -m finagent.input_pipeline --user me --memory rolling_summary --show-profile    # chat in the terminal
+python -m finagent.scenarios --memory both                                            # live smoke-test scenarios
+```
+From Python: `process_message(user_id, text, memory_method)` and, for evaluation, `run_episode(turns, memory_method)`, which uses a fresh temporary store. Per-user data is written to `data/users/` (git-ignored; override with `FINAGENT_DATA_DIR`). Tests: `pytest tests/test_*.py`. The live tests (`pytest -m live`) run only when `FINAGENT_LLM_MODEL` is set.
+
 ## Output phase
 The output phase (`src/finagent/output/`, design in [docs/OUTPUT_PHASE_TDD.md](docs/OUTPUT_PHASE_TDD.md)) turns a `FinancialProfile` into a `PlanOutput`:
 - three budgets: **current** (as stated), **50/30/20**, and **goals + 5:3**, with a rationale for every change;
@@ -61,6 +74,6 @@ A web front end for the output phase (`src/finagent/web/`), built from the "Fina
 python -m finagent.web               # http://127.0.0.1:8000/ ; uses the LLM agents if FINAGENT_LLM_MODEL is set
 python -m finagent.web --no-llm --port 8765
 ```
-- The user describes their situation in the text box. **The input phase is not connected yet**, so `finagent/web/extract.py` accepts the bundled example narrative ("Fill in an example": `examples/profiles/narrative_profile.txt`, which maps to `narrative_profile.json`) or a `FinancialProfile` pasted as JSON. Once `finagent.input_pipeline.process_message` exists it is used for all other text automatically, and `needs_clarification` follow-up questions are shown under the text box.
+- The user describes their situation in the text box. `finagent/web/extract.py` sends free text to the input phase (`process_message`, with the server's `--memory-method`), and `needs_clarification` follow-up questions are shown under the text box. If `FINAGENT_LLM_MODEL` is not set or the input phase fails, it still accepts the bundled example narrative ("Fill in an example": `examples/profiles/narrative_profile.txt`, which maps to `narrative_profile.json`) and a `FinancialProfile` pasted as JSON.
 - `POST /api/plan {"text", "user_id"?}` returns `{"status": "ready", "view", "plan"}`. `plan` is the `PlanOutput` without `trace`. `view` comes from `finagent/web/view.py`, which only selects, groups and formats plan values (plus simple differences such as the total cut to wants).
 - Tests: `pytest tests/web`.

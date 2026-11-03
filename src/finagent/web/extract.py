@@ -1,11 +1,11 @@
 """Text box -> FinancialProfile: the hook between the dashboard and the input phase.
 
-The input phase (`finagent.input_pipeline.process_message`, PROTOTYPE_PLAN §6)
-is not built yet. Until it is, `extract` accepts:
-  1. a FinancialProfile pasted as JSON;
+Text that is not JSON goes to the input phase (`finagent.input_pipeline.process_message`,
+PROTOTYPE_PLAN §6). If the input phase is missing, has no model configured
+(FINAGENT_LLM_MODEL unset) or fails, `extract` falls back to accepting:
+  1. a FinancialProfile pasted as JSON (always accepted, without the input phase);
   2. the text of a bundled example narrative, mapped to its hand-written profile;
-and otherwise says the input phase is unavailable. Once `process_message`
-exists it is used for any text that is not JSON, with no change here.
+and otherwise says the text can't be read.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from __future__ import annotations
 import importlib
 import json
 import re
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal, Optional
@@ -59,6 +60,12 @@ def _input_phase() -> Any:
         return None
 
 
+def _is_unavailable(exc: Exception) -> bool:
+    """True if the input phase says it has no model (FINAGENT_LLM_MODEL unset)."""
+    cls = getattr(sys.modules.get("finagent.input_pipeline"), "InputPhaseUnavailable", None)
+    return isinstance(cls, type) and isinstance(exc, cls)
+
+
 def _from_input_phase(process_message: Any, text: str, user_id: str, memory_method: MemoryMethod) -> Extraction:
     result = process_message(user_id, text, memory_method)
     get = (lambda k: result.get(k)) if isinstance(result, dict) else (lambda k: getattr(result, k, None))
@@ -82,11 +89,19 @@ def extract(text: str, user_id: str = "web", memory_method: MemoryMethod = Memor
         except (ValueError, ValidationError) as exc:
             return Extraction("invalid", message=f"That JSON is not a valid FinancialProfile: {exc}")
     process_message = _input_phase()
+    failed = False
     if process_message is not None:
-        return _from_input_phase(process_message, text, user_id, memory_method)
+        try:
+            return _from_input_phase(process_message, text, user_id, memory_method)
+        except Exception as exc:  # no model configured, or extraction failed: fall back to the examples
+            failed = not _is_unavailable(exc)
+            if failed:
+                print(f"error: input phase failed: {exc!r}", file=sys.stderr)
     profile = _example_profile(text)
     if profile is not None:
         return Extraction("ready", profile=profile)
+    if failed:
+        return Extraction("unavailable", message="Sorry, I couldn't read that just now. Please try again.")
     return Extraction(
         "unavailable",
         message="We can’t read free text yet because the input phase isn’t connected. "

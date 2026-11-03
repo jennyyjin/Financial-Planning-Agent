@@ -1,0 +1,58 @@
+{
+  "name": "plan_updates",
+  "description": "A complete first message, then a new job starting later, a new savings goal and a new subscription. Earlier facts must survive each update.",
+  "turns": [
+    {
+      "text": "I'm 26 and take home $4,200 a month after tax from my job as a lab tech. Rent is $1,400 a month, utilities are about $90 a month, and I spend $75 a week on groceries. My phone bill is $55 a month. I eat out about $300 a month and spend $150 a month on shopping. I have a car loan with $9,000 left at 6.5% APR and a $260 monthly payment. I have $4,000 in savings. I put $200 a month into my 401(k), which has $12,000 in it, and I'd like to retire at 65.",
+      "timestamp": "2026-11-03T09:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "income", "has": {"amount": 4200, "frequency": "monthly", "is_net": true}},
+        {"section": "recurring_expenses", "has": {"amount": 1400, "frequency": "monthly", "category": "housing", "need_or_want": "need"}},
+        {"section": "recurring_expenses", "has": {"amount": 75, "frequency": "weekly", "category": "groceries"}},
+        {"section": "recurring_expenses", "has": {"amount": 300, "category": "dining_out", "need_or_want": "want"}},
+        {"section": "recurring_expenses", "count": 6},
+        {"section": "debts", "has": {"type": "auto_loan", "balance": 9000, "apr": 6.5, "minimum_payment": 260}},
+        {"path": "/retirement/current_age", "equals": 26},
+        {"path": "/retirement/target_retirement_age", "equals": 65},
+        {"path": "/retirement/monthly_contribution", "equals": 200},
+        {"path": "/retirement/current_balance", "equals": 12000},
+        {"path": "/current_savings_balance", "equals": 4000},
+        {"section": "savings_goals", "count": 0}
+      ]
+    },
+    {
+      "text": "Big news: I got a new job! Starting December 1 I'll take home $5,600 a month after tax.",
+      "timestamp": "2026-11-10T18:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "income", "count": 1},
+        {"section": "income", "has": {"amount": 5600, "frequency": "monthly", "is_net": true, "effective_date": "2026-12-01"}},
+        {"section": "recurring_expenses", "has": {"amount": 1400, "category": "housing"}},
+        {"section": "debts", "has": {"balance": 9000}}
+      ]
+    },
+    {
+      "text": "I'm also saving up for a trip to Japan next October. I need about $5,000 and can put $450 a month toward it.",
+      "timestamp": "2026-11-15T12:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "savings_goals", "count": 1},
+        {"section": "savings_goals", "has": {"target_amount": 5000, "deadline": "2027-10-01", "contribution.type": "amount", "contribution.value": 450}},
+        {"section": "income", "has": {"amount": 5600}}
+      ]
+    },
+    {
+      "text": "I started taking weekly yoga classes too. It's a monthly subscription of $130.",
+      "timestamp": "2026-11-20T08:30:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "recurring_expenses", "has": {"amount": 130, "frequency": "monthly", "category": "fitness", "need_or_want": "want"}},
+        {"section": "recurring_expenses", "count": 7},
+        {"section": "income", "has": {"amount": 5600}},
+        {"section": "savings_goals", "has": {"target_amount": 5000}},
+        {"path": "/retirement/target_retirement_age", "equals": 65}
+      ]
+    }
+  ]
+}
