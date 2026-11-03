@@ -1,0 +1,399 @@
+{
+ "id": "gold-missing-apr",
+ "source": "handwritten",
+ "archetype": "debt_heavy",
+ "tags": [
+  "debt_heavy",
+  "needs_clarification",
+  "event:clarification",
+  "event:debt_payoff",
+  "turns:3"
+ ],
+ "description": "Card APR omitted; then answered; then paid off.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-03T12:00:00",
+   "text": "I take home $5,200 a month. Rent $1,600, utilities $150, groceries $450, transit pass $90. I eat out about $500 a month and spend $200 on concerts and events. I have $6,500 on a credit card (paying the $195 minimum) and a $22,000 student loan at 4.8% with a $240 minimum. I want a $6,000 emergency fund by December 2027. I'm 29, retire at 65, $18k in my 401k, contributing $250/month. $2,500 in savings.",
+   "event": "initial",
+   "expected_status": "needs_clarification",
+   "expected_missing": [
+    "debts.apr"
+   ],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold9",
+     "as_of": "2026-10-03T12:00:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 5200,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1600,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 150,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 450,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Transit pass",
+      "amount": 90,
+      "frequency": "monthly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 500,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Concerts and events",
+      "amount": 200,
+      "frequency": "monthly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Emergency fund",
+      "target_amount": 6000,
+      "deadline": "2027-12-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 6500,
+      "apr": null,
+      "minimum_payment": 195,
+      "effective_date": null
+     },
+     {
+      "name": "Student loan",
+      "type": "student_loan",
+      "balance": 22000,
+      "apr": 4.8,
+      "minimum_payment": 240,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 29,
+     "target_retirement_age": 65,
+     "current_balance": 18000,
+     "monthly_contribution": 250,
+     "target": null
+    },
+    "current_savings_balance": 2500
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-10-03T12:04:00",
+   "text": "the card is 22.99% apr",
+   "event": "clarification",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold9",
+     "as_of": "2026-10-03T12:04:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 5200,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1600,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 150,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 450,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Transit pass",
+      "amount": 90,
+      "frequency": "monthly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 500,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Concerts and events",
+      "amount": 200,
+      "frequency": "monthly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Emergency fund",
+      "target_amount": 6000,
+      "deadline": "2027-12-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 6500,
+      "apr": 22.99,
+      "minimum_payment": 195,
+      "effective_date": null
+     },
+     {
+      "name": "Student loan",
+      "type": "student_loan",
+      "balance": 22000,
+      "apr": 4.8,
+      "minimum_payment": 240,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 29,
+     "target_retirement_age": 65,
+     "current_balance": 18000,
+     "monthly_contribution": 250,
+     "target": null
+    },
+    "current_savings_balance": 2500
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "debts",
+     "match": [
+      "credit",
+      "card"
+     ],
+     "field": "apr",
+     "path": null,
+     "expected": 22.99,
+     "expected_text": null,
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-11-01T10:00:00",
+   "text": "paid off the credit card with my tax refund and bonus!! savings didn't change",
+   "event": "debt_payoff",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold9",
+     "as_of": "2026-11-01T10:00:00",
+     "profile_version": 3,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 5200,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1600,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 150,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 450,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Transit pass",
+      "amount": 90,
+      "frequency": "monthly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 500,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Concerts and events",
+      "amount": 200,
+      "frequency": "monthly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Emergency fund",
+      "target_amount": 6000,
+      "deadline": "2027-12-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Student loan",
+      "type": "student_loan",
+      "balance": 22000,
+      "apr": 4.8,
+      "minimum_payment": 240,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 29,
+     "target_retirement_age": 65,
+     "current_balance": 18000,
+     "monthly_contribution": 250,
+     "target": null
+    },
+    "current_savings_balance": 2500
+   },
+   "probes": [
+    {
+     "kind": "item_absent",
+     "in_list": "debts",
+     "match": [
+      "credit",
+      "card"
+     ],
+     "field": null,
+     "path": null,
+     "expected": null,
+     "expected_text": null,
+     "stale": 6500.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

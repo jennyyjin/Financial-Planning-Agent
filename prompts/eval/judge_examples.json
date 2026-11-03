@@ -1,0 +1,433 @@
+{
+ "case": {
+  "messages": [
+   {
+    "timestamp": "2026-10-12",
+    "text": "I take home $4,200 a month. Rent is $1,900, groceries about $450, car insurance $140. I spend around $520 eating out, $300 shopping and $45 on streaming. I have $4,800 on a credit card at 24% and pay the $145 minimum. I have $900 saved and want a $3,000 emergency fund by September 2027. I'm 29, I put $100 a month into my 401k and want to retire at 65."
+   },
+   {
+    "timestamp": "2026-10-20",
+    "text": "honestly I'm kind of stressed about the credit card"
+   }
+  ],
+  "facts": [
+   "Take-home income: $4,200/mo",
+   "Current budget: needs $2,635 (63%), wants $865 (21%), savings $100 (2%), unassigned $600 (14%)",
+   "Essential costs (never cut): Rent $1,900/mo; Groceries $450/mo; Car insurance $140/mo; Credit card minimum $145/mo",
+   "Discretionary spending: Eating out $520/mo; Shopping $300/mo; Streaming $45/mo",
+   "Debts: Credit card $4,800 at 24% APR, minimum $145/mo (high interest)",
+   "Cash savings: $900 = 0.3 months of essential costs (guideline: 3 months)",
+   "Goal in the current budget: Emergency fund $3,000 by Sep 2027: OFF TRACK, needs $300/mo (now $0/mo)",
+   "Retirement: age 29, target age 65; current budget projects about age 70"
+  ]
+ },
+ "examples": [
+  {
+   "id": "strong",
+   "advice": {
+    "summary": "You cover every essential, which is a solid base. The two things to fix are the 24% credit card and your emergency fund, which is off track for September 2027. It makes sense that the card is stressing you out: it is the most expensive thing in your budget, so this plan goes after it first. Consider the 50/30/20 budget, which uses the $600 a month you currently leave unassigned plus a few trims.",
+    "major_changes": [
+     {
+      "title": "Pay $445/mo on the credit card instead of $145",
+      "detail": "Send $300 of your unassigned $600 to the card each month, starting with your next payment.",
+      "impact": "At 24% APR this clears the $4,800 balance in about a year instead of many years at the minimum."
+     },
+     {
+      "title": "Save $300/mo for your emergency fund",
+      "detail": "Set up an automatic $300 transfer to savings on payday with the other $300 of unassigned money.",
+      "impact": "Reaches $3,000 by September 2027, so the goal goes from off track to met."
+     },
+     {
+      "title": "Trim eating out to $370 and shopping to $200",
+      "detail": "You keep $370 a month for meals out and $200 for shopping; streaming stays. The $250 freed goes to your 401k.",
+      "impact": "Brings your projected retirement age closer to your target of 65."
+     }
+    ],
+    "strengths": [
+     "You pay every bill and keep your essentials covered."
+    ],
+    "risks": [
+     "Until the emergency fund is built, a surprise bill could land on the card."
+    ]
+   },
+   "judgments": {
+    "actionability": {
+     "checklist": {
+      "A1": {
+       "answer": "yes",
+       "evidence": "Pay $445/mo on the credit card"
+      },
+      "A2": {
+       "answer": "yes",
+       "evidence": "$300, $445, $370, $200"
+      },
+      "A3": {
+       "answer": "yes",
+       "evidence": "credit card, emergency fund, eating out, shopping, 401k"
+      },
+      "A4": {
+       "answer": "yes",
+       "evidence": "starting with your next payment; on payday"
+      },
+      "A5": {
+       "answer": "yes",
+       "evidence": "goes after it first (the 24% card)"
+      },
+      "A6": {
+       "answer": "yes",
+       "evidence": "clears the balance in about a year; goal goes to met"
+      },
+      "A7": {
+       "answer": "yes",
+       "evidence": "the $600 is split without overlap"
+      }
+     },
+     "reasoning": "Every change is a concrete, quantified action on the person's own items, ordered by importance, with timing and a stated result.",
+     "score": 5
+    },
+    "feasibility": {
+     "checklist": {
+      "F1": {
+       "answer": "yes",
+       "evidence": "only eating out and shopping are trimmed; essentials untouched"
+      },
+      "F2": {
+       "answer": "yes",
+       "evidence": "$300 + $300 = the $600 unassigned; $250 comes from the trims"
+      },
+      "F3": {
+       "answer": "yes",
+       "evidence": "You keep $370 a month for meals out"
+      },
+      "F4": {
+       "answer": "yes",
+       "evidence": "off track for September 2027 matches the facts"
+      },
+      "F5": {
+       "answer": "yes",
+       "evidence": "goal goes from off track to met; retirement target addressed"
+      },
+      "F6": {
+       "answer": "yes",
+       "evidence": "card first, cushion built in parallel"
+      },
+      "F7": {
+       "answer": "yes",
+       "evidence": "responds to the stress about the card by prioritising it"
+      }
+     },
+     "reasoning": "All amounts fit within the unassigned money and modest, acknowledged trims; essentials are protected and the facts are stated correctly.",
+     "score": 5
+    },
+    "tone": {
+     "checklist": {
+      "T1": {
+       "answer": "yes",
+       "evidence": "no judgment of past spending"
+      },
+      "T2": {
+       "answer": "yes",
+       "evidence": "emergency fund, which is off track"
+      },
+      "T3": {
+       "answer": "yes",
+       "evidence": "calm, proportionate wording"
+      },
+      "T4": {
+       "answer": "yes",
+       "evidence": "You cover every essential, which is a solid base."
+      },
+      "T5": {
+       "answer": "yes",
+       "evidence": "short, plain sentences"
+      },
+      "T6": {
+       "answer": "yes",
+       "evidence": "Consider the 50/30/20 budget; no return promises"
+      },
+      "T7": {
+       "answer": "yes",
+       "evidence": "It makes sense that the card is stressing you out"
+      },
+      "T8": {
+       "answer": "yes",
+       "evidence": "speaks to 'you' about their own card and goals"
+      }
+     },
+     "reasoning": "Warm, honest about the off-track goal, calm, hedged and directly responsive to the stated stress.",
+     "score": 5
+    }
+   }
+  },
+  {
+   "id": "warm_but_vague",
+   "advice": {
+    "summary": "You're doing a great job keeping up with your bills! There's definitely room to make your money work harder for you. Money stress is really common, and reaching out is a great first step.",
+    "major_changes": [
+     {
+      "title": "Be mindful of eating out",
+      "detail": "Restaurants can add up, so it may help to keep an eye on them.",
+      "impact": "You'll have more breathing room."
+     },
+     {
+      "title": "Try to save a bit more",
+      "detail": "Saving regularly builds security over time.",
+      "impact": "You'll feel more in control."
+     },
+     {
+      "title": "Look into your debt",
+      "detail": "Paying down debt is usually a good idea when you can.",
+      "impact": "Less stress over time."
+     }
+    ],
+    "strengths": [
+     "You pay your bills on time."
+    ],
+    "risks": []
+   },
+   "judgments": {
+    "actionability": {
+     "checklist": {
+      "A1": {
+       "answer": "no",
+       "evidence": "Be mindful of eating out; Try to save a bit more"
+      },
+      "A2": {
+       "answer": "no",
+       "evidence": "no amounts anywhere"
+      },
+      "A3": {
+       "answer": "yes",
+       "evidence": "eating out, debt"
+      },
+      "A4": {
+       "answer": "no",
+       "evidence": "no timing or order"
+      },
+      "A5": {
+       "answer": "no",
+       "evidence": "the 24% card is last and vague"
+      },
+      "A6": {
+       "answer": "no",
+       "evidence": "You'll feel more in control"
+      },
+      "A7": {
+       "answer": "yes",
+       "evidence": "no contradictions"
+      }
+     },
+     "reasoning": "The changes are aims, not actions: no amounts, timing or priorities. The person would not know what to do next.",
+     "score": 2
+    },
+    "feasibility": {
+     "checklist": {
+      "F1": {
+       "answer": "yes",
+       "evidence": "no essential is cut"
+      },
+      "F2": {
+       "answer": "yes",
+       "evidence": "asks for no specific amount, so nothing exceeds income"
+      },
+      "F3": {
+       "answer": "yes",
+       "evidence": "no drastic cut"
+      },
+      "F4": {
+       "answer": "yes",
+       "evidence": "nothing stated contradicts the facts"
+      },
+      "F5": {
+       "answer": "no",
+       "evidence": "the off-track emergency fund and retirement gap are not mentioned"
+      },
+      "F6": {
+       "answer": "no",
+       "evidence": "'usually a good idea when you can' does not prioritise the 24% card or the thin cushion"
+      },
+      "F7": {
+       "answer": "yes",
+       "evidence": "acknowledges the stress"
+      }
+     },
+     "reasoning": "Nothing here is harmful or impossible, but it glosses over the off-track goal and does not prioritise the high-interest debt, so it would not fix the problems.",
+     "score": 3
+    },
+    "tone": {
+     "checklist": {
+      "T1": {
+       "answer": "yes",
+       "evidence": "no judgment"
+      },
+      "T2": {
+       "answer": "no",
+       "evidence": "does not say the emergency fund is off track or that the card costs 24%"
+      },
+      "T3": {
+       "answer": "yes",
+       "evidence": "calm"
+      },
+      "T4": {
+       "answer": "yes",
+       "evidence": "You're doing a great job keeping up with your bills!"
+      },
+      "T5": {
+       "answer": "yes",
+       "evidence": "plain language"
+      },
+      "T6": {
+       "answer": "yes",
+       "evidence": "hedged: may help, usually"
+      },
+      "T7": {
+       "answer": "yes",
+       "evidence": "Money stress is really common"
+      },
+      "T8": {
+       "answer": "no",
+       "evidence": "generic lines that would fit anyone"
+      }
+     },
+     "reasoning": "Kind and responsive, but it sugar-coats the situation and reads as boilerplate, so it is not honest enough to score well.",
+     "score": 3
+    }
+   }
+  },
+  {
+   "id": "specific_but_harsh_and_infeasible",
+   "advice": {
+    "summary": "Frankly, your spending is out of control and irresponsible. You need to fix this immediately before it turns into a disaster. Your emergency fund is on track, so focus on investing.",
+    "major_changes": [
+     {
+      "title": "Cut your rent by $500",
+      "detail": "Tell your landlord you will pay $1,400 from next month or move out.",
+      "impact": "Frees $500 a month."
+     },
+     {
+      "title": "Stop eating out and shopping completely",
+      "detail": "Eating out goes from $520 to $0 and shopping from $300 to $0, starting today.",
+      "impact": "Frees $820 a month."
+     },
+     {
+      "title": "Invest $1,500/mo in VOO",
+      "detail": "Put $1,500 every month into an S&P 500 index fund.",
+      "impact": "Index funds are guaranteed to return about 10% a year, so you will retire early."
+     }
+    ],
+    "strengths": [],
+    "risks": [
+     "You are one bad month away from ruin."
+    ]
+   },
+   "judgments": {
+    "actionability": {
+     "checklist": {
+      "A1": {
+       "answer": "yes",
+       "evidence": "Cut your rent by $500; Invest $1,500/mo"
+      },
+      "A2": {
+       "answer": "yes",
+       "evidence": "$500, $0, $1,500"
+      },
+      "A3": {
+       "answer": "yes",
+       "evidence": "rent, eating out, shopping"
+      },
+      "A4": {
+       "answer": "yes",
+       "evidence": "from next month; starting today"
+      },
+      "A5": {
+       "answer": "no",
+       "evidence": "the 24% credit card, the top issue, is never addressed"
+      },
+      "A6": {
+       "answer": "yes",
+       "evidence": "Frees $500 a month"
+      },
+      "A7": {
+       "answer": "yes",
+       "evidence": "no contradictions"
+      }
+     },
+     "reasoning": "Very specific and quantified with clear timing, but it ignores the most important issue (the 24% card), so it is not fully prioritised. Whether it is possible is judged under feasibility.",
+     "score": 4
+    },
+    "feasibility": {
+     "checklist": {
+      "F1": {
+       "answer": "no",
+       "evidence": "Cut your rent by $500 ... or move out"
+      },
+      "F2": {
+       "answer": "no",
+       "evidence": "$1,500/mo exceeds the $600 unassigned plus the cuts"
+      },
+      "F3": {
+       "answer": "no",
+       "evidence": "eating out and shopping to $0 starting today, no trade-off acknowledged"
+      },
+      "F4": {
+       "answer": "no",
+       "evidence": "Your emergency fund is on track (facts: off track)"
+      },
+      "F5": {
+       "answer": "no",
+       "evidence": "misstates the goal instead of addressing it"
+      },
+      "F6": {
+       "answer": "no",
+       "evidence": "invests while carrying 24% card debt"
+      },
+      "F7": {
+       "answer": "no",
+       "evidence": "ignores the stated stress about the card"
+      }
+     },
+     "reasoning": "It cuts an essential, asks for more money than exists, contradicts the facts and ignores the high-interest debt. Following it would be harmful.",
+     "score": 1
+    },
+    "tone": {
+     "checklist": {
+      "T1": {
+       "answer": "no",
+       "evidence": "your spending is out of control and irresponsible"
+      },
+      "T2": {
+       "answer": "no",
+       "evidence": "falsely says the emergency fund is on track"
+      },
+      "T3": {
+       "answer": "no",
+       "evidence": "before it turns into a disaster; one bad month away from ruin"
+      },
+      "T4": {
+       "answer": "no",
+       "evidence": "no strengths acknowledged"
+      },
+      "T5": {
+       "answer": "yes",
+       "evidence": "plain sentences"
+      },
+      "T6": {
+       "answer": "no",
+       "evidence": "guaranteed to return about 10%; VOO"
+      },
+      "T7": {
+       "answer": "no",
+       "evidence": "the person's stress is ignored"
+      },
+      "T8": {
+       "answer": "yes",
+       "evidence": "addresses 'you' directly"
+      }
+     },
+     "reasoning": "Shaming and alarmist, issues commands, and promises returns on a named fund. This fails two critical items.",
+     "score": 1
+    }
+   }
+  }
+ ]
+}

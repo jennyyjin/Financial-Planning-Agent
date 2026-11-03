@@ -1,0 +1,288 @@
+{
+ "id": "gold-deficit-parent",
+ "source": "handwritten",
+ "archetype": "deficit",
+ "tags": [
+  "deficit",
+  "effective_date",
+  "event:rent_increase",
+  "turns:2"
+ ],
+ "description": "Protected needs above income; rent rises in January.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-09T22:40:00",
+   "text": "Single mom here. I bring home $3,100 a month. Rent $1,650, daycare $900, groceries about $120 a week, utilities $140, car insurance $160, phone $60. Streaming is $25 and takeout maybe $120 a month. Credit card balance $2,800 at 26.9%, I pay the $85 minimum. I'd love a $1,500 emergency fund by June 2027. I'm 34, would like to retire at 67, have $4,000 in an old 401k and I'm not contributing. $300 in savings.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold5",
+     "as_of": "2026-10-09T22:40:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Paycheck",
+      "amount": 3100,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1650,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Daycare",
+      "amount": 900,
+      "frequency": "monthly",
+      "category": "childcare",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 120,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Car insurance",
+      "amount": 160,
+      "frequency": "monthly",
+      "category": "insurance",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Phone bill",
+      "amount": 60,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Streaming",
+      "amount": 25,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Takeout",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Emergency fund",
+      "target_amount": 1500,
+      "deadline": "2027-06-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 2800,
+      "apr": 26.9,
+      "minimum_payment": 85,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 34,
+     "target_retirement_age": 67,
+     "current_balance": 4000,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 300
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-10-25T07:30:00",
+   "text": "landlord just told me rent goes up to $1,725 starting January",
+   "event": "rent_increase",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold5",
+     "as_of": "2026-10-25T07:30:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Paycheck",
+      "amount": 3100,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1725,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": "2027-01-01"
+     },
+     {
+      "name": "Daycare",
+      "amount": 900,
+      "frequency": "monthly",
+      "category": "childcare",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 120,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Car insurance",
+      "amount": 160,
+      "frequency": "monthly",
+      "category": "insurance",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Phone bill",
+      "amount": 60,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Streaming",
+      "amount": 25,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Takeout",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Emergency fund",
+      "target_amount": 1500,
+      "deadline": "2027-06-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 2800,
+      "apr": 26.9,
+      "minimum_payment": 85,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 34,
+     "target_retirement_age": 67,
+     "current_balance": 4000,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 300
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "rent"
+     ],
+     "field": null,
+     "path": null,
+     "expected": 1725.0,
+     "expected_text": null,
+     "stale": 1650.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

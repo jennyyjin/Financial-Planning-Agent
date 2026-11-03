@@ -1,0 +1,725 @@
+{
+ "id": "gold-memory-stress",
+ "source": "handwritten",
+ "archetype": "healthy_saver",
+ "tags": [
+  "healthy_saver",
+  "reversal",
+  "memory_stress",
+  "event:rent_increase",
+  "event:reversal",
+  "event:windfall",
+  "event:layoff",
+  "event:new_job",
+  "turns:6"
+ ],
+ "description": "Five updates including a reversal; tests that later statements override earlier ones.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-02T09:00:00",
+   "text": "Take home $6,000 a month. Rent $1,800, utilities $140, groceries $550. Dining out $420, shopping $300, gym $70. Saving $500/mo for our $15,000 wedding in May 2028, that's the priority. I'm 31, want to retire at 63, $40,000 in retirement and I add $450/month. $9,000 in savings.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold10",
+     "as_of": "2026-10-02T09:00:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 6000,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 550,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 420,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 300,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 70,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Wedding",
+      "target_amount": 15000,
+      "deadline": "2028-05-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 31,
+     "target_retirement_age": 63,
+     "current_balance": 40000,
+     "monthly_contribution": 450,
+     "target": null
+    },
+    "current_savings_balance": 9000
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-10-10T18:00:00",
+   "text": "ugh rent is going up to $2,000 in February",
+   "event": "rent_increase",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold10",
+     "as_of": "2026-10-10T18:00:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 6000,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 2000,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": "2027-02-01"
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 550,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 420,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 300,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 70,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Wedding",
+      "target_amount": 15000,
+      "deadline": "2028-05-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 31,
+     "target_retirement_age": 63,
+     "current_balance": 40000,
+     "monthly_contribution": 450,
+     "target": null
+    },
+    "current_savings_balance": 9000
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "rent"
+     ],
+     "field": null,
+     "path": null,
+     "expected": 2000.0,
+     "expected_text": null,
+     "stale": 1800.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-10-17T18:00:00",
+   "text": "nvm!! landlord changed their mind, rent stays at $1,800",
+   "event": "reversal",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold10",
+     "as_of": "2026-10-17T18:00:00",
+     "profile_version": 3,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 6000,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 550,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 420,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 300,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 70,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Wedding",
+      "target_amount": 15000,
+      "deadline": "2028-05-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 31,
+     "target_retirement_age": 63,
+     "current_balance": 40000,
+     "monthly_contribution": 450,
+     "target": null
+    },
+    "current_savings_balance": 9000
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "rent"
+     ],
+     "field": null,
+     "path": null,
+     "expected": 1800.0,
+     "expected_text": null,
+     "stale": 2000.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-10-24T11:00:00",
+   "text": "my aunt left me $12,000, it's in savings now",
+   "event": "windfall",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold10",
+     "as_of": "2026-10-24T11:00:00",
+     "profile_version": 4,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 6000,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 550,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 420,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 300,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 70,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Wedding",
+      "target_amount": 15000,
+      "deadline": "2028-05-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 31,
+     "target_retirement_age": 63,
+     "current_balance": 40000,
+     "monthly_contribution": 450,
+     "target": null
+    },
+    "current_savings_balance": 21000
+   },
+   "probes": [
+    {
+     "kind": "scalar",
+     "in_list": null,
+     "match": [],
+     "field": null,
+     "path": "current_savings_balance",
+     "expected": 21000.0,
+     "expected_text": null,
+     "stale": 9000.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-11-02T08:00:00",
+   "text": "got laid off this morning. unemployment will be about $2,100 a month",
+   "event": "layoff",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold10",
+     "as_of": "2026-11-02T08:00:00",
+     "profile_version": 5,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Unemployment benefits",
+      "amount": 2100,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 550,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 420,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 300,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 70,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Wedding",
+      "target_amount": 15000,
+      "deadline": "2028-05-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 31,
+     "target_retirement_age": 63,
+     "current_balance": 40000,
+     "monthly_contribution": 450,
+     "target": null
+    },
+    "current_savings_balance": 21000
+   },
+   "probes": [
+    {
+     "kind": "scalar",
+     "in_list": null,
+     "match": [],
+     "field": null,
+     "path": "derived.income_monthly",
+     "expected": 2100.0,
+     "expected_text": null,
+     "stale": 6000.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-11-20T16:00:00",
+   "text": "good news, found a new job! take-home will be $5,800 a month starting January. no more unemployment after this month",
+   "event": "new_job",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold10",
+     "as_of": "2026-11-20T16:00:00",
+     "profile_version": 6,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "New job salary",
+      "amount": 5800,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": "2027-01-01"
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 140,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 550,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 420,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 300,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 70,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Wedding",
+      "target_amount": 15000,
+      "deadline": "2028-05-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 31,
+     "target_retirement_age": 63,
+     "current_balance": 40000,
+     "monthly_contribution": 450,
+     "target": null
+    },
+    "current_savings_balance": 21000
+   },
+   "probes": [
+    {
+     "kind": "scalar",
+     "in_list": null,
+     "match": [],
+     "field": null,
+     "path": "derived.income_monthly",
+     "expected": 5800.0,
+     "expected_text": null,
+     "stale": 2100.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,292 @@
+{
+ "id": "gold-therapy-label",
+ "source": "handwritten",
+ "archetype": "healthy_saver",
+ "tags": [
+  "healthy_saver",
+  "label_trap",
+  "event:hobby_class",
+  "turns:2"
+ ],
+ "description": "User calls therapy a luxury; it is protected healthcare.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-12T13:00:00",
+   "text": "Take-home is $5,600/month. Rent $1,900, utilities $120, groceries $500. Therapy is $200 a month, it's kind of a luxury for me honestly. Dining out $400, shopping $250, concerts ~$100. I'm putting $400 a month toward a $4,000 moving deposit by March 2027, and I want to save 20% overall. 27 years old, want to retire at 65, $15k in retirement, contributing $300/mo. $8,000 in savings.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold8",
+     "as_of": "2026-10-12T13:00:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 5600,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1900,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 500,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Therapy",
+      "amount": 200,
+      "frequency": "monthly",
+      "category": "healthcare",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 400,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 250,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Concerts",
+      "amount": 100,
+      "frequency": "monthly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Moving deposit",
+      "target_amount": 4000,
+      "deadline": "2027-03-01",
+      "contribution": {
+       "type": "amount",
+       "value": 400,
+       "frequency": "monthly"
+      },
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 20,
+     "frequency": "monthly"
+    },
+    "debts": [],
+    "retirement": {
+     "current_age": 27,
+     "target_retirement_age": 65,
+     "current_balance": 15000,
+     "monthly_contribution": 300,
+     "target": null
+    },
+    "current_savings_balance": 8000
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "therapy"
+     ],
+     "field": "category",
+     "path": null,
+     "expected": null,
+     "expected_text": "healthcare",
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": "healthcare category keeps it protected even if labelled a want"
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-10-26T20:00:00",
+   "text": "started taking a climbing class, $55 a week",
+   "event": "hobby_class",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold8",
+     "as_of": "2026-10-26T20:00:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 5600,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1900,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 500,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Therapy",
+      "amount": 200,
+      "frequency": "monthly",
+      "category": "healthcare",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 400,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 250,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Concerts",
+      "amount": 100,
+      "frequency": "monthly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Climbing class",
+      "amount": 55,
+      "frequency": "weekly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Moving deposit",
+      "target_amount": 4000,
+      "deadline": "2027-03-01",
+      "contribution": {
+       "type": "amount",
+       "value": 400,
+       "frequency": "monthly"
+      },
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 20,
+     "frequency": "monthly"
+    },
+    "debts": [],
+    "retirement": {
+     "current_age": 27,
+     "target_retirement_age": 65,
+     "current_balance": 15000,
+     "monthly_contribution": 300,
+     "target": null
+    },
+    "current_savings_balance": 8000
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "climb"
+     ],
+     "field": null,
+     "path": null,
+     "expected": 238.33333333333334,
+     "expected_text": null,
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

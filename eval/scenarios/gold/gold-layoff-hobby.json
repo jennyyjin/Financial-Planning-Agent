@@ -1,0 +1,444 @@
+{
+ "id": "gold-layoff-hobby",
+ "source": "handwritten",
+ "archetype": "overspender",
+ "tags": [
+  "overspender",
+  "whiteboard",
+  "event:layoff",
+  "event:hobby_class",
+  "turns:3"
+ ],
+ "description": "Layoff, then cancels yoga and starts a pottery class.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-14T19:20:00",
+   "text": "I take home $4,800 a month. Rent's $1,700 and utilities are usually about $130. Groceries run me ~$85 a week. I eat out a lot, probably $600 a month, plus around $350 shopping, a $110 yoga membership and $40 of streaming. I owe $3,200 on a credit card at 22%, paying the $95 minimum. I'm saving $300 a month for a $4,000 Japan trip next June (June 1, 2027) and that's my top priority. I'm 27, I'd like to retire at 62, I've got $9,000 in my 401k and put in $200 a month. Savings account has $3,500.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold1",
+     "as_of": "2026-10-14T19:20:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 4800,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1700,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 130,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 85,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 600,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 350,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Yoga membership",
+      "amount": 110,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Streaming",
+      "amount": 40,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 4000,
+      "deadline": "2027-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 300,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 3200,
+      "apr": 22.0,
+      "minimum_payment": 95,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 27,
+     "target_retirement_age": 62,
+     "current_balance": 9000,
+     "monthly_contribution": 200,
+     "target": null
+    },
+    "current_savings_balance": 3500
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-11-03T08:45:00",
+   "text": "hey I got laid off :( I'll be getting $1,900 a month from unemployment for now.",
+   "event": "layoff",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold1",
+     "as_of": "2026-11-03T08:45:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Unemployment benefits",
+      "amount": 1900,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1700,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 130,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 85,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 600,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 350,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Yoga membership",
+      "amount": 110,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Streaming",
+      "amount": 40,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 4000,
+      "deadline": "2027-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 300,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 3200,
+      "apr": 22.0,
+      "minimum_payment": 95,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 27,
+     "target_retirement_age": 62,
+     "current_balance": 9000,
+     "monthly_contribution": 200,
+     "target": null
+    },
+    "current_savings_balance": 3500
+   },
+   "probes": [
+    {
+     "kind": "scalar",
+     "in_list": null,
+     "match": [],
+     "field": null,
+     "path": "derived.income_monthly",
+     "expected": 1900.0,
+     "expected_text": null,
+     "stale": 4800.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-11-10T21:05:00",
+   "text": "cancelled the yoga membership to save money. BUT I started taking a pottery class on weekends, it's $35 a week lol, it's keeping me sane",
+   "event": "hobby_class",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold1",
+     "as_of": "2026-11-10T21:05:00",
+     "profile_version": 3,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Unemployment benefits",
+      "amount": 1900,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1700,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 130,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 85,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 600,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 350,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Streaming",
+      "amount": 40,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Pottery class",
+      "amount": 35,
+      "frequency": "weekly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 4000,
+      "deadline": "2027-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 300,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 3200,
+      "apr": 22.0,
+      "minimum_payment": 95,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 27,
+     "target_retirement_age": 62,
+     "current_balance": 9000,
+     "monthly_contribution": 200,
+     "target": null
+    },
+    "current_savings_balance": 3500
+   },
+   "probes": [
+    {
+     "kind": "item_absent",
+     "in_list": "recurring_expenses",
+     "match": [
+      "yoga"
+     ],
+     "field": null,
+     "path": null,
+     "expected": null,
+     "expected_text": null,
+     "stale": 110.0,
+     "rel_tol": 0.01,
+     "note": ""
+    },
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "pottery"
+     ],
+     "field": null,
+     "path": null,
+     "expected": 151.66666666666666,
+     "expected_text": null,
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": ""
+    },
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "pottery"
+     ],
+     "field": "need_or_want",
+     "path": null,
+     "expected": null,
+     "expected_text": "want",
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

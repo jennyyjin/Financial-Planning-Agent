@@ -1,0 +1,381 @@
+{
+ "id": "gold-casual-mixed",
+ "source": "handwritten",
+ "archetype": "irregular_pay",
+ "tags": [
+  "irregular_pay",
+  "casual_text",
+  "event:raise",
+  "event:cancel_subscription",
+  "turns:3"
+ ],
+ "description": "Slang, '1.4k', weekly amounts; raise and a cancellation.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-05T23:55:00",
+   "text": "ok so i get paid 1,950 every 2 weeks (after tax). rent's 1.4k, i spend like 80/wk on groceries, gas ~60 a week, spotify+netflix ~30/mo, gym 45, and i eat out a LOT prob 150 a week lol. car payment is 310 (still owe ~9k at 6.9%). nothing saved for retirement yet, im 24, want to retire by 60. got 2k in savings. tryna save 5k for japan by next summer, say july 2027",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold7",
+     "as_of": "2026-10-05T23:55:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Paycheck",
+      "amount": 1950,
+      "frequency": "biweekly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1400,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 80,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gas",
+      "amount": 60,
+      "frequency": "weekly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Spotify and Netflix",
+      "amount": 30,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Gym",
+      "amount": 45,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 150,
+      "frequency": "weekly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 5000,
+      "deadline": "2027-07-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Car loan",
+      "type": "auto_loan",
+      "balance": 9000,
+      "apr": 6.9,
+      "minimum_payment": 310,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 24,
+     "target_retirement_age": 60,
+     "current_balance": 0,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 2000
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-10-21T17:40:00",
+   "text": "update: got a raise!! paycheck is now 2,150 every 2 weeks starting december",
+   "event": "raise",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold7",
+     "as_of": "2026-10-21T17:40:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Paycheck",
+      "amount": 2150,
+      "frequency": "biweekly",
+      "is_net": true,
+      "effective_date": "2026-12-01"
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1400,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 80,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gas",
+      "amount": 60,
+      "frequency": "weekly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Spotify and Netflix",
+      "amount": 30,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Gym",
+      "amount": 45,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 150,
+      "frequency": "weekly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 5000,
+      "deadline": "2027-07-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Car loan",
+      "type": "auto_loan",
+      "balance": 9000,
+      "apr": 6.9,
+      "minimum_payment": 310,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 24,
+     "target_retirement_age": 60,
+     "current_balance": 0,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 2000
+   },
+   "probes": [
+    {
+     "kind": "scalar",
+     "in_list": null,
+     "match": [],
+     "field": null,
+     "path": "derived.income_monthly",
+     "expected": 4658.333333333333,
+     "expected_text": null,
+     "stale": 4225.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-10-22T09:00:00",
+   "text": "oh and i cancelled netflix, so it's just spotify now at $12",
+   "event": "cancel_subscription",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold7",
+     "as_of": "2026-10-22T09:00:00",
+     "profile_version": 3,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Paycheck",
+      "amount": 2150,
+      "frequency": "biweekly",
+      "is_net": true,
+      "effective_date": "2026-12-01"
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1400,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 80,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gas",
+      "amount": 60,
+      "frequency": "weekly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Spotify and Netflix",
+      "amount": 12,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Gym",
+      "amount": 45,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 150,
+      "frequency": "weekly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 5000,
+      "deadline": "2027-07-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [
+     {
+      "name": "Car loan",
+      "type": "auto_loan",
+      "balance": 9000,
+      "apr": 6.9,
+      "minimum_payment": 310,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 24,
+     "target_retirement_age": 60,
+     "current_balance": 0,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 2000
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "spotify",
+      "stream",
+      "music",
+      "netflix",
+      "subscri"
+     ],
+     "field": null,
+     "path": null,
+     "expected": 12.0,
+     "expected_text": null,
+     "stale": 30.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

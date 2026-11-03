@@ -1,0 +1,376 @@
+{
+ "id": "gold-inheritance-trip",
+ "source": "handwritten",
+ "archetype": "healthy_saver",
+ "tags": [
+  "healthy_saver",
+  "whiteboard",
+  "event:windfall",
+  "event:trip_goal",
+  "turns:3"
+ ],
+ "description": "Windfall then a new trip goal.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-28T14:05:00",
+   "text": "Starting November 1 I'll take home $6,200 a month at my new software engineering job. Rent is $1,800 and I spend about $100 a week on groceries. I eat out around $450 a month and have a $120/month yoga membership. I need to buy a $1,500 laptop around December 15. My top priority is a $4,000 trip to Japan by June 1, 2027; I'm putting $500 a month toward it. Overall I'd like to save 20% of my income. I have a federal student loan with $18,000 left at 5.5%, $210 minimum. I'm 24, want to retire at 60, have $8,000 in my retirement account, put in $400 a month, and I figure I'll need $1.5 million. I have $6,500 in savings.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold2",
+     "as_of": "2026-10-28T14:05:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Software engineer salary",
+      "amount": 6200,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": "2026-11-01"
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 100,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 450,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Yoga membership",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [
+     {
+      "name": "Laptop",
+      "amount": 1500,
+      "expected_date": "2026-12-15",
+      "effective_date": null
+     }
+    ],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 4000,
+      "deadline": "2027-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 20,
+     "frequency": "monthly"
+    },
+    "debts": [
+     {
+      "name": "Federal student loan",
+      "type": "student_loan",
+      "balance": 18000,
+      "apr": 5.5,
+      "minimum_payment": 210,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 24,
+     "target_retirement_age": 60,
+     "current_balance": 8000,
+     "monthly_contribution": 400,
+     "target": 1500000
+    },
+    "current_savings_balance": 6500
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-11-06T12:30:00",
+   "text": "inheritance money just hit lol, $25k is sitting in my savings now",
+   "event": "windfall",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold2",
+     "as_of": "2026-11-06T12:30:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Software engineer salary",
+      "amount": 6200,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": "2026-11-01"
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 100,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 450,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Yoga membership",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [
+     {
+      "name": "Laptop",
+      "amount": 1500,
+      "expected_date": "2026-12-15",
+      "effective_date": null
+     }
+    ],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 4000,
+      "deadline": "2027-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 20,
+     "frequency": "monthly"
+    },
+    "debts": [
+     {
+      "name": "Federal student loan",
+      "type": "student_loan",
+      "balance": 18000,
+      "apr": 5.5,
+      "minimum_payment": 210,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 24,
+     "target_retirement_age": 60,
+     "current_balance": 8000,
+     "monthly_contribution": 400,
+     "target": 1500000
+    },
+    "current_savings_balance": 31500
+   },
+   "probes": [
+    {
+     "kind": "scalar",
+     "in_list": null,
+     "match": [],
+     "field": null,
+     "path": "current_savings_balance",
+     "expected": 31500.0,
+     "expected_text": null,
+     "stale": 6500.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "timestamp": "2026-11-07T10:00:00",
+   "text": "want to go to Iceland next August (Aug 2027)? would be like $3,500 all in",
+   "event": "trip_goal",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold2",
+     "as_of": "2026-11-07T10:00:00",
+     "profile_version": 3,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Software engineer salary",
+      "amount": 6200,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": "2026-11-01"
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1800,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 100,
+      "frequency": "weekly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Eating out",
+      "amount": 450,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Yoga membership",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [
+     {
+      "name": "Laptop",
+      "amount": 1500,
+      "expected_date": "2026-12-15",
+      "effective_date": null
+     }
+    ],
+    "savings_goals": [
+     {
+      "name": "Japan trip",
+      "target_amount": 4000,
+      "deadline": "2027-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 500,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     },
+     {
+      "name": "Iceland trip",
+      "target_amount": 3500,
+      "deadline": "2027-08-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 20,
+     "frequency": "monthly"
+    },
+    "debts": [
+     {
+      "name": "Federal student loan",
+      "type": "student_loan",
+      "balance": 18000,
+      "apr": 5.5,
+      "minimum_payment": 210,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 24,
+     "target_retirement_age": 60,
+     "current_balance": 8000,
+     "monthly_contribution": 400,
+     "target": 1500000
+    },
+    "current_savings_balance": 31500
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "savings_goals",
+     "match": [
+      "iceland"
+     ],
+     "field": "target_amount",
+     "path": null,
+     "expected": 3500.0,
+     "expected_text": null,
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}
