@@ -1,0 +1,248 @@
+{
+ "id": "gold-gross-clarify",
+ "source": "handwritten",
+ "archetype": "gross_income",
+ "tags": [
+  "gross_income",
+  "needs_clarification",
+  "event:clarification",
+  "turns:2"
+ ],
+ "description": "'I make 85k' -> asks; answer: before tax.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-20T18:00:00",
+   "text": "I make 85k a year. Rent is $1,950, utilities ~$160, groceries $520, gas $180 a month. Dining out maybe $380 and the gym is $65. Saving $600/month toward a $30,000 house down payment by June 2029. I'm 33, want to retire at 65, have $52,000 in my 401k and add $500 a month. $12k in savings.",
+   "event": "initial",
+   "expected_status": "needs_clarification",
+   "expected_missing": [
+    "income.is_net"
+   ],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold4",
+     "as_of": "2026-10-20T18:00:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 85000,
+      "frequency": "annual",
+      "is_net": null,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1950,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 160,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 520,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gas",
+      "amount": 180,
+      "frequency": "monthly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 380,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 65,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "House down payment",
+      "target_amount": 30000,
+      "deadline": "2029-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 600,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 33,
+     "target_retirement_age": 65,
+     "current_balance": 52000,
+     "monthly_contribution": 500,
+     "target": null
+    },
+    "current_savings_balance": 12000
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-10-20T18:06:00",
+   "text": "that's before tax",
+   "event": "clarification",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold4",
+     "as_of": "2026-10-20T18:06:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 85000,
+      "frequency": "annual",
+      "is_net": false,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1950,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 160,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 520,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gas",
+      "amount": 180,
+      "frequency": "monthly",
+      "category": "transport",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 380,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Gym membership",
+      "amount": 65,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "House down payment",
+      "target_amount": 30000,
+      "deadline": "2029-06-01",
+      "contribution": {
+       "type": "amount",
+       "value": 600,
+       "frequency": "monthly"
+      },
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 33,
+     "target_retirement_age": 65,
+     "current_balance": 52000,
+     "monthly_contribution": 500,
+     "target": null
+    },
+    "current_savings_balance": 12000
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "income",
+     "match": [
+      "salary",
+      "pay",
+      "job",
+      "income",
+      "wage"
+     ],
+     "field": "is_net",
+     "path": null,
+     "expected": null,
+     "expected_text": "false",
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": "gross pay must be recorded as is_net = false"
+    }
+   ]
+  }
+ ]
+}

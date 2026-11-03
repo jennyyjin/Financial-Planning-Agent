@@ -1,0 +1,177 @@
+{
+ "id": "gold-goal-overfunded",
+ "source": "handwritten",
+ "archetype": "one_time_heavy",
+ "tags": [
+  "one_time_heavy",
+  "regression"
+ ],
+ "description": "One goal is funded above its need, which hides that another goal is unfunded.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-18T20:00:00",
+   "text": "I take home $5,950 a month. Rent is $1,650, groceries about $530, car insurance $190 and medication $120. I spend around $200 on video games, $370 on concerts and events, $200 shopping and $300 on hair and nails. My car loan has $6,000 left at 7.5% and I pay $140 a month. I'm putting $1,550 a month toward a $44,300 house down payment by November 2029, and I also want $2,250 for a new laptop by September 2027. Overall I'd like to save 20% of my income. Coming up: about $2,250 for a friend's wedding in mid-November, a $2,700 Disneyland trip in April and a $760 car repair in August. I'm 31, want to retire at 62, have $67,400 in my 401k but I'm not contributing right now. I have $1,600 in savings.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold11",
+     "as_of": "2026-10-18T20:00:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 5950,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 1650,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 530,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Car insurance",
+      "amount": 190,
+      "frequency": "monthly",
+      "category": "insurance",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Medication",
+      "amount": 120,
+      "frequency": "monthly",
+      "category": "healthcare",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Video games",
+      "amount": 200,
+      "frequency": "monthly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Concerts and events",
+      "amount": 370,
+      "frequency": "monthly",
+      "category": "entertainment",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Shopping",
+      "amount": 200,
+      "frequency": "monthly",
+      "category": "shopping",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Hair and nails",
+      "amount": 300,
+      "frequency": "monthly",
+      "category": "personal_care",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [
+     {
+      "name": "Friend's wedding",
+      "amount": 2250,
+      "expected_date": "2026-11-15",
+      "effective_date": null
+     },
+     {
+      "name": "Disneyland trip",
+      "amount": 2700,
+      "expected_date": "2027-04-15",
+      "effective_date": null
+     },
+     {
+      "name": "Car repair",
+      "amount": 760,
+      "expected_date": "2027-08-15",
+      "effective_date": null
+     }
+    ],
+    "savings_goals": [
+     {
+      "name": "New laptop",
+      "target_amount": 2250,
+      "deadline": "2027-09-01",
+      "contribution": null,
+      "priority": null,
+      "effective_date": null
+     },
+     {
+      "name": "House down payment",
+      "target_amount": 44300,
+      "deadline": "2029-11-01",
+      "contribution": {
+       "type": "amount",
+       "value": 1550,
+       "frequency": "monthly"
+      },
+      "priority": null,
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 20,
+     "frequency": "monthly"
+    },
+    "debts": [
+     {
+      "name": "Car loan",
+      "type": "auto_loan",
+      "balance": 6000,
+      "apr": 7.5,
+      "minimum_payment": 140,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 31,
+     "target_retirement_age": 62,
+     "current_balance": 67400,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 1600
+   },
+   "probes": []
+  }
+ ]
+}

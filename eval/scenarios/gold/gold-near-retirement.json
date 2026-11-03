@@ -1,0 +1,258 @@
+{
+ "id": "gold-near-retirement",
+ "source": "handwritten",
+ "archetype": "near_retirement",
+ "tags": [
+  "near_retirement",
+  "event:one_time",
+  "turns:2"
+ ],
+ "description": "58, wants to retire at 62; a wedding contribution.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-16T08:00:00",
+   "text": "I'm 58 and hoping to retire at 62. Take-home is $8,400 a month. Mortgage is $2,100, utilities around $260, groceries $700, health insurance $480. We spend about $400 a month on travel, $350 dining out, and my golf club is $180. Retirement accounts total $610,000 and I add $1,500 a month; I think we need $1.2M. I'd like $30,000 for a new car by December 2027 but it's not urgent. We have $40,000 in savings.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold6",
+     "as_of": "2026-10-16T08:00:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 8400,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Mortgage",
+      "amount": 2100,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 260,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 700,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Health insurance",
+      "amount": 480,
+      "frequency": "monthly",
+      "category": "insurance",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Travel",
+      "amount": 400,
+      "frequency": "monthly",
+      "category": "travel",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 350,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Golf club",
+      "amount": 180,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [],
+    "savings_goals": [
+     {
+      "name": "New car",
+      "target_amount": 30000,
+      "deadline": "2027-12-01",
+      "contribution": null,
+      "priority": "low",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 58,
+     "target_retirement_age": 62,
+     "current_balance": 610000,
+     "monthly_contribution": 1500,
+     "target": 1200000
+    },
+    "current_savings_balance": 40000
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-10-30T19:10:00",
+   "text": "Also I'll be paying $10,000 toward my daughter's wedding in mid-May 2027.",
+   "event": "one_time",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold6",
+     "as_of": "2026-10-30T19:10:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Salary",
+      "amount": 8400,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Mortgage",
+      "amount": 2100,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Utilities",
+      "amount": 260,
+      "frequency": "monthly",
+      "category": "utilities",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 700,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Health insurance",
+      "amount": 480,
+      "frequency": "monthly",
+      "category": "insurance",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Travel",
+      "amount": 400,
+      "frequency": "monthly",
+      "category": "travel",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 350,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Golf club",
+      "amount": 180,
+      "frequency": "monthly",
+      "category": "fitness",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [
+     {
+      "name": "Daughter's wedding",
+      "amount": 10000,
+      "expected_date": "2027-05-15",
+      "effective_date": null
+     }
+    ],
+    "savings_goals": [
+     {
+      "name": "New car",
+      "target_amount": 30000,
+      "deadline": "2027-12-01",
+      "contribution": null,
+      "priority": "low",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": null,
+    "debts": [],
+    "retirement": {
+     "current_age": 58,
+     "target_retirement_age": 62,
+     "current_balance": 610000,
+     "monthly_contribution": 1500,
+     "target": 1200000
+    },
+    "current_savings_balance": 40000
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "one_time_expenses",
+     "match": [
+      "wedding"
+     ],
+     "field": "amount",
+     "path": null,
+     "expected": 10000.0,
+     "expected_text": null,
+     "stale": null,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

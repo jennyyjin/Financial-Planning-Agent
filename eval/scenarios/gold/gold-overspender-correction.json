@@ -1,0 +1,275 @@
+{
+ "id": "gold-overspender-correction",
+ "source": "handwritten",
+ "archetype": "overspender",
+ "tags": [
+  "overspender",
+  "correction",
+  "event:correction",
+  "turns:2"
+ ],
+ "description": "Needs at 77%; corrects dining out.",
+ "seed": null,
+ "turns": [
+  {
+   "timestamp": "2026-10-28T10:00:00",
+   "text": "I make $4,000/month take-home from my office job. Rent is $2,200, my medication is $80 a month, groceries $500, car insurance $150. I spend about $600 on dining out and $60 on streaming. I've got a Disneyland trip in mid-March 2027 that'll cost $2,500. I have $5k on a credit card at 24% (min $150). I want a $3,000 emergency fund by October 2027, it's important to me, and in general I want to save 10% of what I make. I'm 30, want to retire at 65, have $2,000 in a retirement account but don't contribute. Only $500 in savings right now.",
+   "event": "initial",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold3",
+     "as_of": "2026-10-28T10:00:00",
+     "profile_version": 1,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Office job",
+      "amount": 4000,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 2200,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Medication",
+      "amount": 80,
+      "frequency": "monthly",
+      "category": "healthcare",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 500,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Car insurance",
+      "amount": 150,
+      "frequency": "monthly",
+      "category": "insurance",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 600,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Streaming",
+      "amount": 60,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [
+     {
+      "name": "Disneyland trip",
+      "amount": 2500,
+      "expected_date": "2027-03-15",
+      "effective_date": null
+     }
+    ],
+    "savings_goals": [
+     {
+      "name": "Emergency fund",
+      "target_amount": 3000,
+      "deadline": "2027-10-01",
+      "contribution": null,
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 10,
+     "frequency": "monthly"
+    },
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 5000,
+      "apr": 24.0,
+      "minimum_payment": 150,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 30,
+     "target_retirement_age": 65,
+     "current_balance": 2000,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 500
+   },
+   "probes": []
+  },
+  {
+   "timestamp": "2026-10-30T09:15:00",
+   "text": "wait I checked my statements, dining out is more like $450 a month, not $600",
+   "event": "correction",
+   "expected_status": "ready",
+   "expected_missing": [],
+   "expected_profile": {
+    "meta": {
+     "user_id": "u_gold3",
+     "as_of": "2026-10-30T09:15:00",
+     "profile_version": 2,
+     "memory_method": "full_history"
+    },
+    "income": [
+     {
+      "source": "Office job",
+      "amount": 4000,
+      "frequency": "monthly",
+      "is_net": true,
+      "effective_date": null
+     }
+    ],
+    "recurring_expenses": [
+     {
+      "name": "Rent",
+      "amount": 2200,
+      "frequency": "monthly",
+      "category": "housing",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Medication",
+      "amount": 80,
+      "frequency": "monthly",
+      "category": "healthcare",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Groceries",
+      "amount": 500,
+      "frequency": "monthly",
+      "category": "groceries",
+      "need_or_want": "need",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Car insurance",
+      "amount": 150,
+      "frequency": "monthly",
+      "category": "insurance",
+      "need_or_want": "need",
+      "is_fixed": true,
+      "effective_date": null
+     },
+     {
+      "name": "Dining out",
+      "amount": 450,
+      "frequency": "monthly",
+      "category": "dining_out",
+      "need_or_want": "want",
+      "is_fixed": false,
+      "effective_date": null
+     },
+     {
+      "name": "Streaming",
+      "amount": 60,
+      "frequency": "monthly",
+      "category": "subscriptions",
+      "need_or_want": "want",
+      "is_fixed": true,
+      "effective_date": null
+     }
+    ],
+    "one_time_expenses": [
+     {
+      "name": "Disneyland trip",
+      "amount": 2500,
+      "expected_date": "2027-03-15",
+      "effective_date": null
+     }
+    ],
+    "savings_goals": [
+     {
+      "name": "Emergency fund",
+      "target_amount": 3000,
+      "deadline": "2027-10-01",
+      "contribution": null,
+      "priority": "high",
+      "effective_date": null
+     }
+    ],
+    "overall_savings_target": {
+     "type": "percent_of_income",
+     "value": 10,
+     "frequency": "monthly"
+    },
+    "debts": [
+     {
+      "name": "Credit card",
+      "type": "credit_card",
+      "balance": 5000,
+      "apr": 24.0,
+      "minimum_payment": 150,
+      "effective_date": null
+     }
+    ],
+    "retirement": {
+     "current_age": 30,
+     "target_retirement_age": 65,
+     "current_balance": 2000,
+     "monthly_contribution": 0,
+     "target": null
+    },
+    "current_savings_balance": 500
+   },
+   "probes": [
+    {
+     "kind": "item_amount",
+     "in_list": "recurring_expenses",
+     "match": [
+      "dining",
+      "eat"
+     ],
+     "field": null,
+     "path": null,
+     "expected": 450.0,
+     "expected_text": null,
+     "stale": 600.0,
+     "rel_tol": 0.01,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}
