@@ -9,7 +9,7 @@ failure), the rule-based fallback restructurer produces the budget instead.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 from finagent.output import budget as budget_ops
 from finagent.output import goals as goal_math
@@ -18,7 +18,7 @@ from finagent.output.agents.runtime import AgentResult, ChatModel, run_agent
 from finagent.output.budget import Restructurer
 from finagent.output.config import PlanConfig
 from finagent.output.format import cents as _money
-from finagent.output.models import Budget, BudgetId, NormalizedProfile
+from finagent.output.models import Budget, BudgetId, NormalizedProfile, TraceStep
 from finagent.output.tools.budget_tools import BudgetSession, build_budget_tools
 
 PROMPT_PATH = prompt_path("budget_restructurer")
@@ -100,6 +100,7 @@ def restructure_with_agent(
     model: ChatModel,
     *,
     max_steps: Optional[int] = None,
+    on_step: Optional[Callable[[TraceStep], None]] = None,
 ) -> tuple[Budget, AgentResult]:
     """Run the restructurer agent for one rule; fall back to the rule-based restructurer if it fails."""
     session = BudgetSession.start(norm, budget_id, config)
@@ -109,18 +110,22 @@ def restructure_with_agent(
     result = run_agent(
         model, load_prompt(), registry, build_user_message(session),
         agent_name=f"restructurer:{budget_id.value}", max_steps=max_steps or config.agent_max_steps,
-        max_tokens=config.agent_max_tokens,
+        max_tokens=config.agent_max_tokens, on_step=on_step,
     )
     if result.completed and session.finalized is not None:
         return session.finalized, result
     return budget_ops.fallback_restructure(norm, budget_id, config), result
 
 
-def make_agent_restructurer(model: ChatModel, results: Optional[list[AgentResult]] = None) -> Restructurer:
+def make_agent_restructurer(
+    model: ChatModel,
+    results: Optional[list[AgentResult]] = None,
+    on_step: Optional[Callable[[TraceStep], None]] = None,
+) -> Restructurer:
     """A `build_budgets(restructure=...)` callable; each run's AgentResult is appended to `results`."""
 
     def restructure(norm: NormalizedProfile, budget_id: BudgetId, config: PlanConfig) -> Budget:
-        budget, result = restructure_with_agent(norm, budget_id, config, model)
+        budget, result = restructure_with_agent(norm, budget_id, config, model, on_step=on_step)
         if results is not None:
             results.append(result)
         return budget

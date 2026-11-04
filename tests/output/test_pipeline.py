@@ -204,6 +204,39 @@ class Crashing:
         raise RuntimeError("provider down")
 
 
+def test_on_event_reports_each_stage_in_order(plans):
+    events = []
+    plan = generate_plan(load_profile("complete"), generated_at=FIXED, on_event=events.append)
+    stages = [(e["stage"], e.get("budget")) for e in events if e["kind"] == "stage"]
+    assert stages == [("normalize", None), ("restructure", "50_30_20"), ("restructure", "goals_5_3"),
+                      ("forecast", None), ("retirement", None), ("metrics", None), ("advice", None)]
+    assert not [e for e in events if e["kind"] == "step"]  # deterministic run: no agent steps
+    assert plan == plans["complete"]  # watching a run does not change it
+
+
+def test_on_event_streams_every_agent_step_and_matches_the_trace():
+    events = []
+    plan = generate_plan(load_profile("complete"), model=PlanAgents(), generated_at=FIXED, on_event=events.append)
+    steps = [e["step"] for e in events if e["kind"] == "step"]
+    assert steps and steps == plan.trace
+    first_advice = next(i for i, e in enumerate(events) if e == {"kind": "stage", "stage": "advice"})
+    assert all(e["step"].agent == "advisor" for e in events[first_advice:] if e["kind"] == "step")
+
+
+def test_plan_cancelled_stops_the_run_instead_of_falling_back():
+    calls = []
+
+    def stop_after_first_step(event):
+        calls.append(event)
+        if event["kind"] == "step":
+            raise pipeline.PlanCancelled()
+
+    model = PlanAgents()
+    with pytest.raises(pipeline.PlanCancelled):
+        generate_plan(load_profile("complete"), model=model, generated_at=FIXED, on_event=stop_after_first_step)
+    assert sum(e["kind"] == "step" for e in calls) == 1  # nothing ran after the cancel
+
+
 class Spendthrift:
     name = "spendthrift"
 
@@ -234,7 +267,7 @@ def test_crashing_model_falls_back_everywhere_with_warnings(plans):
 
 
 def test_agent_exceptions_are_caught_and_reported(monkeypatch, plans):
-    def broken_restructurer(model, results=None):
+    def broken_restructurer(model, results=None, **kwargs):
         def restructure(norm, budget_id, config):
             raise ValueError("tool bug")
         return restructure

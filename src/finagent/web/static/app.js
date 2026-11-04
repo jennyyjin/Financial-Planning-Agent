@@ -7,11 +7,12 @@
   var COL = { need: '#000000', want: '#FF7A1A', savings: '#2D6CDF', one_time_set_aside: '#7A5AC8', unallocated: '#B9B8B2' };
   var CARD_BG = { current: '#F4F3F0', other: '#FFFFFF', recommended: '#CDEBF7' };
   var MIN_WORKING_MS = 1200;
+  var MAX_LOG = 7; // progress lines kept on screen; older ones scroll away
 
   var $ = function (id) { return document.getElementById(id); };
   var els = {
     intro: $('intro'), card: $('card'), text: $('situation'), feedback: $('feedback'), snippet: $('snippet'),
-    working: $('working'), results: $('results'), example: $('example'), edit: $('edit'), submit: $('submit')
+    working: $('working'), log: $('log'), results: $('results'), example: $('example'), edit: $('edit'), submit: $('submit')
   };
 
   function esc(s) {
@@ -57,19 +58,61 @@
     if (!text) { showFeedback('Add a few details about your money first, or click Fill in an example.'); return; }
     showFeedback('');
     els.snippet.textContent = text;
+    els.log.innerHTML = '';
     setPhase('working');
     var started = Date.now();
-    fetch('/api/plan', {
+    var done = function (data) {
+      var wait = reduceMotion() ? 0 : Math.max(0, MIN_WORKING_MS - (Date.now() - started));
+      setTimeout(function () { handle(data); }, wait);
+    };
+    streamPlan(text, done)
+      .catch(function () { done({ status: 'error', message: 'Could not reach the planner. Is the server running?' }); });
+  }
+
+  // Shows each progress line as the server sends it, then hands the final result to `done`.
+  // The server answers with newline-delimited JSON; a plain JSON answer (a bad request) is passed through.
+  function streamPlan(text, done) {
+    return fetch('/api/plan/stream', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: text, user_id: userId() })
-    })
-      .then(function (r) { return r.json().catch(function () { return { status: 'error' }; }); })
-      .then(function (data) {
-        var wait = reduceMotion() ? 0 : Math.max(0, MIN_WORKING_MS - (Date.now() - started));
-        setTimeout(function () { handle(data); }, wait);
-      })
-      .catch(function () { handle({ status: 'error', message: 'Could not reach the planner. Is the server running?' }); });
+    }).then(function (r) {
+      var ndjson = (r.headers.get('Content-Type') || '').indexOf('application/x-ndjson') === 0;
+      if (!ndjson || !r.body) {
+        return r.json().catch(function () { return { status: 'error' }; }).then(done);
+      }
+      var reader = r.body.getReader(), decoder = new TextDecoder(), buffer = '', finished = false;
+      function line(raw) {
+        if (!raw.trim()) return;
+        var msg;
+        try { msg = JSON.parse(raw); } catch (e) { return; }
+        if (msg.type === 'progress') addProgress(msg);
+        else if (msg.type === 'result') { finished = true; done(msg); }
+      }
+      function pump() {
+        return reader.read().then(function (chunk) {
+          if (chunk.done) {
+            line(buffer + decoder.decode());
+            if (!finished) done({ status: 'error', message: 'The planner stopped before it finished. Please try again.' });
+            return;
+          }
+          buffer += decoder.decode(chunk.value, { stream: true });
+          var lines = buffer.split('\n');
+          buffer = lines.pop();
+          lines.forEach(line);
+          return pump();
+        });
+      }
+      return pump();
+    });
+  }
+
+  function addProgress(msg) {
+    var li = document.createElement('li');
+    li.innerHTML = (msg.who ? '<span class="who">' + esc(msg.who) + '</span>' : '') + esc(msg.label) +
+      (msg.detail ? '<span class="detail">' + esc(msg.detail.length > 220 ? msg.detail.slice(0, 217) + '…' : msg.detail) + '</span>' : '');
+    els.log.appendChild(li);
+    while (els.log.children.length > MAX_LOG) els.log.removeChild(els.log.firstChild);
   }
 
   function handle(data) {

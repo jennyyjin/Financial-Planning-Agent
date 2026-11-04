@@ -219,8 +219,12 @@ def run_agent(
     agent_name: str,
     max_steps: int = DEFAULT_MAX_STEPS,
     max_tokens: Optional[int] = None,
+    on_step: Optional[Callable[[TraceStep], None]] = None,
 ) -> AgentResult:
     """Run the tool-calling loop until a terminal tool succeeds, max_steps, the token budget, or a model error.
+
+    `on_step` is called with each TraceStep as it is recorded (for live progress). It runs on the agent's thread;
+    an exception it raises propagates out of the run.
 
     `max_tokens` bounds the tokens the provider reports for this run. It is checked after each model call, so
     the run can overshoot by one call; the over-budget turn's tool calls are not executed, and the result has
@@ -234,6 +238,11 @@ def run_agent(
     def result(completed: bool, steps: int, final: Optional[dict] = None, error: Optional[str] = None) -> AgentResult:
         return AgentResult(completed, final, steps, trace, messages, error, usage_total)
 
+    def record(step: TraceStep) -> None:
+        trace.append(step)
+        if on_step is not None:
+            on_step(step)
+
     for step in range(1, max_steps + 1):
         started = time.perf_counter()
         try:
@@ -244,12 +253,12 @@ def run_agent(
         _add_usage(usage_total, usage)
 
         if max_tokens is not None and _tokens_used(usage_total) > max_tokens:
-            trace.append(TraceStep(agent=agent_name, step=step, text=reply.text, usage=usage))
+            record(TraceStep(agent=agent_name, step=step, text=reply.text, usage=usage))
             return result(False, step, error=f"token_budget_exceeded: {_tokens_used(usage_total)} of {max_tokens} tokens")
 
         if not reply.tool_calls:
             messages.append(Message(role="assistant", content=reply.text))
-            trace.append(TraceStep(agent=agent_name, step=step, text=reply.text, usage=usage))
+            record(TraceStep(agent=agent_name, step=step, text=reply.text, usage=usage))
             messages.append(Message(role="user", content=_nudge(registry)))
             continue
 
@@ -258,7 +267,7 @@ def run_agent(
         for i, call in enumerate(reply.tool_calls):
             out, done = registry.dispatch(call)
             executed.append((call, out))
-            trace.append(
+            record(
                 TraceStep(
                     agent=agent_name, step=step, tool=call.name, arguments=call.arguments,
                     # The turn's usage is recorded once, on its first tool call, so trace sums are correct.
