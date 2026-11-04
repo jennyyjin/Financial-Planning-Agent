@@ -109,6 +109,7 @@ def restructure_with_agent(
     result = run_agent(
         model, load_prompt(), registry, build_user_message(session),
         agent_name=f"restructurer:{budget_id.value}", max_steps=max_steps or config.agent_max_steps,
+        max_tokens=config.agent_max_tokens,
     )
     if result.completed and session.finalized is not None:
         return session.finalized, result

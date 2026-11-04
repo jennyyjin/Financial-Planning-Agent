@@ -47,6 +47,7 @@ def advise_with_agent(
         build_user_message(context),
         agent_name="advisor",
         max_steps=max_steps or context.config.agent_max_steps,
+        max_tokens=context.config.agent_max_tokens,
     )
     if result.completed and session.submitted is not None:
         return session.submitted, result

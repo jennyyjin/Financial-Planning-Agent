@@ -1059,6 +1059,20 @@
           "title": "Agent Max Steps",
           "type": "integer"
         },
+        "agent_max_tokens": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 200000,
+          "description": "Token budget per agent run (prompt + completion, summed over its model calls); an agent that exceeds it is aborted and the deterministic fallback is used. None = no limit.",
+          "title": "Agent Max Tokens"
+        },
         "money_tolerance": {
           "default": 0.01,
           "description": "Dollar tolerance for target and invariant checks.",

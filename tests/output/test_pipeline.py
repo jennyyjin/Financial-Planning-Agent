@@ -204,6 +204,23 @@ class Crashing:
         raise RuntimeError("provider down")
 
 
+class Spendthrift:
+    name = "spendthrift"
+
+    def chat(self, messages, tools):
+        return AssistantTurn(tool_calls=[call(tools[0].name)], usage={"total_tokens": 1_000})
+
+
+def test_token_budget_overrun_falls_back_with_a_warning(plans):
+    config = PlanConfig(agent_max_tokens=500)
+    plan = generate_plan(load_profile("complete"), config, model=Spendthrift(), generated_at=FIXED)
+    fallbacks = [w for w in plan.meta.warnings if w.code == "agent_fallback"]
+    assert [w.ref for w in fallbacks] == ["restructurer:50_30_20", "restructurer:goals_5_3", "advisor"]
+    assert all("token_budget_exceeded" in w.message for w in fallbacks)
+    assert plan.meta.config.agent_max_tokens == 500
+    assert plan.budgets[BudgetId.goals_5_3] == plans["complete"].budgets[BudgetId.goals_5_3]
+
+
 def test_crashing_model_falls_back_everywhere_with_warnings(plans):
     plan = generate_plan(load_profile("complete"), model=Crashing(), generated_at=FIXED)
     fallback_refs = [w.ref for w in plan.meta.warnings if w.code == "agent_fallback"]
