@@ -20,7 +20,8 @@
      "need_or_want": "want", "is_fixed": true, "effective_date": null}
   ],
   "one_time_expenses": [
-    {"name": "Laptop", "amount": 1500, "expected_date": "2026-12-15", "effective_date": null}
+    {"name": "Laptop", "amount": 1500, "expected_date": "2026-12-15", "category": "shopping",
+     "need_or_want": "want", "effective_date": null}
   ],
   "savings_goals": [
     {"name": "Japan trip", "target_amount": 4000, "deadline": "2027-06-01",
@@ -34,7 +35,7 @@
   ],
   "retirement": {
     "current_age": 24, "target_retirement_age": 60, "current_balance": 8000,
-    "monthly_contribution": 400, "target": 1500000
+    "monthly_contribution": 400, "target": 1500000, "desired_annual_spending": 60000
   },
   "current_savings_balance": 6500
 }

@@ -1,0 +1,21 @@
+{
+  "name": "irrelevant_update",
+  "description": "A message with no financial information should leave the profile unchanged.",
+  "turns": [
+    {
+      "text": "I take home $5,200 a month after tax. Rent is $1,750 a month, utilities are $100 a month and groceries are $350 a month. I spend $250 a month eating out. I'm saving for a $10,000 emergency fund by the end of next year and put $400 a month toward it. I have $3,000 in savings and no debt.",
+      "timestamp": "2026-11-03T09:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "savings_goals", "has": {"target_amount": 10000, "contribution.value": 400}},
+        {"section": "recurring_expenses", "count": 4}
+      ]
+    },
+    {
+      "text": "My sister is visiting next weekend and we're going hiking.",
+      "timestamp": "2026-11-05T20:00:00",
+      "expected_status": "ready",
+      "expect_unchanged": true
+    }
+  ]
+}

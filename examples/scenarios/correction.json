@@ -1,0 +1,29 @@
+{
+  "name": "correction",
+  "description": "The user corrects an earlier amount. Only the corrected value should remain.",
+  "turns": [
+    {
+      "text": "I take home $3,800 a month after tax. My rent is $1,400 a month and groceries are about $300 a month. I spend $120 a month on gas for my commute and $80 a month on streaming services. I have $2,500 in savings and no debt.",
+      "timestamp": "2026-11-03T09:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "recurring_expenses", "has": {"amount": 1400, "category": "housing"}},
+        {"section": "recurring_expenses", "has": {"amount": 120, "category": "transport", "need_or_want": "need"}},
+        {"section": "recurring_expenses", "count": 4},
+        {"section": "debts", "count": 0},
+        {"path": "/retirement", "equals": null}
+      ]
+    },
+    {
+      "text": "Sorry, I made a mistake earlier: my rent is actually $1,500, not $1,400.",
+      "timestamp": "2026-11-04T09:00:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "recurring_expenses", "has": {"amount": 1500, "category": "housing"}},
+        {"section": "recurring_expenses", "lacks": {"amount": 1400}},
+        {"section": "recurring_expenses", "count": 4},
+        {"path": "/current_savings_balance", "equals": 2500}
+      ]
+    }
+  ]
+}

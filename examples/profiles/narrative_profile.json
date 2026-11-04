@@ -46,7 +46,7 @@
 ,
   "retirement": {
     "current_age": null, "target_retirement_age": null, "current_balance": null,
-    "monthly_contribution": 250, "target": null
+    "monthly_contribution": 250, "target": null, "desired_annual_spending": null
   },
   "current_savings_balance": 5000
 }

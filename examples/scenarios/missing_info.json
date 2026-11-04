@@ -1,0 +1,25 @@
+{
+  "name": "missing_info",
+  "description": "The first message leaves out whether income is after tax and the credit card's APR and minimum payment, so the agent must ask. The answer completes the profile.",
+  "turns": [
+    {
+      "text": "I make about $4,000 a month from my job. Rent is $1,200 a month and I spend $250 a month on groceries. I also have a credit card with a $3,000 balance.",
+      "timestamp": "2026-11-03T09:00:00",
+      "expected_status": "needs_clarification",
+      "checks": [
+        {"section": "income", "has": {"amount": 4000, "is_net": null}},
+        {"section": "debts", "has": {"type": "credit_card", "balance": 3000, "apr": null, "minimum_payment": null}}
+      ]
+    },
+    {
+      "text": "That $4,000 is after tax. The credit card APR is 24% and the minimum payment is $90 a month.",
+      "timestamp": "2026-11-03T09:05:00",
+      "expected_status": "ready",
+      "checks": [
+        {"section": "income", "has": {"amount": 4000, "is_net": true}},
+        {"section": "debts", "has": {"type": "credit_card", "balance": 3000, "apr": 24, "minimum_payment": 90}},
+        {"section": "recurring_expenses", "has": {"amount": 1200, "category": "housing"}}
+      ]
+    }
+  ]
+}

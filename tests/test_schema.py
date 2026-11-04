@@ -76,5 +76,21 @@ def test_negative_amount_rejected():
         FinancialProfile.model_validate(data)
 
 
+def test_one_time_expense_labels_default_to_unknown():
+    item = FinancialProfile.model_validate(load("complete_profile.json")).one_time_expenses[0]
+    assert (item.category.value, item.need_or_want.value) == ("shopping", "want")
+    data = load("complete_profile.json")
+    del data["one_time_expenses"][0]["category"], data["one_time_expenses"][0]["need_or_want"]
+    item = FinancialProfile.model_validate(data).one_time_expenses[0]
+    assert (item.category.value, item.need_or_want) == ("other", None)
+
+
+def test_negative_desired_annual_spending_rejected():
+    data = load("complete_profile.json")
+    data["retirement"]["desired_annual_spending"] = -1
+    with pytest.raises(ValidationError):
+        FinancialProfile.model_validate(data)
+
+
 def test_exported_schema_is_up_to_date():
     assert json.loads(SCHEMA_PATH.read_text()) == json_schema(), "Run: python -m finagent.schema"

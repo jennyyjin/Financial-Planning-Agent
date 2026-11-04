@@ -135,6 +135,8 @@ class OneTimeExpense(_Model):
     name: str
     amount: Optional[float] = Field(default=None, ge=0)
     expected_date: Optional[date] = None
+    category: ExpenseCategory = ExpenseCategory.other
+    need_or_want: Optional[NeedOrWant] = None
     effective_date: Optional[date] = None
 
 
@@ -162,6 +164,9 @@ class Retirement(_Model):
     current_balance: Optional[float] = Field(default=None, ge=0)
     monthly_contribution: Optional[float] = Field(default=None, ge=0)
     target: Optional[float] = Field(default=None, ge=0, description="Target retirement savings in dollars.")
+    desired_annual_spending: Optional[float] = Field(
+        default=None, ge=0, description="Desired yearly spending in retirement, in today's dollars."
+    )
 
 
 class FinancialProfile(_Model):
