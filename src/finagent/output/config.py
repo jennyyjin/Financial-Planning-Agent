@@ -6,6 +6,8 @@ assumptions it was computed under.
 
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from finagent.schema import ExpenseCategory
@@ -52,6 +54,11 @@ class PlanConfig(BaseModel):
     min_rationale_chars: int = Field(default=20, ge=1)
 
     agent_max_steps: int = Field(default=25, ge=1)
+    agent_max_tokens: Optional[int] = Field(
+        default=200_000, ge=1,
+        description="Token budget per agent run (prompt + completion, summed over its model calls); "
+        "an agent that exceeds it is aborted and the deterministic fallback is used. None = no limit.",
+    )
     money_tolerance: float = Field(default=0.01, description="Dollar tolerance for target and invariant checks.")
 
     @property

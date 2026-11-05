@@ -42,7 +42,8 @@ LLM agents (the Budget Restructurer and the Advisor) only choose which wants to 
 python -m finagent.output examples/profiles/complete_profile.json --no-llm              # Markdown report
 python -m finagent.output examples/profiles/complete_profile.json --no-llm --format json --out plan.json
 
-# With an LLM (any OpenAI-compatible endpoint)
+# With an LLM (any OpenAI-compatible endpoint). Put these in a gitignored .env (see .env.example);
+# both CLIs load ./.env or <repo root>/.env, and variables already set in your shell win.
 export FINAGENT_LLM_MODEL=gpt-4o-mini
 export FINAGENT_LLM_API_KEY=sk-...          # or OPENAI_API_KEY
 export FINAGENT_LLM_BASE_URL=https://openrouter.ai/api/v1   # optional; defaults to https://api.openai.com/v1
