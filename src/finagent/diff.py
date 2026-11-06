@@ -73,6 +73,19 @@ class ProfileDiff(BaseModel):
         return lines
 
 
+    def summary(self, max_items: int = 3) -> str:
+        """One or two sentences for the dashboard after an update, naming at most `max_items` changes."""
+        if self.is_empty:
+            return "Nothing in your finances changed, so your budgets are the same."
+        lines = self.describe()
+        shown = "; ".join(lines[:max_items])
+        more = len(lines) - max_items
+        text = f"Your budgets were updated: {shown}."
+        if more > 0:
+            text += f" There {'is' if more == 1 else 'are'} {more} other change{'' if more == 1 else 's'} too."
+        return text
+
+
 def _fmt(field: str, value: Any) -> str:
     if value is None:
         return "unknown"

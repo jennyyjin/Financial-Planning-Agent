@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Callable, Optional, Union
 
 from finagent.output import budget as budget_ops
 from finagent.output import forecast as forecast_ops
@@ -40,6 +40,18 @@ from finagent.output.normalize import normalize
 from finagent.schema import FinancialProfile
 
 ProfileSource = Union[FinancialProfile, dict, str, Path]
+
+# Progress events for a live front end: {"kind": "stage", "stage": str, "budget"?: str} when a pipeline step
+# starts, and {"kind": "step", "step": TraceStep} for every agent step.
+ProgressEvent = dict[str, Any]
+OnEvent = Callable[[ProgressEvent], None]
+
+
+class PlanCancelled(BaseException):
+    """Raise from an `on_event` callback to stop a run (e.g. the client went away).
+
+    A BaseException so the per-agent `except Exception` fallbacks do not swallow it and carry on spending tokens.
+    """
 
 
 def _fallback_warning(agent: str, error: Optional[str]) -> PlanWarning:
@@ -92,13 +104,14 @@ def _agent_warnings(budgets: dict[BudgetId, Budget], trace: list[TraceStep]) -> 
 
 def _build_budgets(
     norm: NormalizedProfile, config: PlanConfig, model: Optional[ChatModel],
-    results: list[AgentResult], warnings: list[PlanWarning],
+    results: list[AgentResult], warnings: list[PlanWarning], emit: OnEvent, on_step: Callable[[TraceStep], None],
 ) -> dict[BudgetId, Budget]:
-    if model is None:
-        return budget_ops.build_budgets(norm, config)
-    agent_restructure = make_agent_restructurer(model, results)
+    agent_restructure = make_agent_restructurer(model, results, on_step=on_step) if model is not None else None
 
     def restructure(n: NormalizedProfile, budget_id: BudgetId, c: PlanConfig) -> Budget:
+        emit({"kind": "stage", "stage": "restructure", "budget": budget_id.value})
+        if agent_restructure is None:
+            return budget_ops.fallback_restructure(n, budget_id, c)
         agent = f"restructurer:{budget_id.value}"
         try:
             budget = agent_restructure(n, budget_id, c)
@@ -114,11 +127,12 @@ def _build_budgets(
 
 def _recommend(
     context: PlanContext, model: Optional[ChatModel], results: list[AgentResult], warnings: list[PlanWarning],
+    on_step: Callable[[TraceStep], None],
 ) -> Recommendation:
     if model is None:
         return fallback_recommendation(context)
     try:
-        rec, result = advise_with_agent(context, model)
+        rec, result = advise_with_agent(context, model, on_step=on_step)
     except Exception as exc:  # e.g. a bug in an advisor tool
         warnings.append(_error_warning("advisor", exc))
         return fallback_recommendation(context)
@@ -134,21 +148,39 @@ def generate_plan(
     model: ChatModel | None = None,
     *,
     generated_at: datetime | None = None,
+    on_event: OnEvent | None = None,
 ) -> PlanOutput:
-    """Run the whole output phase on one profile. `model=None` gives a fully deterministic plan."""
+    """Run the whole output phase on one profile. `model=None` gives a fully deterministic plan.
+
+    `on_event` receives a ProgressEvent as each step starts and for every agent step, so a front end can show the
+    run live. It does not change the plan; raise `PlanCancelled` from it to stop the run.
+    """
     config = config or PlanConfig()
+
+    def emit(event: ProgressEvent) -> None:
+        if on_event is not None:
+            on_event(event)
+
+    def on_step(step: TraceStep) -> None:
+        emit({"kind": "step", "step": step})
+
+    emit({"kind": "stage", "stage": "normalize"})
     norm = normalize(profile, config)
     results: list[AgentResult] = []
     pipeline_warnings: list[PlanWarning] = []
 
-    budgets = _build_budgets(norm, config, model, results, pipeline_warnings)
+    budgets = _build_budgets(norm, config, model, results, pipeline_warnings, emit, on_step)
+    emit({"kind": "stage", "stage": "forecast"})
     forecasts = {bid: forecast_ops.forecast_budget(b, norm, config) for bid, b in budgets.items()}
+    emit({"kind": "stage", "stage": "retirement"})
     retirement = {
         bid: retirement_ops.project_retirement(b, forecasts[bid], norm, config) for bid, b in budgets.items()
     }
+    emit({"kind": "stage", "stage": "metrics"})
     metrics = compute_metrics(norm, budgets, forecasts, retirement, config)
     context = PlanContext(norm, config, budgets, forecasts, retirement, metrics)
-    recommendation = _recommend(context, model, results, pipeline_warnings)
+    emit({"kind": "stage", "stage": "advice"})
+    recommendation = _recommend(context, model, results, pipeline_warnings, on_step)
 
     trace: list[TraceStep] = [step for result in results for step in result.trace]
     pipeline_warnings += _agent_warnings(budgets, trace)

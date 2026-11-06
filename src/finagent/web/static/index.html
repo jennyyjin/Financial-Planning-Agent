@@ -40,11 +40,15 @@
 <form id="card" class="card is-open" novalidate>
   <div class="open-body">
     <div style="display: flex; flex-direction: column; gap: 16px">
-      <label for="situation" style="font-size: 15px; font-weight: 600">Your situation</label>
+      <!-- addition: the conversation so far (the user's messages and the agent's follow-up questions) -->
+      <div id="thread" class="thread" role="log" aria-live="polite" aria-label="Conversation" hidden></div>
+      <label for="situation" id="situation-label" style="font-size: 15px; font-weight: 600">Your situation</label>
       <textarea id="situation" placeholder="I take home about $5,000 a month after tax. Rent is $1,650…"></textarea>
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
-        <p style="margin: 0; max-width: 46ch; font-size: 15px; line-height: 1.5; color: #55544F">Include take-home pay, regular bills, debts and any goals with a date. Rough numbers are fine.</p>
+        <p id="hint" style="margin: 0; max-width: 46ch; font-size: 15px; line-height: 1.5; color: #55544F">Include take-home pay, regular bills, debts and any goals with a date. Rough numbers are fine.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" class="ghost" id="back" hidden>Back to my budgets</button>
+          <button type="button" class="ghost" id="restart" hidden>Start over</button>
           <button type="button" class="ghost" id="example">Fill in an example</button>
           <button type="submit" class="primary" id="submit">Build my budgets</button>
         </div>
@@ -59,6 +63,7 @@
         <div id="snippet" style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"></div>
       </div>
       <button type="button" class="ghost" id="edit" style="flex: none">Edit</button>
+      <button type="button" class="ghost" id="restart-closed" style="flex: none">Start over</button>
     </div>
   </div>
 </form>
@@ -66,6 +71,7 @@
 <div id="working" class="status" role="status" hidden>
   <svg class="squig" viewBox="0 0 140 140" aria-hidden="true"><path id="squiggle" pathLength="820"></path></svg>
   <p class="serif" style="margin: 0; font-size: 30px">Working out your three budgets</p>
+  <ol id="log" class="log" aria-label="Progress"></ol>
 </div>
 
 <main id="results" class="grid" style="margin-top: 12px; margin-bottom: 60px" hidden></main>

@@ -297,6 +297,24 @@ def test_grounding_failures_beyond_retry_end_the_session(session):
     assert session.submitted is None and "777" in session.failed
 
 
+def test_rejected_submissions_beyond_five_retries_end_the_session(session):
+    reg = build_advisor_tools(session)
+    wrong_status = {**submission(), "overall_status": "on_track"}
+    for attempt in range(5):  # the first try and the first four retries are sent back to the agent
+        out, done = run(reg, "submit_recommendation", **wrong_status)
+        assert not done and "overall_status" in out["error"], attempt
+    out, done = run(reg, "submit_recommendation", **wrong_status)  # the fifth retry is rejected: session over
+    assert done and out["accepted"] is False
+    assert session.submitted is None and "rejected 6 times" in session.failed
+
+
+def test_accepted_after_rejections_resets_nothing_else(session):
+    reg = build_advisor_tools(session)
+    run(reg, "submit_recommendation", **{**submission(), "overall_status": "on_track"})
+    out, done = run(reg, "submit_recommendation", **submission())
+    assert done and out["accepted"] and session.submit_rejections == 1
+
+
 def test_submit_accepts_grounded_recommendation(session):
     out, done = run(build_advisor_tools(session), "submit_recommendation", **submission())
     assert done and out["accepted"]

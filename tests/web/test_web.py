@@ -166,3 +166,63 @@ def test_server_rejects_bad_requests(base_url):
     assert _post(base_url + "/api/plan", {"nope": 1})[0] == 400
     status, data = _post(base_url + "/api/plan", {"text": "I earn 4k"})
     assert status == 422 and data["status"] == "unavailable" and data["message"]
+
+
+# --- live progress ------------------------------------------------------------------------
+
+
+def _stream(url, payload):
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as r:
+        assert r.headers.get("Content-Type") == "application/x-ndjson"
+        return [json.loads(line) for line in r.read().decode().splitlines()]
+
+
+def test_stream_sends_progress_lines_then_the_same_result_as_api_plan(base_url):
+    text = json.loads(_get(base_url + "/api/example")[2])["text"]
+    lines = _stream(base_url + "/api/plan/stream", {"text": text})
+    progress, result = lines[:-1], lines[-1]
+    assert [p["label"] for p in progress] == [
+        "Reading what you wrote", "Reading your numbers", "Building the 50/30/20 budget",
+        "Building the goals + 5:3 budget", "Forecasting the next 12 months", "Projecting retirement",
+        "Checking the key ratios", "Writing the recommendation",
+    ]
+    assert all(p["type"] == "progress" for p in progress) and result["type"] == "result"
+    plain = _post(base_url + "/api/plan", {"text": text})[1]
+    streamed = {k: v for k, v in result.items() if k != "type"}
+    for body in (streamed, plain):
+        del body["plan"]["meta"]["generated_at"]
+    assert streamed == plain  # same body, deterministic run
+
+
+def test_stream_reports_a_failed_input_as_a_result_line(base_url):
+    lines = _stream(base_url + "/api/plan/stream", {"text": "I earn 4k"})
+    assert lines[-1]["type"] == "result" and lines[-1]["status"] == "unavailable"
+
+
+def test_stream_rejects_a_bad_request_with_plain_json(base_url):
+    assert _post(base_url + "/api/plan/stream", {"nope": 1})[0] == 400
+
+
+def test_progress_wording_for_agent_steps():
+    from finagent.output.models import TraceStep
+    from finagent.web.progress import describe
+
+    def step(tool, args, result, agent="restructurer:50_30_20"):
+        return describe({"kind": "step", "step": TraceStep(agent=agent, step=1, tool=tool, arguments=args, result=result)})
+
+    cut = step("adjust_item", {"line_id": "rec:eating-out", "new_monthly_amount": 120.4, "rationale": "Why."}, {"ok": 1})
+    assert cut == {"type": "progress", "agent": "restructurer:50_30_20", "who": "Restructurer (50/30/20)",
+                   "label": "Cutting eating out to $120", "detail": "Why."}
+    assert step("adjust_item", {"line_id": "rec:rent", "new_monthly_amount": 0}, {"ok": 1})["label"] == "Dropping rent"
+    rejected = step("adjust_item", {"line_id": "rec:rent", "new_monthly_amount": 1}, {"error": "'Rent' is protected."})
+    assert "rejected by the rules" in rejected["label"] and rejected["detail"] == "'Rent' is protected."
+    assert step("compare_budgets", {}, {}, agent="advisor")["who"] == "Advisor"
+    assert step("some_new_tool", {}, {})["label"] == "Some new tool"
+    assert describe({"kind": "other"}) is None
+    # Rejected recommendation drafts are retried internally and not shown.
+    assert step("submit_recommendation", {"summary": "x"}, {"error": "overall_status must be ..."}, agent="advisor") is None
+    assert step("submit_recommendation", {"summary": "x"}, {"accepted": False, "error": "Recommendation rejected"},
+                agent="advisor") is None
+    assert step("submit_recommendation", {"summary": "Done."}, {"accepted": True}, agent="advisor")["label"] == \
+        "Submitting the recommendation"

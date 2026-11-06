@@ -9,13 +9,13 @@ recommendation is used instead.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 from finagent.output.advice import PlanContext, fallback_recommendation
 from finagent.output.agents.prompts import prompt_path, read_prompt
 from finagent.output.agents.runtime import AgentResult, ChatModel, run_agent
 from finagent.output.format import BUDGET_LABELS
-from finagent.output.models import Recommendation
+from finagent.output.models import Recommendation, TraceStep
 from finagent.output.tools.advisor_tools import AdvisorSession, build_advisor_tools
 
 PROMPT_PATH = prompt_path("advisor")
@@ -36,7 +36,11 @@ def build_user_message(context: PlanContext) -> str:
 
 
 def advise_with_agent(
-    context: PlanContext, model: ChatModel, *, max_steps: Optional[int] = None
+    context: PlanContext,
+    model: ChatModel,
+    *,
+    max_steps: Optional[int] = None,
+    on_step: Optional[Callable[[TraceStep], None]] = None,
 ) -> tuple[Recommendation, AgentResult]:
     """Run the Advisor Agent; falls back to the templated recommendation if it fails."""
     session = AdvisorSession(context)
@@ -47,6 +51,8 @@ def advise_with_agent(
         build_user_message(context),
         agent_name="advisor",
         max_steps=max_steps or context.config.agent_max_steps,
+        max_tokens=context.config.agent_max_tokens,
+        on_step=on_step,
     )
     if result.completed and session.submitted is not None:
         return session.submitted, result

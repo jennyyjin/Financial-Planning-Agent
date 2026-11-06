@@ -177,3 +177,13 @@ def test_dashboard_reports_pipeline_errors(monkeypatch, capsys):
     found = web_extract.extract("I earn $3,000 a month")
     assert found.status == "unavailable" and "couldn't read that" in found.message
     assert "input phase failed" in capsys.readouterr().err
+
+
+def test_dashboard_gets_an_update_summary_after_the_first_plan(monkeypatch, tmp_path):
+    monkeypatch.setenv("FINAGENT_DATA_DIR", str(tmp_path))
+    model = RoutedModel(extract=[COMPLETE, with_rent(COMPLETE, 1950)])
+    monkeypatch.setattr(pipeline, "resolve_model", lambda m: model)
+    first = web_extract.extract("my finances", user_id="web_upd")
+    assert first.status == "ready" and first.update_summary is None
+    second = web_extract.extract("Rent went up to $1,950.", user_id="web_upd")
+    assert second.update_summary == "Your budgets were updated: updated Rent (amount $1,800 → $1,950)."

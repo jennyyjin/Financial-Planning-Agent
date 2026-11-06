@@ -11,6 +11,7 @@ import os
 import sys
 from typing import Optional, Sequence
 
+from finagent.env import load_dotenv
 from finagent.output.agents.runtime import ChatModel, OpenAICompatibleModel
 from finagent.schema import MemoryMethod
 from finagent.web.server import make_server
@@ -34,6 +35,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--memory-method", choices=[m.value for m in MemoryMethod], default=MemoryMethod.full_history.value,
                    help="Passed to the input phase once it is connected.")
     args = p.parse_args(argv)
+    load_dotenv()
     server = make_server(args.host, args.port, _model(args.no_llm), MemoryMethod(args.memory_method))
     print(f"Budget planner running at http://{args.host}:{server.server_address[1]}/", file=sys.stderr)
     try:

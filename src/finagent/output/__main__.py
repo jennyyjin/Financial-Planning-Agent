@@ -16,6 +16,7 @@ from typing import Optional, Sequence
 
 from pydantic import ValidationError
 
+from finagent.env import load_dotenv
 from finagent.output.agents.runtime import ChatModel, OpenAICompatibleModel
 from finagent.output.pipeline import generate_plan, load_profile, plan_to_json
 from finagent.output.render import render_text
@@ -48,6 +49,7 @@ def _model(no_llm: bool) -> Optional[ChatModel]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    load_dotenv()
     try:
         profile = load_profile(args.profile)
     except (OSError, ValueError, ValidationError) as exc:

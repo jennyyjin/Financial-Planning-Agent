@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 from typing import Any, Optional, Sequence
 
+from finagent.env import load_dotenv
 from finagent.input_pipeline import InputPhaseUnavailable, InputResult, resolve_model, run_episode
 from finagent.llm import ChatModel
 from finagent.schema import FinancialProfile, MemoryMethod
@@ -113,6 +114,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--memory", choices=[*(m.value for m in MemoryMethod), "both"], default="both")
     p.add_argument("--out", type=Path, help="Write each run's results as JSON into this directory.")
     args = p.parse_args(argv)
+    load_dotenv()
     methods = list(MemoryMethod) if args.memory == "both" else [MemoryMethod(args.memory)]
     try:
         model = resolve_model(None)

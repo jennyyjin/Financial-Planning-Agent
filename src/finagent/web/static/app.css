@@ -42,10 +42,30 @@ textarea::placeholder{color:#6B6A66}
 .questions{margin:0;padding:16px 20px 16px 40px;border-radius:14px;background:#FFE3CF;font-size:16px;line-height:1.5}
 .questions li+li{margin-top:6px}
 
+/* addition: conversation thread (the user's messages and the agent's follow-up questions) */
+.card.is-open.has-thread .open-body{max-height:1600px}
+.thread{display:flex;flex-direction:column;gap:10px;max-height:340px;overflow-y:auto;padding-right:4px}
+.msg{max-width:min(720px,92%);padding:14px 18px;border-radius:16px;font-size:16px;line-height:1.5;animation:rise .3s ease both;overflow-wrap:anywhere}
+.msg .who{display:block;margin-bottom:4px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:#7A7973}
+.msg.user{align-self:flex-end;background:#F2F1EE;white-space:pre-wrap}
+.msg.agent{align-self:flex-start;background:#CDEBF7}
+.msg.agent .questions{margin-top:10px;background:#FFFFFF}
+
+/* addition: what changed after an update, shown above the dashboard until accepted */
+.update-note{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px;background:#FFFFFF;box-shadow:inset 6px 0 0 #FF7A1A;animation:rise .4s ease both}
+.update-note>div{flex:1 1 420px;min-width:0}
+.update-note .note-label{display:block;margin-bottom:6px;font-size:15px;font-weight:600}
+.update-note p{margin:0;font-size:17px;line-height:1.5;color:#3F3E3A;overflow-wrap:anywhere}
+
 /* working moment: a squiggly ring that draws itself */
 .status{display:flex;flex-direction:column;align-items:center;gap:18px;margin:64px auto 0;animation:rise .4s ease both}
 .squig{width:132px;height:132px;animation:spin 3s linear infinite}
 .squig path{fill:none;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-dasharray:820;animation:draw 1.5s cubic-bezier(.6,0,.3,1) both}
+.log{list-style:none;margin:6px 0 0;padding:0;width:min(560px,100%);display:flex;flex-direction:column;gap:8px}
+.log li{padding:10px 14px;border-radius:12px;background:#F4F3F0;font-size:15px;line-height:1.4;color:#55544F;animation:rise .3s ease both}
+.log li:last-child{background:#FFFFFF;color:#000000;font-weight:600;box-shadow:inset 0 0 0 2px #000000}
+.log .who{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;color:#7A7973;text-transform:uppercase}
+.log .detail{display:block;margin-top:2px;font-size:13px;font-weight:400;color:#55544F;overflow-wrap:anywhere}
 @keyframes draw{from{stroke-dashoffset:820}to{stroke-dashoffset:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}

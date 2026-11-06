@@ -264,6 +264,32 @@ def test_run_agent_max_steps(registry: ToolRegistry) -> None:
     assert res.steps == 3 and len(model.calls) == 3
 
 
+def test_run_agent_token_budget_aborts_before_running_the_over_budget_turn(registry: ToolRegistry) -> None:
+    def spend(tokens: int) -> AssistantTurn:
+        return AssistantTurn(tool_calls=[call("add", a=1, b=1)], usage={"prompt_tokens": tokens, "completion_tokens": 0})
+
+    model = ScriptedModel([spend(60), spend(60), spend(60)])
+    res = run_agent(model, "SYS", registry, "go", agent_name="t", max_tokens=100)
+    assert res.completed is False and res.final_result is None
+    assert res.error == "token_budget_exceeded: 120 of 100 tokens"
+    assert res.steps == 2 and len(model.calls) == 2
+    # Step 1 ran its tool; step 2 was over budget, so its tool call was dropped.
+    assert [t.tool for t in res.trace] == ["add", None]
+    # Trace usage still sums to the run's usage.
+    assert sum(t.usage["prompt_tokens"] for t in res.trace if t.usage) == res.usage["prompt_tokens"] == 120
+
+
+def test_run_agent_token_budget_prefers_total_tokens_and_is_inclusive(registry: ToolRegistry) -> None:
+    usage = {"prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 100}
+    model = ScriptedModel([AssistantTurn(tool_calls=[call("finalize", summary="x")], usage=usage)])
+    assert run_agent(model, "SYS", registry, "go", agent_name="t", max_tokens=100).completed is True
+
+
+def test_run_agent_without_a_budget_or_usage_is_unlimited(registry: ToolRegistry) -> None:
+    model = ScriptedModel([turn(call("finalize", summary="x"))])
+    assert run_agent(model, "SYS", registry, "go", agent_name="t", max_tokens=1).completed is True
+
+
 def test_run_agent_model_exception(registry: ToolRegistry) -> None:
     def boom(messages: list[Message]) -> AssistantTurn:
         raise RuntimeError("provider down")

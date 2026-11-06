@@ -194,6 +194,14 @@ def _add_usage(total: dict[str, Any], usage: dict[str, Any]) -> None:
             total[key] = total.get(key, 0) + value
 
 
+def _tokens_used(usage_total: dict[str, Any]) -> int:
+    """Tokens spent so far, from the provider's usage (total_tokens, else prompt + completion)."""
+    total = usage_total.get("total_tokens")
+    if total is None:
+        total = usage_total.get("prompt_tokens", 0) + usage_total.get("completion_tokens", 0)
+    return int(total)
+
+
 def _nudge(registry: ToolRegistry) -> str:
     terminal = registry.terminal_names() or registry.names
     return (
@@ -210,8 +218,18 @@ def run_agent(
     *,
     agent_name: str,
     max_steps: int = DEFAULT_MAX_STEPS,
+    max_tokens: Optional[int] = None,
+    on_step: Optional[Callable[[TraceStep], None]] = None,
 ) -> AgentResult:
-    """Run the tool-calling loop until a terminal tool succeeds, max_steps, or a model error."""
+    """Run the tool-calling loop until a terminal tool succeeds, max_steps, the token budget, or a model error.
+
+    `on_step` is called with each TraceStep as it is recorded (for live progress). It runs on the agent's thread;
+    an exception it raises propagates out of the run.
+
+    `max_tokens` bounds the tokens the provider reports for this run. It is checked after each model call, so
+    the run can overshoot by one call; the over-budget turn's tool calls are not executed, and the result has
+    `error="token_budget_exceeded: ..."`. A provider that reports no usage cannot be limited.
+    """
     messages = [Message(role="system", content=system_prompt), Message(role="user", content=user_message)]
     trace: list[TraceStep] = []
     usage_total: dict[str, Any] = {}
@@ -219,6 +237,11 @@ def run_agent(
 
     def result(completed: bool, steps: int, final: Optional[dict] = None, error: Optional[str] = None) -> AgentResult:
         return AgentResult(completed, final, steps, trace, messages, error, usage_total)
+
+    def record(step: TraceStep) -> None:
+        trace.append(step)
+        if on_step is not None:
+            on_step(step)
 
     for step in range(1, max_steps + 1):
         started = time.perf_counter()
@@ -229,9 +252,13 @@ def run_agent(
         usage = {**reply.usage, "latency_ms": (time.perf_counter() - started) * 1000}
         _add_usage(usage_total, usage)
 
+        if max_tokens is not None and _tokens_used(usage_total) > max_tokens:
+            record(TraceStep(agent=agent_name, step=step, text=reply.text, usage=usage))
+            return result(False, step, error=f"token_budget_exceeded: {_tokens_used(usage_total)} of {max_tokens} tokens")
+
         if not reply.tool_calls:
             messages.append(Message(role="assistant", content=reply.text))
-            trace.append(TraceStep(agent=agent_name, step=step, text=reply.text, usage=usage))
+            record(TraceStep(agent=agent_name, step=step, text=reply.text, usage=usage))
             messages.append(Message(role="user", content=_nudge(registry)))
             continue
 
@@ -240,7 +267,7 @@ def run_agent(
         for i, call in enumerate(reply.tool_calls):
             out, done = registry.dispatch(call)
             executed.append((call, out))
-            trace.append(
+            record(
                 TraceStep(
                     agent=agent_name, step=step, tool=call.name, arguments=call.arguments,
                     # The turn's usage is recorded once, on its first tool call, so trace sums are correct.

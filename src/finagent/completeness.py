@@ -198,4 +198,4 @@ def confirmation_message(profile: FinancialProfile, diff: Optional[ProfileDiff] 
     if profile.current_savings_balance:
         parts.append(f"{dollars(profile.current_savings_balance)} in savings")
     summary = "; ".join(parts) if parts else "your details"
-    return f"Got it. I've recorded {summary}. Your plan is being updated."
+    return f"Got it. I've recorded {summary}. Here are your budgets."
