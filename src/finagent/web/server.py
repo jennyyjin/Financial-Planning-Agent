@@ -4,7 +4,7 @@
   GET  /static/...   page assets
   GET  /api/example  {"text": example narrative}
   POST /api/plan     {"text": str, "user_id"?: str} ->
-                     {"status": "ready", "view": {...}, "plan": PlanOutput}
+                     {"status": "ready", "message", "update_summary" (null for a first plan), "view": {...}, "plan": PlanOutput}
                      {"status": "needs_clarification", "message", "questions"}
                      {"status": "unavailable" | "invalid", "message"}   (HTTP 422)
   POST /api/plan/stream   same request, answered as newline-delimited JSON while the plan is built:
@@ -93,8 +93,8 @@ class PlanHandler(BaseHTTPRequestHandler):
             print(f"error: plan generation failed: {exc!r}", file=sys.stderr)
             return HTTPStatus.INTERNAL_SERVER_ERROR, {"status": "error",
                                                       "message": "Something went wrong building your plan."}
-        return HTTPStatus.OK, {"status": "ready", "message": found.message, "view": build_view(plan),
-                               "plan": plan.model_dump(mode="json", exclude={"trace"})}
+        return HTTPStatus.OK, {"status": "ready", "message": found.message, "update_summary": found.update_summary,
+                               "view": build_view(plan), "plan": plan.model_dump(mode="json", exclude={"trace"})}
 
     def do_POST(self) -> None:
         path = self.path.split("?", 1)[0]

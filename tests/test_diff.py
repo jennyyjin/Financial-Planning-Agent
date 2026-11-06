@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from finagent.completeness import confirmation_message
-from finagent.diff import diff_profiles
+from finagent.diff import ProfileDiff as ProfileDiffEmpty, diff_profiles
 from finagent.schema import FinancialProfile
 
 PROFILES = Path(__file__).resolve().parents[1] / "examples" / "profiles"
@@ -69,3 +69,20 @@ def test_no_previous_profile_counts_everything_as_added():
     diff = diff_profiles(None, BASE)
     assert len(diff.added) == 1 + 4 + 1 + 1 + 1  # income, recurring, one-time, goals, debts
     assert {c.section for c in diff.changed} == {"retirement", "overall_savings_target", "current_savings_balance"}
+
+
+def test_summary_names_at_most_three_changes():
+    assert ProfileDiffEmpty().summary() == "Nothing in your finances changed, so your budgets are the same."
+
+    def raise_rent(d):
+        d["recurring_expenses"][0]["amount"] = 1950
+    one = diff_profiles(BASE, edit(x=raise_rent))
+    assert one.summary() == "Your budgets were updated: updated Rent (amount $1,800 → $1,950)."
+
+    def many(d):
+        for e in d["recurring_expenses"]:
+            e["amount"] += 10
+        d["current_savings_balance"] = 7000
+    text = diff_profiles(BASE, edit(x=many)).summary()
+    assert text.count("updated") == 4  # "were updated" + three changes
+    assert text.endswith("There are 2 other changes too.")

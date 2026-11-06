@@ -81,6 +81,8 @@ def describe(event: dict[str, Any]) -> Optional[dict[str, Any]]:
         return {"type": "progress", "stage": stage, "label": STAGES.get(stage, stage)}
     if event.get("kind") == "step":
         step: TraceStep = event["step"]
+        if step.tool == "submit_recommendation" and isinstance(step.result, dict) and step.result.get("error"):
+            return None  # rejected drafts are internal retries; the page shows only the accepted submission
         label, detail = _step_label(step)
         out: dict[str, Any] = {"type": "progress", "agent": step.agent, "who": _who(step.agent), "label": label}
         if detail:

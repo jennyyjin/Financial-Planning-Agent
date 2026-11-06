@@ -220,3 +220,9 @@ def test_progress_wording_for_agent_steps():
     assert step("compare_budgets", {}, {}, agent="advisor")["who"] == "Advisor"
     assert step("some_new_tool", {}, {})["label"] == "Some new tool"
     assert describe({"kind": "other"}) is None
+    # Rejected recommendation drafts are retried internally and not shown.
+    assert step("submit_recommendation", {"summary": "x"}, {"error": "overall_status must be ..."}, agent="advisor") is None
+    assert step("submit_recommendation", {"summary": "x"}, {"accepted": False, "error": "Recommendation rejected"},
+                agent="advisor") is None
+    assert step("submit_recommendation", {"summary": "Done."}, {"accepted": True}, agent="advisor")["label"] == \
+        "Submitting the recommendation"

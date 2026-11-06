@@ -12,8 +12,11 @@
   var $ = function (id) { return document.getElementById(id); };
   var els = {
     intro: $('intro'), card: $('card'), text: $('situation'), feedback: $('feedback'), snippet: $('snippet'),
-    working: $('working'), log: $('log'), results: $('results'), example: $('example'), edit: $('edit'), submit: $('submit')
+    working: $('working'), log: $('log'), results: $('results'), example: $('example'), edit: $('edit'), submit: $('submit'),
+    thread: $('thread'), label: $('situation-label'), hint: $('hint'), restart: $('restart'), restartClosed: $('restart-closed'),
+    back: $('back')
   };
+  var PLACEHOLDER = els.text.placeholder;
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -32,13 +35,114 @@
       return id;
     } catch (e) { return 'web'; }
   }
+  function resetUserId() {
+    try { sessionStorage.removeItem('finagent.user_id'); } catch (e) { /* storage unavailable */ }
+  }
+
+  // --- conversation (addition) ---------------------------------------------------
+  // The page shows the conversation so far but sends only the newest message: the server's
+  // input phase remembers earlier ones for this user_id. Kept in sessionStorage with the id.
+
+  var THREAD_KEY = 'finagent.thread';
+  var thread = loadThread();
+
+  function loadThread() {
+    try { return JSON.parse(sessionStorage.getItem(THREAD_KEY)) || []; } catch (e) { return []; }
+  }
+  function saveThread() {
+    try { sessionStorage.setItem(THREAD_KEY, JSON.stringify(thread)); } catch (e) { /* storage unavailable */ }
+  }
+
+  function renderThread() {
+    var started = thread.length > 0;
+    var ready = started && !!thread[thread.length - 1].ready;
+    els.thread.hidden = !started;
+    els.thread.innerHTML = thread.map(function (m) {
+      if (m.role === 'user') return '<div class="msg user"><span class="who">You</span>' + esc(m.text) + '</div>';
+      var qs = m.questions && m.questions.length
+        ? '<ol class="questions">' + m.questions.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ol>' : '';
+      return '<div class="msg agent"><span class="who">Planner</span>' + esc(m.text) + qs + '</div>';
+    }).join('');
+    els.thread.scrollTop = els.thread.scrollHeight;
+    els.label.textContent = !started ? 'Your situation' : (ready ? 'Anything to add or change?' : 'Your answer');
+    els.text.placeholder = !started ? PLACEHOLDER
+      : (ready ? 'For example: my rent goes up to $1,800 in January.' : 'Answer the questions above. Rough numbers are fine.');
+    els.submit.textContent = !started ? 'Build my budgets' : (ready ? 'Update my budgets' : 'Send answer');
+    els.hint.hidden = started;
+    els.example.hidden = started;
+    els.restart.hidden = !started;
+    // Once a dashboard exists, Edit must be cancellable even if there is nothing to change.
+    els.back.hidden = !(loadDashboard() || {}).view;
+  }
+
+  function backToDashboard() {
+    var saved = loadDashboard();
+    if (!saved || !saved.view) return;
+    els.text.value = ''; // a draft update the user decided not to send
+    showFeedback('');
+    if (els.results.innerHTML) setPhase('results');
+    else showDashboard(saved);
+    window.scrollTo({ top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }
+
+  // --- saved dashboard (addition) ------------------------------------------------
+  // The latest view is kept in sessionStorage so a reload shows it again. After an update,
+  // `update` holds a short summary of what changed, shown above the dashboard until accepted.
+
+  var DASHBOARD_KEY = 'finagent.dashboard';
+
+  function loadDashboard() {
+    try { return JSON.parse(sessionStorage.getItem(DASHBOARD_KEY)); } catch (e) { return null; }
+  }
+  function saveDashboard(saved) {
+    try {
+      if (saved) sessionStorage.setItem(DASHBOARD_KEY, JSON.stringify(saved));
+      else sessionStorage.removeItem(DASHBOARD_KEY);
+    } catch (e) { /* storage unavailable or full: the dashboard just won't survive a reload */ }
+  }
+
+  function updateNote(text) {
+    return '<section id="update-note" class="t s12 update-note" role="status">' +
+      '<div><span class="note-label">What changed</span><p>' + esc(text) + '</p></div>' +
+      '<button type="button" class="primary" id="accept-update">Accept</button></section>';
+  }
+
+  function showDashboard(saved) {
+    els.results.innerHTML = (saved.update ? updateNote(saved.update) : '') + renderResults(saved.view);
+    var accept = $('accept-update');
+    if (accept) {
+      accept.addEventListener('click', function () {
+        saved.update = null;
+        saveDashboard(saved);
+        var note = $('update-note');
+        if (note) note.parentNode.removeChild(note);
+      });
+    }
+    var first = thread.filter(function (m) { return m.role === 'user'; })[0];
+    if (first) els.snippet.textContent = first.text; // the story, not the last answer
+    setPhase('results');
+  }
+
+  function restart() {
+    thread = [];
+    saveThread();
+    saveDashboard(null);
+    resetUserId(); // a fresh id means a fresh profile and memory on the server
+    els.text.value = '';
+    els.results.innerHTML = '';
+    showFeedback('');
+    renderThread();
+    setPhase('input');
+    els.text.focus();
+  }
 
   // --- phases ----------------------------------------------------------------
 
   function setPhase(phase) {
     var input = phase === 'input';
     els.intro.className = input ? 'intro' : 'intro is-gone';
-    els.card.className = input ? 'card is-open' : 'card is-closed';
+    els.card.className = (input ? 'card is-open' : 'card is-closed') + (thread.length ? ' has-thread' : '');
+    els.card.scrollTop = 0; // focusing the text box can scroll the card; don't carry that into the folded note
     els.working.hidden = phase !== 'working';
     els.results.hidden = phase !== 'results';
     els.submit.disabled = phase === 'working';
@@ -55,8 +159,15 @@
   function submit(e) {
     e.preventDefault();
     var text = els.text.value.trim();
-    if (!text) { showFeedback('Add a few details about your money first, or click Fill in an example.'); return; }
+    if (!text) {
+      showFeedback(thread.length ? 'Type your answer first.' : 'Add a few details about your money first, or click Fill in an example.');
+      return;
+    }
     showFeedback('');
+    thread.push({ role: 'user', text: text });
+    saveThread();
+    renderThread();
+    els.text.value = '';
     els.snippet.textContent = text;
     els.log.innerHTML = '';
     setPhase('working');
@@ -117,17 +228,27 @@
 
   function handle(data) {
     if (data.status === 'ready' && data.view) {
-      els.results.innerHTML = renderResults(data.view);
-      setPhase('results');
+      thread.push({ role: 'agent', text: data.message || 'Got it. Here are your budgets.', ready: true });
+      saveThread();
+      renderThread();
+      var saved = { view: data.view, update: data.update_summary || null };
+      saveDashboard(saved);
+      showDashboard(saved);
       window.scrollTo({ top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
       return;
     }
-    setPhase('input');
     if (data.status === 'needs_clarification') {
-      showFeedback(data.message || 'A few more details and we can build your budgets:', data.questions);
+      thread.push({ role: 'agent', text: data.message || 'A few more details and we can build your budgets:',
+                    questions: data.questions || [] });
     } else {
+      // Nothing was recorded on the server, so take the message back out and let the user retry it.
+      var last = thread.pop();
+      if (last && last.role === 'user') els.text.value = last.text;
       showFeedback(data.message || 'Something went wrong building your plan. Please try again.');
     }
+    saveThread();
+    renderThread();
+    setPhase('input');
     els.text.focus();
   }
 
@@ -141,7 +262,13 @@
       els.text.value = d.text; showFeedback(''); els.text.focus();
     });
   });
-  els.edit.addEventListener('click', function () { setPhase('input'); els.text.focus(); });
+  els.edit.addEventListener('click', function () { renderThread(); setPhase('input'); els.text.focus(); });
+  els.restart.addEventListener('click', restart);
+  els.restartClosed.addEventListener('click', restart);
+  els.back.addEventListener('click', backToDashboard);
+  renderThread();
+  var savedDashboard = loadDashboard();
+  if (savedDashboard && savedDashboard.view && thread.length) showDashboard(savedDashboard);
 
   (function squiggle() {
     var pts = [];

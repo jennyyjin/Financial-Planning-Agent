@@ -64,6 +64,8 @@ class AdvisorSession:
     submitted: Optional[Recommendation] = None
     max_grounding_retries: int = 1   # TDD §10: one retry after an ungrounded submission, then the run fails
     grounding_failures: int = 0
+    max_submit_retries: int = 5      # retries after any rejected submission, then the run fails (templated fallback)
+    submit_rejections: int = 0
     failed: Optional[str] = None     # set when the run ended without an accepted recommendation
 
     def allowed(self) -> list[float]:
@@ -326,6 +328,16 @@ def build_advisor_tools(session: AdvisorSession) -> ToolRegistry:
         terminal=True,
     )
     def submit_recommendation(args: SubmitRecommendationArgs) -> dict:
+        try:
+            return _submit(args)
+        except ToolError as exc:
+            session.submit_rejections += 1
+            if session.submit_rejections > session.max_submit_retries:
+                session.failed = f"recommendation rejected {session.submit_rejections} times; last: {exc}"
+                return {"accepted": False, "error": f"Recommendation rejected: {session.failed}"}
+            raise
+
+    def _submit(args: SubmitRecommendationArgs) -> dict:
         n = len(args.major_changes)
         if not MIN_MAJOR_CHANGES <= n <= MAX_MAJOR_CHANGES:
             raise ToolError(

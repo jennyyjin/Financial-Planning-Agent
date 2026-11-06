@@ -35,6 +35,7 @@ from finagent.completeness import (
     follow_up_questions,
 )
 from finagent.diff import ProfileDiff, diff_profiles
+from finagent.env import load_dotenv
 from finagent.extraction import extract_profile
 from finagent.llm import ChatModel, UsageLog, model_from_env
 from finagent.memory import make_memory
@@ -189,6 +190,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--memory", choices=[m.value for m in MemoryMethod], default=MemoryMethod.full_history.value)
     p.add_argument("--show-profile", action="store_true", help="Print the extracted profile JSON after each message.")
     args = p.parse_args(argv)
+    load_dotenv()
     try:
         model = resolve_model(None)
     except InputPhaseUnavailable as exc:

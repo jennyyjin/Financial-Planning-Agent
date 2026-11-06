@@ -119,7 +119,7 @@ def test_confirmation_message_complete_profile():
         "Got it. I've recorded income of $6,200/month after tax from Software engineer salary; "
         "4 recurring expenses totalling $2,803/month; 1 upcoming one-time cost; "
         "1 savings goal (Japan trip); 1 debt with $18,000 owed; $400/month toward retirement; "
-        "$6,500 in savings. Your plan is being updated."
+        "$6,500 in savings. Here are your budgets."
     )
 
 
@@ -130,5 +130,5 @@ def test_confirmation_message_minimal_profile():
     })
     assert confirmation_message(profile) == (
         "Got it. I've recorded income of $6,200/month after tax from Software engineer salary. "
-        "Your plan is being updated."
+        "Here are your budgets."
     )

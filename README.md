@@ -75,6 +75,20 @@ A web front end for the output phase (`src/finagent/web/`), built from the "Fina
 python -m finagent.web               # http://127.0.0.1:8000/ ; uses the LLM agents if FINAGENT_LLM_MODEL is set
 python -m finagent.web --no-llm --port 8765
 ```
-- The user describes their situation in the text box. `finagent/web/extract.py` sends free text to the input phase (`process_message`, with the server's `--memory-method`), and `needs_clarification` follow-up questions are shown under the text box. If `FINAGENT_LLM_MODEL` is not set or the input phase fails, it still accepts the bundled example narrative ("Fill in an example": `examples/profiles/narrative_profile.txt`, which maps to `narrative_profile.json`) and a `FinancialProfile` pasted as JSON.
+- **The flow:**
+  1. The user describes their situation in the text box. `finagent/web/extract.py` sends the text to the input phase (`process_message`, with the server's `--memory-method`).
+  2. If the profile is missing required information, the page shows a conversation: what the user wrote and the agent's follow-up questions. The text box becomes "Your answer", and only the answer is sent, because the input phase remembers the rest for this `user_id`. This repeats until the profile is complete.
+  3. The server then builds the plan, with live progress, and the dashboard shows it.
+
+  The conversation, the `user_id` and the latest dashboard are kept in `sessionStorage`, so a reload keeps them. **Start over** clears all three and starts a new profile.
+- **Updates:** **Edit** on the dashboard reopens the conversation ("Anything to add or change?"), and **Back to my budgets** cancels without sending anything. After an update, a short "What changed" summary from the input phase's diff (`update_summary` in the response, at most three changes) sits above the dashboard until the user clicks **Accept**.
+- **Advisor retries:** the advisor gets at most 5 retries after a rejected recommendation, then the templated recommendation is used. Rejected drafts are not shown in the progress log.
+- **Without a model:** if `FINAGENT_LLM_MODEL` is not set, or the input phase fails, the page still accepts the bundled example narrative ("Fill in an example": `examples/profiles/narrative_profile.txt`, which maps to `narrative_profile.json`) and a `FinancialProfile` pasted as JSON. A message that fails is put back in the text box so the user can retry it.
+- **Running the demo:**
+  1. `cp .env.example .env` and fill in a key and model.
+  2. Run `python -m finagent.web` and open http://127.0.0.1:8000/.
+  3. Click "Fill in an example" and then "Build my budgets". The agent asks for the student loan balance and APR and for the user's ages. Answer, and the three budgets appear.
+
+  Per-user data goes to `data/users/`.
 - `POST /api/plan {"text", "user_id"?}` returns `{"status": "ready", "view", "plan"}`. `plan` is the `PlanOutput` without `trace`. `view` comes from `finagent/web/view.py`, which only selects, groups and formats plan values (plus simple differences such as the total cut to wants).
-- Tests: `pytest tests/web`.
+- Tests: `pytest tests/web`. The browser test of the whole flow, `tests/test_demo_flow.py`, uses a fake model and runs when Playwright and Chrome are installed (`pip install playwright`).

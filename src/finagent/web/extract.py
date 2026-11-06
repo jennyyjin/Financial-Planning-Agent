@@ -20,6 +20,7 @@ from typing import Any, Literal, Optional
 
 from pydantic import ValidationError
 
+from finagent.diff import ProfileDiff
 from finagent.schema import FinancialProfile, MemoryMethod
 
 EXAMPLES_DIR = Path(__file__).resolve().parents[3] / "examples" / "profiles"
@@ -35,6 +36,8 @@ class Extraction:
     profile: Optional[FinancialProfile] = None
     message: Optional[str] = None
     questions: list[str] = field(default_factory=list)
+    # A short summary of what changed since the last plan, for the dashboard; None for a first plan.
+    update_summary: Optional[str] = None
 
 
 def _norm(text: str) -> str:
@@ -76,7 +79,11 @@ def _from_input_phase(process_message: Any, text: str, user_id: str, memory_meth
     profile = get("profile")
     if profile is not None and not isinstance(profile, FinancialProfile):
         profile = FinancialProfile.model_validate(profile)
-    return Extraction("ready", profile=profile, message=get("confirmation_message"))
+    diff = get("diff")
+    if diff is not None and not isinstance(diff, ProfileDiff):
+        diff = ProfileDiff.model_validate(diff)
+    return Extraction("ready", profile=profile, message=get("confirmation_message"),
+                      update_summary=diff.summary() if diff is not None else None)
 
 
 def extract(text: str, user_id: str = "web", memory_method: MemoryMethod = MemoryMethod.full_history) -> Extraction:
